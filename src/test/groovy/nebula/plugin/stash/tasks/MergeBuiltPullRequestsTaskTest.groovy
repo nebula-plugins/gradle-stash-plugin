@@ -25,7 +25,7 @@ class MergeBuiltPullRequestsTaskConfigTest {
     public void createsTheRightClass() {
         project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
         project.ext.targetBranch = "bar"
-        project.apply plugin: 'nebula-stash'
+        project.apply plugin: 'gradle-stash'
         assertTrue(project.tasks.mergeBuiltPullRequests instanceof MergeBuiltPullRequestsTask)
     }
 
@@ -47,7 +47,7 @@ class MergeBuiltPullRequestsTaskConfigTest {
     public void canConfigureTargetBranch() {       
         project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
         project.ext.targetBranch = "bar"
-        project.apply plugin: 'nebula-stash'
+        project.apply plugin: 'gradle-stash'
         
         assertEquals("bar", project.tasks.mergeBuiltPullRequests.targetBranch)
     }
@@ -60,7 +60,7 @@ class MergeBuiltPullRequestsTaskConfigTest {
     
     private void runTaskExpectFail(String missingParam) {
         try {
-            project.apply plugin: 'nebula-stash'
+            project.apply plugin: 'gradle-stash'
             project.mergeBuiltPullRequests.execute()
             fail("should have thrown a GradleException")
         } catch (org.gradle.api.tasks.TaskValidationException e) {
@@ -82,7 +82,7 @@ class MergeBuiltPullRequestsTaskFuncTest {
         project = ProjectBuilder.builder().build()
         project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
         project.ext.targetBranch = "bar"
-        project.apply plugin: 'nebula-stash'
+        project.apply plugin: 'gradle-stash'
         mockStash = mock(StashRestApi.class)
         task = project.tasks.mergeBuiltPullRequests
         task.stash = mockStash

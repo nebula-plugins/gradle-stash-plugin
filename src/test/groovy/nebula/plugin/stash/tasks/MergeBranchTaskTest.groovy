@@ -26,7 +26,7 @@ class MergeBranchTaskTest {
     @Test
     public void createsTheRightClass() {
         project.repo = project.projectName = project.user = project.password = "foo"
-        project.apply plugin: 'nebula-stash'
+        project.apply plugin: 'gradle-stash'
         assertTrue(project.tasks.mergeBranch instanceof MergeBranchTask)
     }
     
@@ -34,7 +34,7 @@ class MergeBranchTaskTest {
     public void canConfigurePullFromBranch() {       
         project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
         project.ext.pullFromBranch = "bar"
-        project.apply plugin: 'nebula-stash'
+        project.apply plugin: 'gradle-stash'
         assertEquals("bar", project.tasks.mergeBranch.pullFromBranch)
     }
     
@@ -42,35 +42,35 @@ class MergeBranchTaskTest {
     public void canConfigureMergeToBranch() {
         project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
         project.ext.mergeToBranch = "mine"
-        project.apply plugin: 'nebula-stash'
+        project.apply plugin: 'gradle-stash'
         assertEquals("mine", project.tasks.mergeBranch.mergeToBranch)
     }
     @Test
     public void canConfigureRemoteName() {
         project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
         project.ext.remoteName = "remote"
-        project.apply plugin: 'nebula-stash'
+        project.apply plugin: 'gradle-stash'
         assertEquals("remote", project.tasks.mergeBranch.remoteName)
     }
     @Test
     public void canConfigureRepoUrl() {       
         project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
         project.ext.repoUrl = "http://builds/mine"
-        project.apply plugin: 'nebula-stash'
+        project.apply plugin: 'gradle-stash'
         assertEquals("http://builds/mine", project.tasks.mergeBranch.repoUrl)
     }
     @Test
     public void canConfigureWorkingPath() {
         project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
         project.ext.workingPath = "/working/path"
-        project.apply plugin: 'nebula-stash'
+        project.apply plugin: 'gradle-stash'
         assertEquals("/working/path", project.tasks.mergeBranch.workingPath)
     }
     @Test
     public void canConfigureAutoMergeBranch() {
         project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
         project.ext.autoMergeBranch = "auto-merge"
-        project.apply plugin: 'nebula-stash'        
+        project.apply plugin: 'gradle-stash'        
         assertEquals("auto-merge", project.tasks.mergeBranch.autoMergeBranch)
     }
     
@@ -78,7 +78,7 @@ class MergeBranchTaskTest {
     public void canConfigurMergeMessage() {
         project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
         project.ext.mergeMessage = "merge message"
-        project.apply plugin: 'nebula-stash'
+        project.apply plugin: 'gradle-stash'
         assertEquals("merge message", project.tasks.mergeBranch.mergeMessage)
     }
     
@@ -86,7 +86,7 @@ class MergeBranchTaskTest {
     public void canConfigureRepoName() {
         project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
         project.ext.repoName = "repo"
-        project.apply plugin: 'nebula-stash'
+        project.apply plugin: 'gradle-stash'
         
         assertEquals("repo", project.tasks.mergeBranch.repoName)
     }
@@ -129,7 +129,7 @@ class MergeBranchTaskTest {
     
     private void runTaskExpectFail(String missingParam) {
         try {
-            project.apply plugin: 'nebula-stash'
+            project.apply plugin: 'gradle-stash'
             project.mergeBranch.execute()
             fail("should have thrown a GradleException")
         } catch (org.gradle.api.tasks.TaskValidationException e) {
@@ -157,7 +157,7 @@ class MergeBranchTaskFunctionalTest {
         mockStash = mock(StashRestApi.class)
         mockFile = mock(File.class)
         mockClonePath = mock(File.class)
-        project.apply plugin: 'nebula-stash'
+        project.apply plugin: 'gradle-stash'
         task = project.tasks.mergeBranch
         cmd = task.cmd = mock(ExternalProcess.class)
     }

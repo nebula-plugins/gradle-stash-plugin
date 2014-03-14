@@ -26,7 +26,7 @@ class PostPullRequestTaskTest {
     @Test
     public void createsTheRightClass() {
         project.repo = project.projectName = project.user = project.password = "foo"
-        project.apply plugin: 'nebula-stash'
+        project.apply plugin: 'gradle-stash'
         assertTrue(project.tasks.postPullRequest instanceof PostPullRequestTask)
     }
     
@@ -34,7 +34,7 @@ class PostPullRequestTaskTest {
     public void canConfigurePrFromBranch() {       
         project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
         project.ext.prFromBranch = "bar"
-        project.apply plugin: 'nebula-stash'
+        project.apply plugin: 'gradle-stash'
         assertEquals("bar", project.tasks.postPullRequest.prFromBranch)
     }
     
@@ -42,7 +42,7 @@ class PostPullRequestTaskTest {
     public void canConfigurePrToBranch() {
         project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
         project.ext.prToBranch = "mine"
-        project.apply plugin: 'nebula-stash'
+        project.apply plugin: 'gradle-stash'
         assertEquals("mine", project.tasks.postPullRequest.prToBranch)
     }
     
@@ -50,7 +50,7 @@ class PostPullRequestTaskTest {
     public void canConfigurePrTitle() {
         project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
         project.ext.prTitle = "title"
-        project.apply plugin: 'nebula-stash'
+        project.apply plugin: 'gradle-stash'
         assertEquals("title", project.tasks.postPullRequest.prTitle)
     }
     
@@ -58,7 +58,7 @@ class PostPullRequestTaskTest {
     public void canConfigurePrDescription() {       
         project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
         project.ext.prDescription = "description"
-        project.apply plugin: 'nebula-stash'
+        project.apply plugin: 'gradle-stash'
         assertEquals("description", project.tasks.postPullRequest.prDescription)
     }
     
@@ -100,7 +100,7 @@ class PostPullRequestTaskTest {
     
     private void runTaskExpectFail(String missingParam) {
         try {
-            project.apply plugin: 'nebula-stash'
+            project.apply plugin: 'gradle-stash'
             project.postPullRequest.execute()
             fail("should have thrown a GradleException")
         } catch (org.gradle.api.tasks.TaskValidationException e) {
@@ -123,7 +123,7 @@ class PostPullRequestTaskFunctionalTest {
         project.ext.prDescription = "description"
         
         mockStash = mock(StashRestApi.class)
-        project.apply plugin: 'nebula-stash'
+        project.apply plugin: 'gradle-stash'
         project.tasks.postPullRequest.stash = mockStash
     }
     

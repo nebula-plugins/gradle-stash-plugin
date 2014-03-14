@@ -24,7 +24,7 @@ class ClosePullRequestTaskTest {
     @Test
     public void createsTheRightClass() {
         project.repo = project.projectName = project.user = project.password = "foo"
-        project.apply plugin: 'nebula-stash'
+        project.apply plugin: 'gradle-stash'
         assertTrue(project.tasks.closePullRequest instanceof ClosePullRequestAfterBuildTask)
     }
     
@@ -32,7 +32,7 @@ class ClosePullRequestTaskTest {
     public void canConfigurePullRequestVersion() {
         project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
         project.ext.pullRequestVersion = "1"
-        project.apply plugin: 'nebula-stash'
+        project.apply plugin: 'gradle-stash'
         
         assertEquals("1", project.tasks.closePullRequest.pullRequestVersion)
     }
@@ -41,7 +41,7 @@ class ClosePullRequestTaskTest {
     public void canConfigurePullRequestId() {       
         project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
         project.ext.pullRequestId = "10"
-        project.apply plugin: 'nebula-stash'
+        project.apply plugin: 'gradle-stash'
         
         assertEquals("10", project.tasks.closePullRequest.pullRequestId)
     }
@@ -62,7 +62,7 @@ class ClosePullRequestTaskTest {
     
     private void runTaskExpectFail(String missingParam) {
         try {
-            project.apply plugin: 'nebula-stash'
+            project.apply plugin: 'gradle-stash'
             project.closePullRequest.execute()
             fail("should have thrown a GradleException")
         } catch (org.gradle.api.tasks.TaskValidationException e) {
@@ -86,7 +86,7 @@ class ClosePullRequestTaskFunctionalTest {
     
     @Test
     public void closePullRequestAfterBuild() {
-        project.apply plugin: 'nebula-stash'
+        project.apply plugin: 'gradle-stash'
         project.tasks.closePullRequest.stash = mockStash
         
         def pr = [id:project.ext.pullRequestId, version:  project.ext.pullRequestVersion]
@@ -103,7 +103,7 @@ class ClosePullRequestTaskFunctionalTest {
     
     @Test
     public void closePullRequestThrowException() {
-        project.apply plugin: 'nebula-stash'
+        project.apply plugin: 'gradle-stash'
         project.tasks.closePullRequest.stash = mockStash
         
         def pr = [id:project.ext.pullRequestId, version:  project.ext.pullRequestVersion]

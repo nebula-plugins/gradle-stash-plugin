@@ -30,7 +30,7 @@ public class RetryStashUntilConsistentTaskImplTest {
     public void setup() {
         project = ProjectBuilder.builder().build()
         project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
-        project.apply plugin: 'nebula-stash'
+        project.apply plugin: 'gradle-stash'
         mockStash = mock(StashRestApi.class)
         task = project.tasks.syncNextPullRequest
         task.stash = mockStash
@@ -92,7 +92,7 @@ class MergeAndSyncPullRequestTest {
     public void setup() {
         project = ProjectBuilder.builder().build()
         project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
-        project.apply plugin: 'nebula-stash'
+        project.apply plugin: 'gradle-stash'
         task = project.tasks.syncNextPullRequest
         task.CONSISTENCY_POLL_RETRY_DELAY_MS = 0
         task.logger = mock(Logger.class)
@@ -162,7 +162,7 @@ public class IsValidPullRequestsTaskTest {
     public void setup() {
         project = ProjectBuilder.builder().build()
         project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
-        project.apply plugin: 'nebula-stash'
+        project.apply plugin: 'gradle-stash'
         mockStash = mock(StashRestApi.class)
         task = project.tasks.syncNextPullRequest
         task.stash = mockStash

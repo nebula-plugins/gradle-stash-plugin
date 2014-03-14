@@ -17,7 +17,7 @@ import org.gradle.api.tasks.Optional;
 class StashRestPlugin implements Plugin<Project> {
     void apply(Project project) {
 			Logger log = project.logger
-			log.lifecycle "nebula-stash tasks are enabled" 
+			log.lifecycle "gradle-stash tasks are enabled" 
             project.extensions.create("stash", StashPluginExtension)
             
             // these are all needed for the tasks

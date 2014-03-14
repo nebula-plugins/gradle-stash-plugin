@@ -26,7 +26,7 @@ class AddBuildStatusTaskTest {
     @Test
     public void createsTheRightClass() {
         project.repo = project.projectName = project.user = project.password = "foo"
-        project.apply plugin: 'nebula-stash'
+        project.apply plugin: 'gradle-stash'
         assertTrue(project.tasks.addBuildStatus instanceof AddBuildStatusTask)
     }
     
@@ -34,7 +34,7 @@ class AddBuildStatusTaskTest {
     public void canConfigureBuildState() {       
         project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
         project.ext.buildState = "INPROGRESS"
-        project.apply plugin: 'nebula-stash'
+        project.apply plugin: 'gradle-stash'
         
         assertEquals("INPROGRESS", project.tasks.addBuildStatus.buildState)
     }
@@ -43,7 +43,7 @@ class AddBuildStatusTaskTest {
     public void canConfigureBuildKey() {
         project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
         project.ext.buildKey = "121"
-        project.apply plugin: 'nebula-stash'
+        project.apply plugin: 'gradle-stash'
         
         assertEquals("121", project.tasks.addBuildStatus.buildKey)
     }
@@ -51,7 +51,7 @@ class AddBuildStatusTaskTest {
     public void canConfigureBuildName() {
         project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
         project.ext.buildName = "My Build"
-        project.apply plugin: 'nebula-stash'
+        project.apply plugin: 'gradle-stash'
         
         assertEquals("My Build", project.tasks.addBuildStatus.buildName)
     }
@@ -59,7 +59,7 @@ class AddBuildStatusTaskTest {
     public void canConfigureBuildUrl() {       
         project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
         project.ext.buildUrl = "http://builds/mine"
-        project.apply plugin: 'nebula-stash'
+        project.apply plugin: 'gradle-stash'
         
         assertEquals("http://builds/mine", project.tasks.addBuildStatus.buildUrl)
     }
@@ -67,7 +67,7 @@ class AddBuildStatusTaskTest {
     public void canConfigureBuildDescription() {
         project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
         project.ext.buildDescription = "Build Description"
-        project.apply plugin: 'nebula-stash'
+        project.apply plugin: 'gradle-stash'
         
         assertEquals("Build Description", project.tasks.addBuildStatus.buildDescription)
     }
@@ -75,7 +75,7 @@ class AddBuildStatusTaskTest {
     public void canConfigureBuildCommit() {
         project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
         project.ext.buildCommit = "AEAEAEAE"
-        project.apply plugin: 'nebula-stash'
+        project.apply plugin: 'gradle-stash'
         
         assertEquals("AEAEAEAE", project.tasks.addBuildStatus.buildCommit)
     }
@@ -137,7 +137,7 @@ class AddBuildStatusTaskTest {
     
     private void runTaskExpectFail(String missingParam) {
         try {
-            project.apply plugin: 'nebula-stash'
+            project.apply plugin: 'gradle-stash'
             project.addBuildStatus.execute()
             fail("should have thrown a GradleException")
         } catch (org.gradle.api.tasks.TaskValidationException e) {
@@ -169,7 +169,7 @@ class AddBuildStatusTaskFuncTest {
     public void addBuildStatusProvidedCommit() {
         // SUCCESSFUL, FAILED and INPROGRESS
         project.ext.buildCommit = "ABCD"
-        project.apply plugin: 'nebula-stash'
+        project.apply plugin: 'gradle-stash'
         task = project.tasks.addBuildStatus
         cmd = task.cmd = mock(ExternalProcess.class)
         project.tasks.addBuildStatus.stash = mockStash
@@ -180,7 +180,7 @@ class AddBuildStatusTaskFuncTest {
     
     @Test
     public void addBuildStatusCalculatedCommit() {
-        project.apply plugin: 'nebula-stash'
+        project.apply plugin: 'gradle-stash'
         project.tasks.addBuildStatus.stash = mockStash
         task = project.tasks.addBuildStatus
         cmd = task.cmd = mock(ExternalProcess.class)
@@ -192,7 +192,7 @@ class AddBuildStatusTaskFuncTest {
     
     @Test(expected=GradleException.class)
     public void addBuildStatusCantCalculateCommit() {
-        project.apply plugin: 'nebula-stash'
+        project.apply plugin: 'gradle-stash'
         project.tasks.addBuildStatus.stash = mockStash
         task = project.tasks.addBuildStatus
         cmd = task.cmd = mock(ExternalProcess.class)

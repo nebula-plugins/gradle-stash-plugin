@@ -26,7 +26,7 @@ class SyncNextPullRequestTaskTest {
     @Test
     public void createsTheRightClass() {
         project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
-        project.apply plugin: 'nebula-stash'
+        project.apply plugin: 'gradle-stash'
         assertTrue(project.tasks.syncNextPullRequest instanceof SyncNextPullRequestTask)
     }
 
@@ -49,7 +49,7 @@ class SyncNextPullRequestTaskTest {
     public void canConfigureTargetBranch() {       
         project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
         project.ext.targetBranch = "bar"
-        project.apply plugin: 'nebula-stash'
+        project.apply plugin: 'gradle-stash'
         
         assertEquals("bar", project.tasks.mergeBuiltPullRequests.targetBranch)
     }
@@ -62,7 +62,7 @@ class SyncNextPullRequestTaskTest {
     
     private void runTaskExpectFail(String missingParam) {
         try {
-            project.apply plugin: 'nebula-stash'
+            project.apply plugin: 'gradle-stash'
             project.syncNextPullRequest.execute()
             fail("should have thrown a GradleException")
         } catch (org.gradle.api.tasks.TaskValidationException e) {
@@ -84,7 +84,7 @@ class SyncNextPullRequestTaskFunctionalTest {
         project = ProjectBuilder.builder().build()
         project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
         project.extensions.checkoutDir = "/foo/bar"
-        project.apply plugin: 'nebula-stash'
+        project.apply plugin: 'gradle-stash'
         mockStash = mock(StashRestApi.class)
         task = project.tasks.syncNextPullRequest
         task.stash = mockStash
