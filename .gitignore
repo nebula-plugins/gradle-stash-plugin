@@ -1,0 +1,16 @@
+build/
+.gradle/
+gradle/
+gradlew
+gradlew.bat
+
+.idea/
+*.iml
+*.ipr
+*.iws
+
+.classpath
+.gitignore
+.project
+.settings/
+/bin
