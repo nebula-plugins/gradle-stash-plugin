@@ -1,4 +1,11 @@
-package netflix.nebula.scm.stash
+package nebula.plugin.stash
+
+import nebula.plugin.stash.tasks.AddBuildStatusTask;
+import nebula.plugin.stash.tasks.ClosePullRequestAfterBuildTask;
+import nebula.plugin.stash.tasks.MergeBranchTask;
+import nebula.plugin.stash.tasks.MergeBuiltPullRequestsTask;
+import nebula.plugin.stash.tasks.PostPullRequestTask;
+import nebula.plugin.stash.tasks.SyncNextPullRequestTask;
 
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin

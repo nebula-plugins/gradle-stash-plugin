@@ -1,4 +1,4 @@
-package netflix.nebula.scm.stash.util
+package nebula.plugin.stash.util
 
 public class ExternalProcessImpl implements ExternalProcess {
     public String execute(command, workingDirStr, ignoreExitCode = false) {

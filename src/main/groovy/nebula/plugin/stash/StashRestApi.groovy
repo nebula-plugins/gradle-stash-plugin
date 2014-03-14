@@ -1,4 +1,4 @@
-package netflix.nebula.scm.stash
+package nebula.plugin.stash
 
 import groovyx.net.http.ContentType
 import groovyx.net.http.HTTPBuilder
@@ -165,80 +165,6 @@ public class StashRestApiImpl implements StashRestApi {
         validateKeys(pullRequest, ["id", "version"])
         return stashPostJson(path, [:], [version: pullRequest.version])
     }
-
-    /**
-     * Java adapter so we can easily call it from a Jenkins plugin
-     * @param input A HashMap with 'id' and 'version' keys
-     * @return
-     */
-     /*
-    public boolean doMergePullRequest(HashMap input) {
-        mergePullRequest(input).
-        map({
-            def targetBranch = it.toRef.displayId
-            def originBranch = it.fromRef.displayId            
-            doCommentPullRequest(input['id'].toInteger(), "Build was successful. Merging pull request.")
-            } as Func1).
-        onErrorReturn({e ->
-            log "Failed to 'Merge' Pull Request id: ${input.id} at version ${input.version}. Commenting Pull Request. Pull Request will remain open."
-            doCommentPullRequest(input['id'].toInteger(), MESSAGE_CONFLICTED)
-            } as Func1).
-        subscribe([
-            onNext:
-                {
-                    log "Finished processing pull request: ${it.dump()}"
-                },
-            onError:
-                {
-                    log "Unexpected error in merge process: ${e.dump()}"
-                    it.printStackTrace()
-                    return false
-                },
-            onCompleted:
-                {
-                    log "Closed pull request and commented ($targetBranch -> $originBranch)"
-                    return true
-                }
-            ] as rx.Observer)
-    }
-    */
-
-    /**
-     * Java adapter so we can easily call it from a Jenkins plugin
-     * @param input A HashMap with 'id' and 'version' keys
-     * @return
-     */
-     /*
-    public boolean doDeclinePullRequest(HashMap input) {
-        declinePullRequest(input).
-        map({
-            def targetBranch = it.toRef.displayId
-            def originBranch = it.fromRef.displayId
-            doCommentPullRequest(input['id'].toInteger(), "Build failed. Declining pull request.")
-            } as Func1).
-        onErrorReturn({e ->
-            log "Failed to 'Decline' Pull Request id: ${input.id} at version ${input.version}. Commenting Pull Request. Pull Request will remain open."
-            doCommentPullRequest(input['id'].toInteger(), MESSAGE_CONFLICTED)
-            } as Func1).
-        subscribe([
-            onNext:
-                {
-                    log "Finished declining pull request: ${it.dump()}"
-                },
-            onError:
-                {
-                    log "Unexpected error in merge process: ${e.dump()}"
-                    it.printStackTrace()
-                    return false
-                },
-            onCompleted:
-                {
-                    log "Declined pull request and commented ($targetBranch -> $originBranch)"
-                    return true
-                }
-            ] as rx.Observer)
-    }
-    */
 
     public Map declinePullRequest(HashMap pullRequest)
     {

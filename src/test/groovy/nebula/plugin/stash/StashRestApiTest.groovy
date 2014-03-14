@@ -1,6 +1,6 @@
-package netflix.nebula.scm.stash
+package nebula.plugin.stash
 
-import netflix.nebula.scm.stash.StashRestApiImpl;
+import nebula.plugin.stash.StashRestApiImpl;
 import org.junit.Test
 import static org.junit.Assert.*
 

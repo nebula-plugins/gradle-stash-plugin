@@ -1,7 +1,7 @@
-package netflix.nebula.scm.stash
+package nebula.plugin.stash.tasks
 
-import netflix.nebula.scm.stash.ClosePullRequestAfterBuildTask
-import netflix.nebula.scm.stash.StashRestApi
+import nebula.plugin.stash.StashRestApi
+import nebula.plugin.stash.tasks.ClosePullRequestAfterBuildTask;
 
 import org.gradle.api.GradleException
 import org.gradle.api.Project

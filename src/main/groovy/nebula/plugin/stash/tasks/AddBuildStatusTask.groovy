@@ -1,10 +1,14 @@
-package netflix.nebula.scm.stash
+package nebula.plugin.stash.tasks
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
 import org.gradle.api.tasks.TaskAction
-import netflix.nebula.scm.stash.util.ExternalProcess
-import netflix.nebula.scm.stash.util.ExternalProcessImpl
+
+import nebula.plugin.stash.StashRestApi;
+import nebula.plugin.stash.StashRestApiImpl;
+import nebula.plugin.stash.util.ExternalProcess
+import nebula.plugin.stash.util.ExternalProcessImpl
+
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 

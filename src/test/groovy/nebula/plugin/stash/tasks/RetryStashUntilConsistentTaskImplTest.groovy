@@ -1,4 +1,4 @@
-package netflix.nebula.scm.stash
+package nebula.plugin.stash.tasks
 
 import org.gradle.testfixtures.ProjectBuilder
 import org.gradle.api.GradleException
@@ -6,7 +6,9 @@ import org.gradle.api.Project
 import org.junit.Test
 import org.junit.Before
 
-import netflix.nebula.scm.stash.util.ExternalProcess
+import nebula.plugin.stash.StashRestApi;
+import nebula.plugin.stash.tasks.SyncNextPullRequestTask;
+import nebula.plugin.stash.util.ExternalProcess
 
 import org.gradle.api.logging.Logger
 import org.mockito.stubbing.Answer

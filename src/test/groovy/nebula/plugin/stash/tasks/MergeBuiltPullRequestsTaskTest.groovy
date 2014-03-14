@@ -1,8 +1,8 @@
-package netflix.nebula.scm.stash
+package nebula.plugin.stash.tasks
 
-import netflix.nebula.scm.stash.MergeBuiltPullRequestsTask
-import netflix.nebula.scm.stash.StashRestApi
-import netflix.nebula.scm.stash.util.ExternalProcess
+import nebula.plugin.stash.StashRestApi
+import nebula.plugin.stash.tasks.MergeBuiltPullRequestsTask;
+import nebula.plugin.stash.util.ExternalProcess
 
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder

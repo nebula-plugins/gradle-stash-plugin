@@ -1,7 +1,7 @@
-package netflix.nebula.scm.stash
+package nebula.plugin.stash.tasks
 
-import netflix.nebula.scm.stash.PostPullRequestTask
-import netflix.nebula.scm.stash.StashRestApi
+import nebula.plugin.stash.StashRestApi
+import nebula.plugin.stash.tasks.PostPullRequestTask;
 
 import org.gradle.api.GradleException
 import org.gradle.api.Project

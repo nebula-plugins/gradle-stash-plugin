@@ -1,13 +1,17 @@
 buildscript {
     repositories { jcenter() }
-    dependencies { classpath 'com.netflix.nebula:nebula-plugin-plugin:1.9.6-SNAPSHOT' }
+    dependencies { classpath 'com.netflix.nebula:nebula-plugin-plugin:1.9.7' }
 }
 
 description 'Gradle plugin to do various Stash SCM tasks'
 apply plugin: 'nebula-plugin'
 apply plugin: 'nebula-sign'
+apply plugin: 'idea'
+apply plugin: 'eclipse'
 
 dependencies {
+    dependencies { compile "org.codehaus.groovy.modules.http-builder:http-builder:0.7.1" }
+    dependencies { testCompile 'org.mockito:mockito-all:1.9.5'}
 }
 
 def pomConfig = {

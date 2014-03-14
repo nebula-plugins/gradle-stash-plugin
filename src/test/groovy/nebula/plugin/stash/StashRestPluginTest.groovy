@@ -1,7 +1,7 @@
-package netflix.nebula.scm.stash
+package nebula.plugin.stash
 
-import netflix.nebula.scm.stash.StashRestApi;
-import netflix.nebula.scm.stash.StashRestApiImpl;
+import nebula.plugin.stash.StashRestApi;
+import nebula.plugin.stash.StashRestApiImpl;
 
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
