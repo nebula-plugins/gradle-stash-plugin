@@ -89,8 +89,3 @@ These are meant to be passed in on the command line so you don't hardcode creden
     ...
     }
 
-When you run
-
-    ./gradlew lockDependencies
-
-It will output
