@@ -25,6 +25,7 @@ public interface StashRestApi {
     public Map declinePullRequest(HashMap pullRequest)
     public List<Map> getPullRequests(String branch)
     public Map getPullRequest(int id)
+    public void deleteBranch(String branchName)
     public List<Map> getBuilds(String changeSet)
     public Map getBuildStats(String changeSet)
     public Logger setLogger(Logger logger)
@@ -95,6 +96,16 @@ public class StashRestApiImpl implements StashRestApi {
         log "builder : " + builder.toString()
 //        return httpRequest(POST, JSON, path, queryParams, JSONUtility.jsonFromMap(postBody))
         return httpRequest(POST, JSON, path, queryParams, builder.toString())
+    }
+
+    private void stashDeleteJson(String path, HashMap postBody = [], HashMap queryParams = [])
+    {
+        log "DELETE: \n$path \n$postBody"        
+        def builder = new groovy.json.JsonBuilder()
+        def root = builder { postBody }
+        log "builder : " + builder.toString()
+//        return httpRequest(POST, JSON, path, queryParams, JSONUtility.jsonFromMap(postBody))
+        httpRequest(DELETE, JSON, path, queryParams, builder.toString())
     }
 
     private Map httpRequest(Method method, ContentType contentType, String path, HashMap queryParams, String requestBody = '') {        
@@ -187,6 +198,12 @@ public class StashRestApiImpl implements StashRestApi {
     {
         def path = getRestPath() + "pull-requests/$id"
         return stashGetJson(path)
+    }
+
+    @Override
+    public void deleteBranch(String branchName) 
+    {
+        stashDeleteJson(path, [name:"/refs/heads/$branchName", dryRun:false], [:])
     }
 
     public List<Map> getBuilds(String changeSet)
