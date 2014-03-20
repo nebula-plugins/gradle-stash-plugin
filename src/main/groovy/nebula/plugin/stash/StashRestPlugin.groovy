@@ -41,8 +41,8 @@ class StashRestPlugin implements Plugin<Project> {
             project.task("closePullRequest",
                 type : ClosePullRequestAfterBuildTask,
                 description: "After a build this task should be run to apply comments and merge the pull request.")
-            project.closePullRequest.pullRequestVersion = project.hasProperty('pullRequestVersion') ? project.pullRequestVersion : null
-            project.closePullRequest.pullRequestId = project.hasProperty('pullRequestId') ? project.pullRequestId : null
+            project.closePullRequest.pullRequestVersion = project.hasProperty('pullRequestVersion') ? project.pullRequestVersion.toInteger() : -1
+            project.closePullRequest.pullRequestId = project.hasProperty('pullRequestId') ? project.pullRequestId.toInteger() : -1
             
             project.task("addBuildStatus", 
                 type : AddBuildStatusTask, 

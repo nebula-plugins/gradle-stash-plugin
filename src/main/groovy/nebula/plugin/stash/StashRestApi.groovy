@@ -91,9 +91,10 @@ public class StashRestApiImpl implements StashRestApi {
     private Map stashPostJson(String path, HashMap postBody = [], HashMap queryParams = [])
     {
         log "POST: \n$path \n$postBody"        
-        def builder = new groovy.json.JsonBuilder()
-        def root = builder { postBody }
-        log "builder : " + builder.toString()
+        def builder = new groovy.json.JsonBuilder(postBody)
+        //def root = builder { postBody }
+        //log "root : ${root.dump()}"
+        log "builder : ${builder.dump()}"
 //        return httpRequest(POST, JSON, path, queryParams, JSONUtility.jsonFromMap(postBody))
         return httpRequest(POST, JSON, path, queryParams, builder.toString())
     }
@@ -190,7 +191,9 @@ public class StashRestApiImpl implements StashRestApi {
         branch = branch.trim()
         def path = getRestPath() + "pull-requests/"
         def prs = []
-        stashGetJson(path, [at:"refs/heads/$branch"]).each(prs << it.values)
+        stashGetJson(path, [at:"refs/heads/$branch"]).values.each {
+            prs << it 
+            }
         return prs
     }
 
@@ -211,7 +214,7 @@ public class StashRestApiImpl implements StashRestApi {
         changeSet = changeSet.trim()
         def path = "/rest/build-status/1.0/commits/${changeSet}"
         def builds = []
-        stashGetJson(path).each({builds << it.values})
+        stashGetJson(path).values.each({builds << it})
         return builds
     }
 
