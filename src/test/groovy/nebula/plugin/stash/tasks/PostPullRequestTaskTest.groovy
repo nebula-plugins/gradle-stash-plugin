@@ -25,14 +25,14 @@ class PostPullRequestTaskTest {
 
     @Test
     public void createsTheRightClass() {
-        project.repo = project.projectName = project.user = project.password = "foo"
+        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
         project.apply plugin: 'gradle-stash'
         assertTrue(project.tasks.postPullRequest instanceof PostPullRequestTask)
     }
     
     @Test
     public void canConfigurePrFromBranch() {       
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
+        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
         project.ext.prFromBranch = "bar"
         project.apply plugin: 'gradle-stash'
         assertEquals("bar", project.tasks.postPullRequest.prFromBranch)
@@ -40,7 +40,7 @@ class PostPullRequestTaskTest {
     
     @Test
     public void canConfigurePrToBranch() {
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
+        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
         project.ext.prToBranch = "mine"
         project.apply plugin: 'gradle-stash'
         assertEquals("mine", project.tasks.postPullRequest.prToBranch)
@@ -48,7 +48,7 @@ class PostPullRequestTaskTest {
     
     @Test
     public void canConfigurePrTitle() {
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
+        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
         project.ext.prTitle = "title"
         project.apply plugin: 'gradle-stash'
         assertEquals("title", project.tasks.postPullRequest.prTitle)
@@ -56,7 +56,7 @@ class PostPullRequestTaskTest {
     
     @Test
     public void canConfigurePrDescription() {       
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
+        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
         project.ext.prDescription = "description"
         project.apply plugin: 'gradle-stash'
         assertEquals("description", project.tasks.postPullRequest.prDescription)
@@ -64,7 +64,7 @@ class PostPullRequestTaskTest {
     
     @Test
     public void failsIfPrFromBranchNotProvided() {
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
+        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
         project.ext.prToBranch = "branch2"
         project.ext.prDescription = "description"
         project.ext.prTitle = "title"
@@ -73,7 +73,7 @@ class PostPullRequestTaskTest {
     
     @Test
     public void failsIfprToBranchNotProvided() {
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
+        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
         project.ext.prFromBranch = "branch"
         project.ext.prDescription = "description"
         project.ext.prTitle = "title"
@@ -82,7 +82,7 @@ class PostPullRequestTaskTest {
     
     @Test
     public void failsIfprDescriptionNotProvided() {
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
+        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
         project.ext.prFromBranch = "branch"
         project.ext.prToBranch = "branch2"
         project.ext.prTitle = "title"
@@ -91,7 +91,7 @@ class PostPullRequestTaskTest {
     
     @Test
     public void failsIfPrTitleNotProvided() {
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
+        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
         project.ext.prFromBranch = "branch"
         project.ext.prToBranch = "branch2"
         project.ext.prDescription = "description"
@@ -116,7 +116,7 @@ class PostPullRequestTaskFunctionalTest {
     @Before
     public void setup() {
         project = ProjectBuilder.builder().build()
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
+        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
         project.ext.prFromBranch = "source-branch"
         project.ext.prToBranch = "target-branch"
         project.ext.prTitle = "title"

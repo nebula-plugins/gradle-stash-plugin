@@ -4,8 +4,8 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
 import org.gradle.api.tasks.TaskAction
 
-import nebula.plugin.stash.StashRestApi;
-import nebula.plugin.stash.StashRestApiImpl;
+import nebula.plugin.stash.StashRestApi
+import nebula.plugin.stash.StashRestApiImpl
 import nebula.plugin.stash.util.ExternalProcess
 import nebula.plugin.stash.util.ExternalProcessImpl
 
@@ -46,18 +46,26 @@ public class MergeBranchTask extends DefaultTask {
         stash = !stash ? new StashRestApiImpl(project.stash.repo, project.stash.projectName, project.stash.host, project.stash.user, project.stash.password) : stash
         stash.logger = project.logger
 
-        final String workingPath = "$workingPath/$repoName"
+        String shortPath = workingPath
+        String workingPath = "$workingPath/$repoName"
+
         clonePath = !clonePath ? new File(workingPath) : clonePath
         if (clonePath.exists())
             failTask("Cannot clone. Path already exists '$workingPath'")
 
-
-        cmd.execute("git clone $repoUrl $repoName", workingPath)
+        cmd.execute("git clone $repoUrl $repoName", shortPath)
         path = !path ? new File(workingPath) : path
         logger.info "path : ${path.dump()}"
         if (!path.exists() || !path.isDirectory())
             failTask("Cannot access git repo path '$workingPath'")
-
+         
+        // make sure auto-merge branch exists on the server, if not, error out
+        //https://stash/rest/api/1.0/projects/EDGE/repos/server-fork/branches?base&details&filterText=automerge-dz-testing-to-master&orderBy
+        def branches = stash.getBranchesMatching(autoMergeBranch)
+        if(branches.size() <= 0) {
+            failTask("${autoMergeBranch} must exist on the server before you can run this task")
+        }
+            
         cmd.execute("git checkout -t origin/$autoMergeBranch", workingPath)
         cmd.execute("git pull origin $mergeToBranch", workingPath)
         def results = cmd.execute("git pull origin $pullFromBranch", workingPath)
@@ -78,7 +86,8 @@ public class MergeBranchTask extends DefaultTask {
         }
         logger.info("Completed merge from '$pullFromBranch' to '$mergeToBranch'.")
         try {
-            if(!path.delete()) { // this could return false or throw an exception
+            // path.exists() is really for working around mocking not mocking deleteDir for testing
+            if(path.exists() && !path.deleteDir()) { // this could return false or throw an exception
                 failTask("Could not delete git clone directory used for merging : ${path.toString()}")
             }
         } catch (Throwable e) {

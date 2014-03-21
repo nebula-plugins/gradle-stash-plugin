@@ -13,8 +13,8 @@ class ClosePullRequestAfterBuildTask extends DefaultTask{
     public static String MESSAGE_CONFLICTED = "Build was successful but unable to merge pull request. Most likely the pull request was modified during the build (new commits or changing status)."
     public static String MESSAGE_SUCCESSFUL = "Build was successful. Merging pull request."
     StashRestApi stash
-    @Input int pullRequestVersion
-    @Input int pullRequestId
+    @Input def pullRequestVersion
+    @Input def pullRequestId
     
     @TaskAction
     def closePullRequestAfterBuild() {

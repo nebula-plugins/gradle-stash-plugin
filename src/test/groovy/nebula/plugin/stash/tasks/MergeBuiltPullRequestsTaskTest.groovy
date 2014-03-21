@@ -23,7 +23,7 @@ class MergeBuiltPullRequestsTaskConfigTest {
 
     @Test
     public void createsTheRightClass() {
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
+        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
         project.ext.targetBranch = "bar"
         project.apply plugin: 'gradle-stash'
         assertTrue(project.tasks.mergeBuiltPullRequests instanceof MergeBuiltPullRequestsTask)
@@ -45,7 +45,7 @@ class MergeBuiltPullRequestsTaskConfigTest {
 
     @Test
     public void canConfigureTargetBranch() {       
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
+        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
         project.ext.targetBranch = "bar"
         project.apply plugin: 'gradle-stash'
         
@@ -54,7 +54,7 @@ class MergeBuiltPullRequestsTaskConfigTest {
 
     @Test
     public void failsIfTargetBranchNotProvided() {
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
+        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
         runTaskExpectFail("targetBranch")
     }
     
@@ -80,7 +80,7 @@ class MergeBuiltPullRequestsTaskFuncTest {
     @Before
     public void setup() {
         project = ProjectBuilder.builder().build()
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
+        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
         project.ext.targetBranch = "bar"
         project.apply plugin: 'gradle-stash'
         mockStash = mock(StashRestApi.class)

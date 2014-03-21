@@ -28,6 +28,7 @@ public interface StashRestApi {
     public void deleteBranch(String branchName)
     public List<Map> getBuilds(String changeSet)
     public Map getBuildStats(String changeSet)
+    public List<Map> getBranchesMatching(String branchName)
     public Logger setLogger(Logger logger)
 }
 
@@ -203,6 +204,19 @@ public class StashRestApiImpl implements StashRestApi {
         return stashGetJson(path)
     }
 
+    @Override
+    public List<Map> getBranchesMatching(String branch)
+    {
+        branch = branch.trim()
+        def path = getRestPath() + "branches/"
+        def prs = []
+        stashGetJson(path, [filterText:branch]).values.each {
+            prs << it
+            }
+        return prs
+    }
+    
+    
     @Override
     public void deleteBranch(String branchName) 
     {

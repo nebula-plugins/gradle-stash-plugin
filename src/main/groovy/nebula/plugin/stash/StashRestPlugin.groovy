@@ -24,6 +24,7 @@ class StashRestPlugin implements Plugin<Project> {
             // if any are not defined, groovy.lang.MissingPropertyException is thrown
             project.stash.repo = project.repo
             project.stash.projectName = project.projectName
+            project.stash.host = project.host
             project.stash.user = project.user
             project.stash.password = project.password
             
@@ -41,8 +42,8 @@ class StashRestPlugin implements Plugin<Project> {
             project.task("closePullRequest",
                 type : ClosePullRequestAfterBuildTask,
                 description: "After a build this task should be run to apply comments and merge the pull request.")
-            project.closePullRequest.pullRequestVersion = project.hasProperty('pullRequestVersion') ? project.pullRequestVersion.toInteger() : -1
-            project.closePullRequest.pullRequestId = project.hasProperty('pullRequestId') ? project.pullRequestId.toInteger() : -1
+            project.closePullRequest.pullRequestVersion = project.hasProperty('pullRequestVersion') ? project.pullRequestVersion.toInteger() : null
+            project.closePullRequest.pullRequestId = project.hasProperty('pullRequestId') ? project.pullRequestId.toInteger() : null
             
             project.task("addBuildStatus", 
                 type : AddBuildStatusTask, 
@@ -79,7 +80,7 @@ class StashRestPlugin implements Plugin<Project> {
 class StashPluginExtension {
     String repo
     String projectName
-    String host = 'https://stash.corp.netflix.com'
+    String host
     String user
     String password
 }

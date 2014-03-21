@@ -48,6 +48,10 @@ class SyncNextPullRequestTask extends DefaultTask {
 
         try {
             def allPullReqs = stash.getPullRequests(targetBranch)
+            if(allPullReqs.size() <= 0) {
+                logger.info("no pull requests to merge")
+            }
+            
             for (Map pr : allPullReqs)
                 if (isValidPullRequest(pr)) {
                     pr = mergeAndSyncPullRequest(pr)

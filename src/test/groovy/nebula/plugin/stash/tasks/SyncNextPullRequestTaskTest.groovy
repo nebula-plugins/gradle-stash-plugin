@@ -25,7 +25,7 @@ class SyncNextPullRequestTaskTest {
 
     @Test
     public void createsTheRightClass() {
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
+        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
         project.apply plugin: 'gradle-stash'
         assertTrue(project.tasks.syncNextPullRequest instanceof SyncNextPullRequestTask)
     }
@@ -47,7 +47,7 @@ class SyncNextPullRequestTaskTest {
 
     @Test
     public void canConfigureTargetBranch() {       
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
+        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
         project.ext.targetBranch = "bar"
         project.apply plugin: 'gradle-stash'
         
@@ -56,7 +56,7 @@ class SyncNextPullRequestTaskTest {
 
     @Test
     public void failsIfCheckoutDirNotProvided() {
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
+        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
         runTaskExpectFail("checkoutDir")
     }
     
@@ -82,7 +82,7 @@ class SyncNextPullRequestTaskFunctionalTest {
     @Before
     public void setup() {
         project = ProjectBuilder.builder().build()
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
+        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
         project.extensions.checkoutDir = "/foo/bar"
         project.apply plugin: 'gradle-stash'
         mockStash = mock(StashRestApi.class)

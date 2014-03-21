@@ -25,14 +25,14 @@ class AddBuildStatusTaskTest {
 
     @Test
     public void createsTheRightClass() {
-        project.repo = project.projectName = project.user = project.password = "foo"
+        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
         project.apply plugin: 'gradle-stash'
         assertTrue(project.tasks.addBuildStatus instanceof AddBuildStatusTask)
     }
     
     @Test
     public void canConfigureBuildState() {       
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
+        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
         project.ext.buildState = "INPROGRESS"
         project.apply plugin: 'gradle-stash'
         
@@ -41,7 +41,7 @@ class AddBuildStatusTaskTest {
     
     @Test
     public void canConfigureBuildKey() {
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
+        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
         project.ext.buildKey = "121"
         project.apply plugin: 'gradle-stash'
         
@@ -49,7 +49,7 @@ class AddBuildStatusTaskTest {
     }
     @Test
     public void canConfigureBuildName() {
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
+        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
         project.ext.buildName = "My Build"
         project.apply plugin: 'gradle-stash'
         
@@ -57,7 +57,7 @@ class AddBuildStatusTaskTest {
     }
     @Test
     public void canConfigureBuildUrl() {       
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
+        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
         project.ext.buildUrl = "http://builds/mine"
         project.apply plugin: 'gradle-stash'
         
@@ -65,7 +65,7 @@ class AddBuildStatusTaskTest {
     }
     @Test
     public void canConfigureBuildDescription() {
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
+        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
         project.ext.buildDescription = "Build Description"
         project.apply plugin: 'gradle-stash'
         
@@ -73,7 +73,7 @@ class AddBuildStatusTaskTest {
     }
     @Test
     public void canConfigureBuildCommit() {
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
+        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
         project.ext.buildCommit = "AEAEAEAE"
         project.apply plugin: 'gradle-stash'
         
@@ -82,7 +82,7 @@ class AddBuildStatusTaskTest {
     @Test
     public void failsIfBuildStateNotProvided() {
         def key = "buildState"
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
+        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
         project.ext.buildKey = "121"
         project.ext.buildName = "My Build"
         project.ext.buildUrl = "http://builds/mine"
@@ -93,7 +93,7 @@ class AddBuildStatusTaskTest {
     
     @Test
     public void failsIfBuildKeyNotProvided() {
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
+        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
         project.ext.buildState = "INPROGRESS"
         project.ext.buildName = "My Build"
         project.ext.buildUrl = "http://builds/mine"
@@ -104,7 +104,7 @@ class AddBuildStatusTaskTest {
     
     @Test
     public void failsIfBuildNameNotProvided() {
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
+        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
         project.ext.buildState = "INPROGRESS"
         project.ext.buildKey = "121"
         project.ext.buildUrl = "http://builds/mine"
@@ -115,7 +115,7 @@ class AddBuildStatusTaskTest {
     
     @Test
     public void failsIfBuildUrlNotProvided() {
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
+        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
         project.ext.buildState = "INPROGRESS"
         project.ext.buildKey = "121"
         project.ext.buildName = "My Build"
@@ -126,7 +126,7 @@ class AddBuildStatusTaskTest {
     
     @Test
     public void failsIfBuildDescriptionNotProvided() {
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
+        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
         project.ext.buildState = "INPROGRESS"
         project.ext.buildKey = "121"
         project.ext.buildName = "My Build"
@@ -156,7 +156,7 @@ class AddBuildStatusTaskFuncTest {
     @Before
     public void setup() {
         project = ProjectBuilder.builder().build()
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = "foo"
+        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
         project.ext.buildState = "SUCCESSFUL"
         project.ext.buildKey = "Smoke_Test"
         project.ext.buildName = "EDGE-Master-Smoke-Test #503"
