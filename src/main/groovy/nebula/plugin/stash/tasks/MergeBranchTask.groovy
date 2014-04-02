@@ -27,6 +27,7 @@ public class MergeBranchTask extends DefaultTask {
     @Optional def autoMergeBranch
     @Optional def mergeMessage
     @Optional def repoName
+    @Optional def acceptFilter
     File path
     File clonePath
     
@@ -69,9 +70,27 @@ public class MergeBranchTask extends DefaultTask {
         cmd.execute("git checkout -t origin/$autoMergeBranch", workingPath)
         cmd.execute("git pull origin $mergeToBranch", workingPath)
         def results = cmd.execute("git pull origin $pullFromBranch", workingPath)
-        if (results ==~ /[\s\S]*Automatic merge failed[\s\S]*/)
-            failTask("Merge conflict merging from '$pullFromBranch' to '$mergeToBranch'\n:$results")
-//        cmd.execute("git commit --amend -m \"$mergeMessage\"", workingPath)
+        if (results ==~ /[\s\S]*Automatic merge failed[\s\S]*/) {
+            // get the list of conflicting files
+            def conflictingFiles =  cmd.execute("git diff --name-only --diff-filter=U", workingPath)
+            if(acceptFilter) {
+                boolean acceptSource = true
+                conflictingFiles.eachLine {
+                    if(!it.endsWith("/${acceptFilter}")) {
+                        acceptSource = false
+                    }
+                }
+                if(acceptSource) {
+                    logger.info("fixing merge issue by accepting theirs")
+                    // run git command to resolve merge with source
+                    def mergeFiles =  cmd.execute("git pull -s theirs origin $pullFromBranch", workingPath)                    
+                } else {
+                    failTask("Merge conflict merging from '$pullFromBranch' to '$mergeToBranch'\n:$results")
+                }                
+            } else {
+                failTask("Merge conflict merging from '$pullFromBranch' to '$mergeToBranch'\n:$results")
+            }
+        }
         logger.info("Merge successful.")
         def pushResults = cmd.execute("git push origin $autoMergeBranch", workingPath)
         logger.info("Push successful.")

@@ -33,16 +33,16 @@ class SyncNextPullRequestTaskTest {
     @Test
     public void failsIfStashRepoNotProvided() {
         def key = "repo"
-        project.ext.projectName = project.ext.user = project.ext.password = "foo"
+        project.ext.projectName = project.ext.user = project.ext.password = project.ext.checkoutDir = "foo"
         project.ext.targetBranch = "bar"
         runTaskExpectFail("repo")
     }
 
     @Test
     public void failsIfStashProjectNameNotProvided() {
-        project.ext.repo = project.ext.user = project.ext.password = "foo"
+        project.ext.repo = project.ext.user = project.ext.password = project.ext.checkoutDir = "foo"
         project.ext.targetBranch = "foo"
-        runTaskExpectFail("projectName")
+        runTaskExpectFail("project")
    }
 
     @Test
@@ -65,7 +65,8 @@ class SyncNextPullRequestTaskTest {
             project.apply plugin: 'gradle-stash'
             project.syncNextPullRequest.execute()
             fail("should have thrown a GradleException")
-        } catch (org.gradle.api.tasks.TaskValidationException e) {
+        } catch (Exception e) {
+            println "checking cause message : ${e.cause.message}"
             assertTrue(e.cause.message ==~ ".*$missingParam.*")
         } catch (groovy.lang.MissingPropertyException f) {
             assertTrue(f.message ==~ ".*$missingParam.*")

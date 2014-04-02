@@ -22,11 +22,11 @@ class StashRestPlugin implements Plugin<Project> {
             
             // these are all needed for the tasks
             // if any are not defined, groovy.lang.MissingPropertyException is thrown
-            project.stash.repo = project.repo
-            project.stash.projectName = project.projectName
-            project.stash.host = project.host
-            project.stash.user = project.user
-            project.stash.password = project.password
+            project.stash.repo =  project.hasProperty('repo') ? project.repo : null
+            project.stash.projectName =  project.hasProperty('projectName') ? project.projectName : null
+            project.stash.host =  project.hasProperty('host') ? project.host : null
+            project.stash.user =  project.hasProperty('user') ? project.user : null
+            project.stash.password =  project.hasProperty('password') ? project.password : null
             
 			project.task("mergeBuiltPullRequests", 
                 type : MergeBuiltPullRequestsTask, 
@@ -74,6 +74,7 @@ class StashRestPlugin implements Plugin<Project> {
             project.mergeBranch.autoMergeBranch = project.hasProperty('autoMergeBranch') ? project.autoMergeBranch : null
             project.mergeBranch.mergeMessage = project.hasProperty('mergeMessage') ? project.mergeMessage : null
             project.mergeBranch.repoName = project.hasProperty('repoName') ? project.repoName : null
+            project.mergeBranch.acceptFilter = project.hasProperty('acceptFilter') ? project.acceptFilter : null
     }
 }
 

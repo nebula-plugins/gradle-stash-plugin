@@ -40,7 +40,7 @@ class MergeBuiltPullRequestsTaskConfigTest {
     public void failsIfStashProjectNameNotProvided() {
         project.ext.repo = project.ext.user = project.ext.password = "foo"
         project.ext.targetBranch = "foo"
-        runTaskExpectFail("projectName")
+        runTaskExpectFail("project")
    }
 
     @Test
@@ -63,7 +63,7 @@ class MergeBuiltPullRequestsTaskConfigTest {
             project.apply plugin: 'gradle-stash'
             project.mergeBuiltPullRequests.execute()
             fail("should have thrown a GradleException")
-        } catch (org.gradle.api.tasks.TaskValidationException e) {
+        } catch (Exception e) {
             assertTrue(e.cause.message ==~ ".*$missingParam.*")
         } catch (groovy.lang.MissingPropertyException f) {
             assertTrue(f.message ==~ ".*$missingParam.*")
