@@ -29,7 +29,7 @@ public class RetryStashUntilConsistentTaskImplTest {
     @Before
     public void setup() {
         project = ProjectBuilder.builder().build()
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
+        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.apply plugin: 'gradle-stash'
         mockStash = mock(StashRestApi.class)
         task = project.tasks.syncNextPullRequest
@@ -91,7 +91,7 @@ class MergeAndSyncPullRequestTest {
     @Before
     public void setup() {
         project = ProjectBuilder.builder().build()
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
+        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.apply plugin: 'gradle-stash'
         task = project.tasks.syncNextPullRequest
         task.CONSISTENCY_POLL_RETRY_DELAY_MS = 0
@@ -161,7 +161,7 @@ public class IsValidPullRequestsTaskTest {
     @Before
     public void setup() {
         project = ProjectBuilder.builder().build()
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
+        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.apply plugin: 'gradle-stash'
         mockStash = mock(StashRestApi.class)
         task = project.tasks.syncNextPullRequest

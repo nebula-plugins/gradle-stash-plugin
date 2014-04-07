@@ -35,25 +35,25 @@ public interface StashRestApi {
 public class StashRestApiImpl implements StashRestApi {
 
     private String stashHost
-    private String userName
-    private String password
-    private String project
-    private String repo
+    private String stashUser
+    private String stashPassword
+    private String stashProject
+    private String stashRepo
 
     public Logger logger
     private static String MESSAGE_CONFLICTED = "Build was successful but unable to merge pull request. Most likely the pull request was modified during the build (new commits or changing status)."
 
-    public StashRestApiImpl(String repo, String project, String stashHost, String userName, String password) {
-        if(repo) {
-            this.repo = repo
+    public StashRestApiImpl(String stashRepo, String stashProject, String stashHost, String stashUser, String stashPassword) {
+        if(stashRepo) {
+            this.stashRepo = stashRepo
         } else {
-            throw new Exception("missing repo parameter")
+            throw new Exception("missing stashRepo parameter")
         }
         
-        if(project) {
-            this.project = project
+        if(stashProject) {
+            this.stashProject = stashProject
         } else {
-            throw new Exception("missing project parameter")
+            throw new Exception("missing stashProject parameter")
         }
         
         if(stashHost) {
@@ -62,25 +62,25 @@ public class StashRestApiImpl implements StashRestApi {
             throw new Exception("missing stashHost parameter")
         }
         
-        if(userName) {
-            this.userName = userName
+        if(stashUser) {
+            this.stashUser = stashUser
         } else {
-            throw new Exception("missing userName parameter")
+            throw new Exception("missing stashUser parameter")
         }
         
-        if(password) {
-            this.password = password
+        if(stashPassword) {
+            this.stashPassword = stashPassword
         } else {
-            throw new Exception("missing password parameter")
+            throw new Exception("missing stashPassword parameter")
         }
     }
 
     private GString getRestPath() {
-        "/rest/api/1.0/projects/${project}/repos/${repo}/"
+        "/rest/api/1.0/projects/${stashProject}/repos/${stashRepo}/"
     }
 
     private String getBasicAuthHeader() {
-        "Basic " + "$userName:$password".getBytes('iso-8859-1').encodeBase64()
+        "Basic " + "$stashUser:$stashPassword".getBytes('iso-8859-1').encodeBase64()
     }
 
     private Map stashGetJson(String path, HashMap queryParams = [])
@@ -149,10 +149,10 @@ public class StashRestApiImpl implements StashRestApi {
 
         def path = getRestPath() + "pull-requests/"
         def repositoryMap = [
-                slug: repo,
+                slug: stashRepo,
                 name: null,
                 project: [
-                        key: project
+                        key: stashProject
                 ]
         ]
         def body = [

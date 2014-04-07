@@ -13,7 +13,7 @@ import org.slf4j.Logger
 import static org.junit.Assert.*
 import static org.mockito.Mockito.*
 
-class MergeBuiltPullRequestsTaskConfigTest {
+class MergeBuiltPullRequestsTaskTest {
     Project project
 
     @Before
@@ -23,7 +23,7 @@ class MergeBuiltPullRequestsTaskConfigTest {
 
     @Test
     public void createsTheRightClass() {
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
+        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.ext.targetBranch = "bar"
         project.apply plugin: 'gradle-stash'
         assertTrue(project.tasks.mergeBuiltPullRequests instanceof MergeBuiltPullRequestsTask)
@@ -31,21 +31,21 @@ class MergeBuiltPullRequestsTaskConfigTest {
 
     @Test
     public void failsIfStashRepoNotProvided() {
-        project.ext.projectName = project.ext.user = project.ext.password = "foo"
+        project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = "foo"
         project.ext.targetBranch = "bar"
-        runTaskExpectFail("repo")
+        runTaskExpectFail("stashRepo")
     }
 
     @Test
-    public void failsIfStashProjectNameNotProvided() {
-        project.ext.repo = project.ext.user = project.ext.password = "foo"
+    public void failsIfStashProjectNotProvided() {
+        project.ext.stashRepo = project.ext.stashHost = project.ext.stashUser = project.ext.stashPassword = "foo"
         project.ext.targetBranch = "foo"
-        runTaskExpectFail("project")
+        runTaskExpectFail("stashProject")
    }
 
     @Test
     public void canConfigureTargetBranch() {       
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
+        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.ext.targetBranch = "bar"
         project.apply plugin: 'gradle-stash'
         
@@ -54,7 +54,7 @@ class MergeBuiltPullRequestsTaskConfigTest {
 
     @Test
     public void failsIfTargetBranchNotProvided() {
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
+        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         runTaskExpectFail("targetBranch")
     }
     
@@ -64,9 +64,7 @@ class MergeBuiltPullRequestsTaskConfigTest {
             project.mergeBuiltPullRequests.execute()
             fail("should have thrown a GradleException")
         } catch (Exception e) {
-            assertTrue(e.cause.message ==~ ".*$missingParam.*")
-        } catch (groovy.lang.MissingPropertyException f) {
-            assertTrue(f.message ==~ ".*$missingParam.*")
+            assertTrue(e.message ==~ ".*$missingParam.*" || e.cause.message ==~ ".*$missingParam.*")
         }
     }
 }
@@ -80,7 +78,7 @@ class MergeBuiltPullRequestsTaskFuncTest {
     @Before
     public void setup() {
         project = ProjectBuilder.builder().build()
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
+        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.ext.targetBranch = "bar"
         project.apply plugin: 'gradle-stash'
         mockStash = mock(StashRestApi.class)

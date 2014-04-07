@@ -23,14 +23,14 @@ class ClosePullRequestTaskTest {
 
     @Test
     public void createsTheRightClass() {
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
+        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.apply plugin: 'gradle-stash'
         assertTrue(project.tasks.closePullRequest instanceof ClosePullRequestAfterBuildTask)
     }
     
     @Test
     public void canConfigurePullRequestVersion() {
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
+        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.ext.pullRequestVersion = "1"
         project.apply plugin: 'gradle-stash'
         
@@ -39,7 +39,7 @@ class ClosePullRequestTaskTest {
     
     @Test
     public void canConfigurePullRequestId() {       
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
+        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.ext.pullRequestId = "10"
         project.apply plugin: 'gradle-stash'
         
@@ -48,14 +48,14 @@ class ClosePullRequestTaskTest {
 
     @Test
     public void failsIfPullRequestIdNotProvided() {
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
+        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.ext.pullRequestVersion = "1"
         runTaskExpectFail("pullRequestId")
     }
     
     @Test
     public void failsIfPullRequestVersionNotProvided() {
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
+        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.ext.pullRequestId = "1"
         runTaskExpectFail("pullRequestVersion")
     }
@@ -78,7 +78,7 @@ class ClosePullRequestTaskFunctionalTest {
     @Before
     public void setup() {
         project = ProjectBuilder.builder().build()
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
+        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.ext.pullRequestVersion = 1
         project.ext.pullRequestId = 2
         mockStash = mock(StashRestApi.class)

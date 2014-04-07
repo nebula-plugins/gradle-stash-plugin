@@ -25,14 +25,14 @@ class MergeBranchTaskTest {
 
     @Test
     public void createsTheRightClass() {
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
+        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.apply plugin: 'gradle-stash'
         assertTrue(project.tasks.mergeBranch instanceof MergeBranchTask)
     }
     
     @Test
     public void canConfigurePullFromBranch() {       
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
+        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.ext.pullFromBranch = "bar"
         project.apply plugin: 'gradle-stash'
         assertEquals("bar", project.tasks.mergeBranch.pullFromBranch)
@@ -40,35 +40,35 @@ class MergeBranchTaskTest {
     
     @Test
     public void canConfigureMergeToBranch() {
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
+        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.ext.mergeToBranch = "mine"
         project.apply plugin: 'gradle-stash'
         assertEquals("mine", project.tasks.mergeBranch.mergeToBranch)
     }
     @Test
     public void canConfigureRemoteName() {
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
+        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.ext.remoteName = "remote"
         project.apply plugin: 'gradle-stash'
         assertEquals("remote", project.tasks.mergeBranch.remoteName)
     }
     @Test
     public void canConfigureRepoUrl() {       
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
+        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.ext.repoUrl = "http://builds/mine"
         project.apply plugin: 'gradle-stash'
         assertEquals("http://builds/mine", project.tasks.mergeBranch.repoUrl)
     }
     @Test
     public void canConfigureWorkingPath() {
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
+        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.ext.workingPath = "/working/path"
         project.apply plugin: 'gradle-stash'
         assertEquals("/working/path", project.tasks.mergeBranch.workingPath)
     }
     @Test
     public void canConfigureAutoMergeBranch() {
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
+        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.ext.autoMergeBranch = "auto-merge"
         project.apply plugin: 'gradle-stash'        
         assertEquals("auto-merge", project.tasks.mergeBranch.autoMergeBranch)
@@ -76,7 +76,7 @@ class MergeBranchTaskTest {
     
     @Test
     public void canConfigurMergeMessage() {
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
+        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.ext.mergeMessage = "merge message"
         project.apply plugin: 'gradle-stash'
         assertEquals("merge message", project.tasks.mergeBranch.mergeMessage)
@@ -84,34 +84,34 @@ class MergeBranchTaskTest {
     
     @Test
     public void canConfigureRepoName() {
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
-        project.ext.repoName = "repo"
+        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
+        project.ext.repoName = "stashRepo"
         project.apply plugin: 'gradle-stash'
         
-        assertEquals("repo", project.tasks.mergeBranch.repoName)
+        assertEquals("stashRepo", project.tasks.mergeBranch.repoName)
     }
     
     @Test
     public void failsIfPullFromBranchNotProvided() {
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
+        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.ext.mergeToBranch = "branch"
-        project.ext.repoUrl = "http://foo/bar"
+        project.ext.stashRepoUrl = "http://foo/bar"
         project.ext.workingPath = "/foo/bar"
         runTaskExpectFail("pullFromBranch")
     }
     
     @Test
     public void failsIfMergeToBranchNotProvided() {
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
+        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.ext.pullFromBranch = "branch"
-        project.ext.repoUrl = "http://foo/bar"
+        project.ext.stashRepoUrl = "http://foo/bar"
         project.ext.workingPath = "/foo/bar"
         runTaskExpectFail("mergeToBranch")
     }
     
     @Test
-    public void failsIfRepoUrlNotProvided() {
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
+    public void failsIfstashRepoUrlNotProvided() {
+        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.ext.pullFromBranch = "branch"
         project.ext.mergeToBranch = "branch"
         project.ext.workingPath = "/foo/bar"
@@ -120,7 +120,7 @@ class MergeBranchTaskTest {
     
     @Test
     public void failsIfWorkingPathNotProvided() {
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
+        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.ext.pullFromBranch = "branch"
         project.ext.mergeToBranch = "branch"
         project.ext.repoUrl = "http://foo/bar"
@@ -149,10 +149,10 @@ class MergeBranchTaskFunctionalTest {
     @Before
     public void setup() {
         project = ProjectBuilder.builder().build()
-        project.ext.repo = project.ext.projectName = project.ext.user = project.ext.password = project.ext.host = "foo"
+        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.ext.pullFromBranch = "source-branch"
         project.ext.mergeToBranch = "target-branch"
-        project.ext.repoUrl = "http://repo"
+        project.ext.repoUrl = "http://stashRepo"
         project.ext.workingPath = System.getProperty("user.dir")
         mockStash = mock(StashRestApi.class)
         mockFile = mock(File.class)

@@ -44,7 +44,7 @@ public class MergeBranchTask extends DefaultTask {
         repoName = repoName ?:  inferRepoName(repoUrl)
 
         // for unit testing, don't reset if one is passed in
-        stash = !stash ? new StashRestApiImpl(project.stash.repo, project.stash.projectName, project.stash.host, project.stash.user, project.stash.password) : stash
+        stash = !stash ? new StashRestApiImpl(project.stash.stashRepo, project.stash.stashProject, project.stash.stashHost, project.stash.stashUser, project.stash.stashPassword) : stash
         stash.logger = project.logger
 
         String shortPath = workingPath
