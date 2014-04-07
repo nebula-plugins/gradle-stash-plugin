@@ -24,7 +24,7 @@ class StashRestPlugin implements Plugin<Project> {
             // if any are not defined, groovy.lang.MissingPropertyException is thrown
             project.stash.stashRepo =  project.hasProperty('stashRepo') ? project.stashRepo : null
             project.stash.stashProject =  project.hasProperty('stashProject') ? project.stashProject : null
-            project.stash.stasHost =  project.hasProperty('stasHost') ? project.stasHost : null
+            project.stash.stashHost =  project.hasProperty('stashHost') ? project.stashHost : null
             project.stash.stashUser =  project.hasProperty('stashUser') ? project.stashUser : null
             project.stash.stashPassword =  project.hasProperty('stashPassword') ? project.stashPassword : null
             
