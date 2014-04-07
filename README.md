@@ -60,10 +60,10 @@ To include, add the following to your build.gradle
 ### Extensions Provided
 These are meant to be passed in on the command line so you don't hardcode credentials in your build.gradle file, via -P<param>=<value>.
 
-* repo - The Stash repository
-* projectName - Stash project name
-* user - Stash user name
-* password - Stash password
+* stashRepo - The Stash repository
+* stashProject - Stash project name
+* stashUser - Stash user name
+* stashPassword - Stash password
 
 ### Properties that Effect the Plugin
 
