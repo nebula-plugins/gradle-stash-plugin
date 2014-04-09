@@ -93,8 +93,8 @@ public class MergeBranchTask extends DefaultTask {
         
         // get the hash of the source and target branches
         // only post a pull request if they are different
-        def autoMergeRev = cmd.execute("git rev-parse --branches=$autoMergeBranch --verify HEAD", workingPath)
-        def targetBranchRev = cmd.execute("git rev-parse --branches=$mergeToBranch --verify HEAD", workingPath)
+        def autoMergeRev = cmd.execute("git rev-parse origin/$autoMergeBranch", workingPath)
+        def targetBranchRev = cmd.execute("git rev-parse origin/$mergeToBranch", workingPath)
         
         logger.info("Push successful.")
         if (!(pushResults ==~ /[\s\S]*Everything up-to-date[\s\S]*/) && !autoMergeRev.equals(targetBranchRev)) {

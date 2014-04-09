@@ -3,6 +3,7 @@ package nebula.plugin.stash.tasks
 import nebula.plugin.stash.StashRestApi
 import nebula.plugin.stash.tasks.MergeBranchTask;
 import nebula.plugin.stash.util.ExternalProcess;
+import nebula.plugin.stash.util.ExternalProcessImpl
 
 import org.gradle.api.Project
 import org.gradle.api.tasks.Input;
@@ -210,9 +211,7 @@ class MergeBranchTaskFunctionalTest {
         when(mockFile.isDirectory()).thenReturn(true)
         when(mockFile.exists()).thenReturn(true, false)
         when(cmd.execute(not(find('rev-parse')), anyString())).thenReturn("call post pull request")
-        when(cmd.execute(eq("git rev-parse --branches=source-branch --verify HEAD"), anyString())).thenReturn("ABC")
-        when(cmd.execute(eq("git rev-parse --branches=target-branch --verify HEAD"), anyString())).thenReturn("DEF")
-        
+        when(cmd.execute(find("git rev-parse"), anyString())).thenReturn("ABC", "DEF")       
         when(mockStash.postPullRequest(anyObject(), anyObject(), anyObject(), anyObject())).thenThrow(new RuntimeException("mock exception"))
         when(mockStash.getBranchesMatching(anyString())).thenReturn([[foo : "bar"]])
         try {
@@ -231,9 +230,7 @@ class MergeBranchTaskFunctionalTest {
         when(mockFile.isDirectory()).thenReturn(true)
         when(mockFile.exists()).thenReturn(true)
         when(cmd.execute(not(find('rev-parse')), anyString())).thenReturn("call post pull request")
-        when(cmd.execute(eq("git rev-parse --branches=source-branch --verify HEAD"), anyString())).thenReturn("ABC")
-        when(cmd.execute(eq("git rev-parse --branches=source-branch --verify HEAD"), anyString())).thenReturn("ABC")
-        when(cmd.execute(eq("git rev-parse --branches=target-branch --verify HEAD"), anyString())).thenReturn("DEF")
+        when(cmd.execute(find("git rev-parse"), anyString())).thenReturn("ABC", "DEF")
         when(mockStash.postPullRequest(anyObject(), anyObject(), anyObject(), anyObject())).thenReturn(null)
         when(mockStash.getBranchesMatching(anyString())).thenReturn([[foo : "bar"]])
 
@@ -241,6 +238,7 @@ class MergeBranchTaskFunctionalTest {
             project.tasks.mergeBranch.execute()
             fail("should have thrown an exception")
         } catch (org.gradle.api.GradleException e) {
+            println (e.dump())
             verify(mockStash).postPullRequest(anyObject(), anyObject(), anyObject(), anyObject())
         }
     }
@@ -253,8 +251,7 @@ class MergeBranchTaskFunctionalTest {
         when(mockFile.isDirectory()).thenReturn(true)
         when(mockFile.exists()).thenReturn(true).thenThrow(new SecurityException("mock security exception") )
         when(cmd.execute(not(find('rev-parse')), anyString())).thenReturn("call post pull request")
-        when(cmd.execute(eq("git rev-parse --branches=source-branch --verify HEAD"), anyString())).thenReturn("ABC")
-        when(cmd.execute(eq("git rev-parse --branches=target-branch --verify HEAD"), anyString())).thenReturn("DEF")
+        when(cmd.execute(find("git rev-parse"), anyString())).thenReturn("ABC", "DEF")
         when(mockStash.postPullRequest(anyObject(), anyObject(), anyObject(), anyObject())).thenReturn(null)
         when(mockStash.getBranchesMatching(anyString())).thenReturn([[foo : "bar"]])
 
