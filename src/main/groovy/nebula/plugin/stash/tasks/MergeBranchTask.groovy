@@ -64,9 +64,9 @@ public class MergeBranchTask extends DefaultTask {
         if(branches.size() <= 0) {
             failTask("${autoMergeBranch} must exist on the server before you can run this task")
         }
-        cmd.execute("git checkout -t origin/$autoMergeBranch", workingPath)
-        cmd.execute("git pull origin $mergeToBranch", workingPath)
-        def results = cmd.execute("git pull origin $pullFromBranch", workingPath, true)
+        cmd.execute("git checkout -t $remoteName/$autoMergeBranch", workingPath)
+        cmd.execute("git pull $remoteName $mergeToBranch", workingPath)
+        def results = cmd.execute("git pull $remoteName $pullFromBranch", workingPath, true)
         if (results ==~ /[\s\S]*Automatic merge failed[\s\S]*/) {
             // get the list of conflicting files
             def conflictingFiles =  cmd.execute("git diff --name-only --diff-filter=U", workingPath)
@@ -80,7 +80,7 @@ public class MergeBranchTask extends DefaultTask {
                 if(acceptSource) {
                     logger.info("fixing merge issue by accepting theirs")
                     // run git command to resolve merge with source
-                    def mergeFiles =  cmd.execute("git pull -s theirs origin $pullFromBranch", workingPath)                    
+                    def mergeFiles =  cmd.execute("git pull -X theirs --no-edit $remoteName $pullFromBranch", workingPath)
                 } else {
                     failTask("Merge conflict merging from '$pullFromBranch' to '$mergeToBranch'\n:$results")
                 }                
@@ -89,12 +89,12 @@ public class MergeBranchTask extends DefaultTask {
             }
         }
         logger.info("Merge successful.")
-        def pushResults = cmd.execute("git push origin $autoMergeBranch", workingPath)
+        def pushResults = cmd.execute("git push $remoteName $autoMergeBranch", workingPath)
         
         // get the hash of the source and target branches
         // only post a pull request if they are different
-        def autoMergeRev = cmd.execute("git rev-parse origin/$autoMergeBranch", workingPath)
-        def targetBranchRev = cmd.execute("git rev-parse origin/$mergeToBranch", workingPath)
+        def autoMergeRev = cmd.execute("git rev-parse $remoteName/$autoMergeBranch", workingPath)
+        def targetBranchRev = cmd.execute("git rev-parse $remoteName/$mergeToBranch", workingPath)
         
         logger.info("Push successful.")
         if (!(pushResults ==~ /[\s\S]*Everything up-to-date[\s\S]*/) && !autoMergeRev.equals(targetBranchRev)) {
