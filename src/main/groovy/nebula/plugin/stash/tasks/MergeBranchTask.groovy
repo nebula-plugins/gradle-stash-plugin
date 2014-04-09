@@ -79,6 +79,8 @@ public class MergeBranchTask extends DefaultTask {
                 }
                 if(acceptSource) {
                     logger.info("fixing merge issue by accepting theirs")
+                    // undo any changes
+                    cmd.execute("git reset --hard @{u}", workingPath)
                     // run git command to resolve merge with source
                     def mergeFiles =  cmd.execute("git pull -X theirs --no-edit $remoteName $pullFromBranch", workingPath)
                 } else {

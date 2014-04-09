@@ -262,6 +262,13 @@ class MergeBranchTaskFunctionalTest {
             verify(mockStash).postPullRequest(anyObject(), anyObject(), anyObject(), anyObject())
         }
     }
+    
+    //@Test
+    public void testExternalProcess() {
+        ExternalProcessImpl e = new ExternalProcessImpl()
+        e.execute("git reset --hard @{u}", "/tmp/test/server.git.14-04-09.08:15:28")
+    }
+    
 }
 
 
