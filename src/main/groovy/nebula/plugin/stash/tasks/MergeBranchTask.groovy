@@ -66,7 +66,7 @@ public class MergeBranchTask extends DefaultTask {
         }
         cmd.execute("git checkout -t origin/$autoMergeBranch", workingPath)
         cmd.execute("git pull origin $mergeToBranch", workingPath)
-        def results = cmd.execute("git pull origin $pullFromBranch", workingPath)
+        def results = cmd.execute("git pull origin $pullFromBranch", workingPath, true)
         if (results ==~ /[\s\S]*Automatic merge failed[\s\S]*/) {
             // get the list of conflicting files
             def conflictingFiles =  cmd.execute("git diff --name-only --diff-filter=U", workingPath)
