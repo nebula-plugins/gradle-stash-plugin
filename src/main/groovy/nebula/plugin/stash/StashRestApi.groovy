@@ -159,6 +159,8 @@ public class StashRestApiImpl implements StashRestApi {
                 title: title,
                 description: description,
                 state: "OPEN",
+                open : true,
+                closed : false,
                 fromRef: [
                         id: "refs/heads/$fromBranch",
                         repository: repositoryMap

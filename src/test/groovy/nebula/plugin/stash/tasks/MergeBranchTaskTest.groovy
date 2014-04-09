@@ -14,6 +14,7 @@ import org.slf4j.Logger
 
 import static org.junit.Assert.*
 import static org.mockito.Mockito.*
+import static org.mockito.AdditionalMatchers.*
 
 class MergeBranchTaskTest {
     Project project
@@ -208,7 +209,10 @@ class MergeBranchTaskFunctionalTest {
         
         when(mockFile.isDirectory()).thenReturn(true)
         when(mockFile.exists()).thenReturn(true, false)
-        when(cmd.execute(anyString(), anyString())).thenReturn("call post pull request")
+        when(cmd.execute(not(find('rev-parse')), anyString())).thenReturn("call post pull request")
+        when(cmd.execute(eq("git rev-parse --branches=source-branch --verify HEAD"), anyString())).thenReturn("ABC")
+        when(cmd.execute(eq("git rev-parse --branches=target-branch --verify HEAD"), anyString())).thenReturn("DEF")
+        
         when(mockStash.postPullRequest(anyObject(), anyObject(), anyObject(), anyObject())).thenThrow(new RuntimeException("mock exception"))
         when(mockStash.getBranchesMatching(anyString())).thenReturn([[foo : "bar"]])
         try {
@@ -226,7 +230,10 @@ class MergeBranchTaskFunctionalTest {
         
         when(mockFile.isDirectory()).thenReturn(true)
         when(mockFile.exists()).thenReturn(true)
-        when(cmd.execute(anyString(), anyString())).thenReturn("call post pull request")
+        when(cmd.execute(not(find('rev-parse')), anyString())).thenReturn("call post pull request")
+        when(cmd.execute(eq("git rev-parse --branches=source-branch --verify HEAD"), anyString())).thenReturn("ABC")
+        when(cmd.execute(eq("git rev-parse --branches=source-branch --verify HEAD"), anyString())).thenReturn("ABC")
+        when(cmd.execute(eq("git rev-parse --branches=target-branch --verify HEAD"), anyString())).thenReturn("DEF")
         when(mockStash.postPullRequest(anyObject(), anyObject(), anyObject(), anyObject())).thenReturn(null)
         when(mockStash.getBranchesMatching(anyString())).thenReturn([[foo : "bar"]])
 
@@ -245,10 +252,11 @@ class MergeBranchTaskFunctionalTest {
         
         when(mockFile.isDirectory()).thenReturn(true)
         when(mockFile.exists()).thenReturn(true).thenThrow(new SecurityException("mock security exception") )
-        when(cmd.execute(anyString(), anyString())).thenReturn("call post pull request")
+        when(cmd.execute(not(find('rev-parse')), anyString())).thenReturn("call post pull request")
+        when(cmd.execute(eq("git rev-parse --branches=source-branch --verify HEAD"), anyString())).thenReturn("ABC")
+        when(cmd.execute(eq("git rev-parse --branches=target-branch --verify HEAD"), anyString())).thenReturn("DEF")
         when(mockStash.postPullRequest(anyObject(), anyObject(), anyObject(), anyObject())).thenReturn(null)
         when(mockStash.getBranchesMatching(anyString())).thenReturn([[foo : "bar"]])
-        
 
         try {
             project.tasks.mergeBranch.execute()

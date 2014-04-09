@@ -53,20 +53,17 @@ public class MergeBranchTask extends DefaultTask {
         clonePath = !clonePath ? new File(workingPath) : clonePath
         if (clonePath.exists())
             failTask("Cannot clone. Path already exists '$workingPath'")
-
         cmd.execute("git clone $repoUrl $repoName", shortPath)
         path = !path ? new File(workingPath) : path
         logger.info "path : ${path.dump()}"
         if (!path.exists() || !path.isDirectory())
             failTask("Cannot access git repo path '$workingPath'")
-         
         // make sure auto-merge branch exists on the server, if not, error out
         //https://stash/rest/api/1.0/projects/EDGE/repos/server-fork/branches?base&details&filterText=automerge-dz-testing-to-master&orderBy
         def branches = stash.getBranchesMatching(autoMergeBranch)
         if(branches.size() <= 0) {
             failTask("${autoMergeBranch} must exist on the server before you can run this task")
         }
-            
         cmd.execute("git checkout -t origin/$autoMergeBranch", workingPath)
         cmd.execute("git pull origin $mergeToBranch", workingPath)
         def results = cmd.execute("git pull origin $pullFromBranch", workingPath)
@@ -93,15 +90,22 @@ public class MergeBranchTask extends DefaultTask {
         }
         logger.info("Merge successful.")
         def pushResults = cmd.execute("git push origin $autoMergeBranch", workingPath)
+        
+        // get the hash of the source and target branches
+        // only post a pull request if they are different
+        def autoMergeRev = cmd.execute("git rev-parse --branches=$autoMergeBranch --verify HEAD", workingPath)
+        def targetBranchRev = cmd.execute("git rev-parse --branches=$mergeToBranch --verify HEAD", workingPath)
+        
         logger.info("Push successful.")
-        if (!(pushResults ==~ /[\s\S]*Everything up-to-date[\s\S]*/)) {
-            def failedMsg = null
+        if (!(pushResults ==~ /[\s\S]*Everything up-to-date[\s\S]*/) && !autoMergeRev.equals(targetBranchRev)) {
             try {
                 stash.postPullRequest(autoMergeBranch, mergeToBranch, "Auto merge $pullFromBranch to $mergeToBranch", mergeMessage)
             } catch (Throwable e) {
                 logger.error("Problem opening pull request")
                 failTask("Problem opening pull request : ${e.getMessage()}")
             }
+        } else {
+            logger.info("Nothing to merge, not opening a pull request from '$autoMergeBranch' to '$mergeToBranch'.")  
         }
         logger.info("Completed merge from '$pullFromBranch' to '$mergeToBranch'.")
         try {
