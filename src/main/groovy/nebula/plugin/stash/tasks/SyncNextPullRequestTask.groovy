@@ -1,19 +1,10 @@
 package nebula.plugin.stash.tasks
 
-import org.gradle.api.DefaultTask
+import nebula.plugin.stash.StashRestApi
 import org.gradle.api.GradleException
 import org.gradle.api.logging.Logger
-import org.gradle.api.tasks.TaskAction
-
-import nebula.plugin.stash.StashRestApi;
-import nebula.plugin.stash.StashRestApiImpl;
-import nebula.plugin.stash.util.ExternalProcess
-import nebula.plugin.stash.util.ExternalProcessImpl
-
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
-
-import java.util.concurrent.TimeUnit
 
 /**
  * Poll stash pull requests and pick the top one.
@@ -21,23 +12,17 @@ import java.util.concurrent.TimeUnit
  * @author dzapata
  *
  */
-class SyncNextPullRequestTask extends DefaultTask {
-    public static int CONSISTENCY_POLL_RETRY_COUNT = 20
-    public static long CONSISTENCY_POLL_RETRY_DELAY_MS = 250
+class SyncNextPullRequestTask extends StashTask {
+    int CONSISTENCY_POLL_RETRY_COUNT = 20
+    long CONSISTENCY_POLL_RETRY_DELAY_MS = 250
 
     Logger logger
     String buildPath
     @Input String checkoutDir
-    @Optional targetBranch
-    StashRestApi stash
-    ExternalProcess cmd = new ExternalProcessImpl()
+    @Input @Optional targetBranch
 
-    @TaskAction
-    def syncNextPullRequest() {
-        
-        // for unit testing, don't reset if one is passed in
-        stash = !stash ? new StashRestApiImpl(project.stash.stashRepo, project.stash.stashProject, project.stash.stashHost, project.stash.stashUser, project.stash.stashPassword) : stash
-        stash.logger = project.logger
+    @Override
+    void executeStashCommand() {
         logger = project.logger
 
         buildPath = project.buildDir.getPath().toString()

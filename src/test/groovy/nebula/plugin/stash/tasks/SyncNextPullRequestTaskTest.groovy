@@ -80,7 +80,7 @@ class SyncNextPullRequestTaskFunctionalTest {
     @Before
     public void setup() {
         project = ProjectBuilder.builder().build()
-        project.ext.stashRepo = project.ext.stashProject = project.ext.userstashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
+        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.extensions.checkoutDir = "/foo/bar"
         project.apply plugin: 'gradle-stash'
         mockStash = mock(StashRestApi.class)

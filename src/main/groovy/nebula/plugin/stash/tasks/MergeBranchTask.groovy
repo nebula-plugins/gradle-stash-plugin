@@ -1,51 +1,32 @@
 package nebula.plugin.stash.tasks
 
-import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
-import org.gradle.api.tasks.TaskAction
-
-import nebula.plugin.stash.StashRestApi
-import nebula.plugin.stash.StashRestApiImpl
-import nebula.plugin.stash.util.ExternalProcess
-import nebula.plugin.stash.util.ExternalProcessImpl
-
 import org.gradle.api.logging.Logger
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 
 import java.text.SimpleDateFormat
 
-public class MergeBranchTask extends DefaultTask {
-
-    ExternalProcess cmd
-    StashRestApi stash
+public class MergeBranchTask extends StashTask {
     @Input def pullFromBranch
     @Input def mergeToBranch
-    @Optional def remoteName
+    @Input @Optional def remoteName
     @Input def repoUrl
     @Input def workingPath
-    @Optional def autoMergeBranch
-    @Optional def mergeMessage
-    @Optional def repoName
-    @Optional def acceptFilter
+    @Input @Optional def autoMergeBranch
+    @Input @Optional def mergeMessage
+    @Input @Optional def repoName
+    @Input @Optional def acceptFilter
     File path
     File clonePath
-    
-    public MergeBranchTask(){
-        this.cmd = new ExternalProcessImpl()
-    }
 
-    @TaskAction
-    def mergeBranchTask() {
+    @Override
+    void executeStashCommand() {
         final Logger logger = project.logger
         remoteName = remoteName ?: "origin"
         autoMergeBranch = autoMergeBranch ?: "automerge-$pullFromBranch-to-$mergeToBranch"
         mergeMessage = mergeMessage ?: "Down-merged branch '$pullFromBranch' into '$mergeToBranch' ($autoMergeBranch)"                                       
         repoName = repoName ?:  inferRepoName(repoUrl)
-
-        // for unit testing, don't reset if one is passed in
-        stash = !stash ? new StashRestApiImpl(project.stash.stashRepo, project.stash.stashProject, project.stash.stashHost, project.stash.stashUser, project.stash.stashPassword) : stash
-        stash.logger = project.logger
 
         String shortPath = workingPath
         String workingPath = "$workingPath/$repoName"

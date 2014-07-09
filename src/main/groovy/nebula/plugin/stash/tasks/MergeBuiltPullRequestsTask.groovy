@@ -1,25 +1,14 @@
 package nebula.plugin.stash.tasks
 
-import nebula.plugin.stash.StashRestApi;
-import nebula.plugin.stash.StashRestApiImpl;
-
-import org.gradle.api.DefaultTask
-import org.gradle.api.GradleException
-import org.gradle.api.tasks.TaskAction
-import org.gradle.api.logging.Logger
+import nebula.plugin.stash.StashRestApi
 import org.gradle.api.tasks.Input
 
-class MergeBuiltPullRequestsTask extends DefaultTask {
-    StashRestApi stash
+class MergeBuiltPullRequestsTask extends StashTask {
     @Input String targetBranch
 
-    @TaskAction
-    def mergeBuiltPullRequests() {
+    @Override
+    void executeStashCommand() {
         try {
-            // for unit testing, don't reset if one is passed in
-            stash = !stash ? new StashRestApiImpl(project.stash.stashRepo, project.stash.stashProject, project.stash.stashHost, project.stash.stashUser, project.stash.stashPassword) : stash
-            stash.logger = project.logger
-            
             project.logger.info("Finding Pull Requests targeting $targetBranch.")
             List<Map> pullRequests = stash.getPullRequests(targetBranch)
             for (def pr : pullRequests) {

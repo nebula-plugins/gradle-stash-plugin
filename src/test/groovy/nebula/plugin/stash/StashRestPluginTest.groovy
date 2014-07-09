@@ -1,5 +1,6 @@
 package nebula.plugin.stash
 
+import nebula.plugin.stash.tasks.StashTask
 import nebula.test.ProjectSpec
 import org.gradle.api.Task
 
@@ -33,6 +34,33 @@ class StashRestPluginTest extends ProjectSpec {
         postPullRequestTask.description == 'Post a new pull request.'
         Task mergeBranchTask = findTask('mergeBranch')
         mergeBranchTask.description == 'Merge any changes from one branch into another.'
+    }
+
+    def "Can use extension to set task properties"() {
+        given:
+        String givenStashRepo = 'myRepo'
+        String givenStashProject = 'example'
+        String givenStashHost = 'mytesthost'
+        String givenStashUser = 'foobar'
+        String givenStashPassword = 'qwerty'
+
+        when:
+        project.stash {
+            stashRepo = givenStashRepo
+            stashProject = givenStashProject
+            stashHost = givenStashHost
+            stashUser = givenStashUser
+            stashPassword = givenStashPassword
+        }
+
+        then:
+        project.tasks.withType(StashTask) {
+            assert stashRepo == givenStashRepo
+            assert stashProject == givenStashProject
+            assert stashHost == givenStashHost
+            assert stashUser == givenStashUser
+            assert stashPassword == givenStashPassword
+        }
     }
 
     private Task findTask(String taskName) {

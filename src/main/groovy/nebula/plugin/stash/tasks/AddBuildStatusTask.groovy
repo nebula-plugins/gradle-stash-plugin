@@ -1,27 +1,16 @@
 package nebula.plugin.stash.tasks
 
-import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
-import org.gradle.api.tasks.TaskAction
-
-import nebula.plugin.stash.StashRestApi;
-import nebula.plugin.stash.StashRestApiImpl;
-import nebula.plugin.stash.util.ExternalProcess
-import nebula.plugin.stash.util.ExternalProcessImpl
-
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 
-class AddBuildStatusTask extends DefaultTask{
-
-    StashRestApi stash
-    ExternalProcess cmd = new ExternalProcessImpl()
+class AddBuildStatusTask extends StashTask {
     @Input String buildState
     @Input String buildKey
     @Input String buildName
     @Input String buildUrl
     @Input String buildDescription
-    @Optional String buildCommit
+    @Input @Optional String buildCommit
     
     /**
      * Find the hash of the current commit in your current working directory
@@ -34,12 +23,8 @@ class AddBuildStatusTask extends DefaultTask{
         return currentSha
     }
     
-    @TaskAction
-    def addBuildStatus() throws GradleException {        
-        // for unit testing, don't reset if one is passed in
-        stash = !stash ? new StashRestApiImpl(project.stash.stashRepo, project.stash.stashProject, project.stash.stashHost, project.stash.stashUser, project.stash.stashPassword) : stash
-        stash.logger = project.logger
-        
+    @Override
+    void executeStashCommand() {
         def commit
         
         if(buildCommit) {
