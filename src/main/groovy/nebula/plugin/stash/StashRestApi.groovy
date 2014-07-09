@@ -9,7 +9,7 @@ import org.gradle.api.logging.Logging
 import static groovyx.net.http.ContentType.JSON
 import static groovyx.net.http.Method.*
 
-public interface StashRestApi {
+interface StashRestApi {
     static final String RPM_BUILD_KEY = "Family_Build"
     static final String INSTALL_BUILD_KEY = "Install_RPM"
     static final String BAKE_BUILD_KEY = "Bake_AMI"
@@ -19,20 +19,20 @@ public interface StashRestApi {
     static final String SUCCESSFUL_BUILD_STATE = "SUCCESSFUL"
     static final String INPROGRESS_BUILD_STATE = "INPROGRESS"
     static final String FAILED_BUILD_STATE = "FAILED"
-    public Map postBuildStatus(String changeSet, HashMap body)
-    public Map commentPullRequest(int prId, String comment)
-    public Map postPullRequest(fromBranch, toBranch, title, description)
-    public Map mergePullRequest(HashMap pullRequest)
-    public Map declinePullRequest(HashMap pullRequest)
-    public List<Map> getPullRequests(String branch)
-    public Map getPullRequest(int id)
-    public void deleteBranch(String branchName)
-    public List<Map> getBuilds(String changeSet)
-    public Map getBuildStats(String changeSet)
-    public List<Map> getBranchesMatching(String branchName)
+    Map postBuildStatus(String changeSet, HashMap body)
+    Map commentPullRequest(int prId, String comment)
+    Map postPullRequest(fromBranch, toBranch, title, description)
+    Map mergePullRequest(HashMap pullRequest)
+    Map declinePullRequest(HashMap pullRequest)
+    List<Map> getPullRequests(String branch)
+    Map getPullRequest(int id)
+    void deleteBranch(String branchName)
+    List<Map> getBuilds(String changeSet)
+    Map getBuildStats(String changeSet)
+    List<Map> getBranchesMatching(String branchName)
 }
 
-public class StashRestApiImpl implements StashRestApi {
+class StashRestApiImpl implements StashRestApi {
     private final Logger logger = Logging.getLogger(StashRestApiImpl)
     private String stashHost
     private String stashUser
@@ -41,7 +41,7 @@ public class StashRestApiImpl implements StashRestApi {
     private String stashRepo
     private static String MESSAGE_CONFLICTED = "Build was successful but unable to merge pull request. Most likely the pull request was modified during the build (new commits or changing status)."
 
-    public StashRestApiImpl(String stashRepo, String stashProject, String stashHost, String stashUser, String stashPassword) {
+    StashRestApiImpl(String stashRepo, String stashProject, String stashHost, String stashUser, String stashPassword) {
         if(stashRepo) {
             this.stashRepo = stashRepo
         } else {

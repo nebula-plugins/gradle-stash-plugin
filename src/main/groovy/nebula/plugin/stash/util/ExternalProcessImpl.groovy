@@ -1,7 +1,8 @@
 package nebula.plugin.stash.util
 
-public class ExternalProcessImpl implements ExternalProcess {
-    public String execute(String command, String workingDirStr, boolean ignoreExitCode = false) {
+class ExternalProcessImpl implements ExternalProcess {
+    @Override
+    String execute(String command, String workingDirStr, boolean ignoreExitCode = false) {
         def workingDir = new File(workingDirStr)
         println "[CMD] $workingDirStr: $command"
         def p = command.execute(null, workingDir)
