@@ -1,40 +1,22 @@
 buildscript {
     repositories { jcenter() }
-    dependencies { classpath 'com.netflix.nebula:nebula-plugin-plugin:1.9.+' }
+    dependencies { classpath 'com.netflix.nebula:nebula-plugin-plugin:1.12.+' }
 }
 
 description 'Gradle plugin to do various Stash SCM tasks'
 apply plugin: 'nebula-plugin'
-apply plugin: 'nebula-sign'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
 
+contacts {
+    'dzapata@gmail.com' {
+        moniker 'Daniel Zapata'
+        github 'dzapata'
+    }
+}
+
 dependencies {
-    dependencies { compile "org.codehaus.groovy.modules.http-builder:http-builder:0.7.1" }
-    dependencies { testCompile 'org.mockito:mockito-all:1.9.5'}
-}
-
-def pomConfig = {
-    inceptionYear '2014'
-
-    developers {
-        developer {
-            id 'dzapata'
-            name 'Daniel Zapata'
-            email 'dzapata@gmail.com'
-            roles{
-                role 'Developer'
-            }
-            timezone '-8'
-        }
-    }
-}
-
-import nebula.plugin.publishing.maven.NebulaBaseMavenPublishingPlugin
-plugins.withType(NebulaBaseMavenPublishingPlugin) {
-    withMavenPublication {
-        pom.withXml {
-            asNode().children().last() + pomConfig
-        }
-    }
+    compile "org.codehaus.groovy.modules.http-builder:http-builder:0.7.1"
+    testCompile 'org.mockito:mockito-all:1.9.5'
+    testCompile 'com.netflix.nebula:nebula-test:1.12.+'
 }
