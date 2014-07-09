@@ -16,16 +16,16 @@ class AddBuildStatusTask extends StashTask {
      * Find the hash of the current commit in your current working directory
      * @return The commit hash if found, Null if not
      */
-    def getCurrentCommit() {
+    private String getCurrentCommit() {
         logger.info("getting the sha for the HEAD of the current directory")
-        def currentSha = cmd.execute("git rev-parse HEAD", System.getProperty("user.dir"))
+        String currentSha = cmd.execute("git rev-parse HEAD", System.getProperty("user.dir"))
         logger.info("currentSha : ${currentSha}")
-        return currentSha
+        currentSha
     }
     
     @Override
     void executeStashCommand() {
-        def commit
+        String commit
         
         if(buildCommit) {
             commit = buildCommit
