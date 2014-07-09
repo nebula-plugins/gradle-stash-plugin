@@ -7,6 +7,7 @@ import org.gradle.api.Task
 class StashRestPluginTest extends ProjectSpec {
     def setup() {
         project.apply plugin: 'gradle-stash'
+        assert project.plugins.hasPlugin(StashRestBasePlugin)
     }
 
     def "Creates custom extension with default values"() {

@@ -9,21 +9,9 @@ class StashRestPlugin implements Plugin<Project> {
 
     @Override
     void apply(Project project) {
+        project.plugins.apply(StashRestBasePlugin)
         project.logger.lifecycle "gradle-stash tasks are enabled"
-        StashPluginExtension extension = project.extensions.create(EXTENSION_NAME, StashPluginExtension)
-
-        configureStashTasks(project, extension)
         createTasks(project)
-    }
-
-    private void configureStashTasks(Project project, StashPluginExtension extension) {
-        project.tasks.withType(StashTask) {
-            conventionMapping.stashRepo = { project.hasProperty('stashRepo') ? project.stashRepo : extension.stashRepo }
-            conventionMapping.stashProject = { project.hasProperty('stashProject') ? project.stashProject : extension.stashProject }
-            conventionMapping.stashHost = { project.hasProperty('stashHost') ? project.stashHost : extension.stashHost }
-            conventionMapping.stashUser = { project.hasProperty('stashUser') ? project.stashUser : extension.stashUser }
-            conventionMapping.stashPassword = { project.hasProperty('stashPassword') ? project.stashPassword : extension.stashPassword }
-        }
     }
 
     private void createTasks(Project project) {
