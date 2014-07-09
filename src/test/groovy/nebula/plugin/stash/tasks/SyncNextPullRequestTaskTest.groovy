@@ -1,18 +1,16 @@
 package nebula.plugin.stash.tasks
 
-import nebula.plugin.stash.StashRestApi;
-import nebula.plugin.stash.tasks.MergeBuiltPullRequestsTask;
-import nebula.plugin.stash.tasks.SyncNextPullRequestTask;
-import nebula.plugin.stash.util.ExternalProcess;
-
+import nebula.plugin.stash.StashRestApi
+import nebula.plugin.stash.util.ExternalProcess
 import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
-import org.junit.Test
 import org.junit.Before
-import org.slf4j.Logger
+import org.junit.Test
 
 import static org.junit.Assert.*
+import static org.mockito.Matchers.anyInt
+import static org.mockito.Matchers.anyString
 import static org.mockito.Mockito.*
 
 class SyncNextPullRequestTaskTest {
