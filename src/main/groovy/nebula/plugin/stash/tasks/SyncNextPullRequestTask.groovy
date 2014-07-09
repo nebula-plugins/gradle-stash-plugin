@@ -15,13 +15,12 @@ class SyncNextPullRequestTask extends StashTask {
     int consistencyPollRetryCount = 20
     long consistencyPollRetryDeplayMs = 250
 
-    String buildPath
     @Input String checkoutDir
     @Input @Optional String targetBranch
 
     @Override
     void executeStashCommand() {
-        buildPath = project.buildDir.getPath().toString()
+        String buildPath = project.buildDir.getPath().toString()
 
         logger.info("checking for open pull requests")
         targetBranch = targetBranch ?:  "master"
@@ -36,7 +35,7 @@ class SyncNextPullRequestTask extends StashTask {
             for (Map pr : allPullReqs)
                 if (isValidPullRequest(pr)) {
                     pr = mergeAndSyncPullRequest(pr)
-                    setPropertiesFile(pr)
+                    setPropertiesFile(pr, buildPath)
                     project.ext.set("pullRequestId", pr.id)
                     project.ext.set("pullRequestVersion", pr.version)
                     project.ext.set("buildCommit", pr.fromRef.latestChangeset.trim())
@@ -106,8 +105,8 @@ class SyncNextPullRequestTask extends StashTask {
         throw new GradleException("Stash has not asynchronously updated git repo with changes to pull request. $stashCommit != $localCommit")
     }
 
-    public void setPropertiesFile(Map pr) {
-        def propPath = this.buildPath + "/pull-request.properties"
+    private void setPropertiesFile(Map pr, String buildPath) {
+        def propPath = buildPath + "/pull-request.properties"
         logger.info "Writing pull request data to $propPath using ${pr.dump()}"
         Properties prop = new Properties();
         prop.setProperty("pullRequestId", Integer.toString(pr.id));
