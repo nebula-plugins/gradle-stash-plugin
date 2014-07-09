@@ -11,43 +11,24 @@ import static groovyx.net.http.Method.*
 
 class StashRestApiImpl implements StashRestApi {
     private final Logger logger = Logging.getLogger(StashRestApiImpl)
-    private String stashHost
-    private String stashUser
-    private String stashPassword
-    private String stashProject
-    private String stashRepo
+    private final String stashHost
+    private final String stashUser
+    private final String stashPassword
+    private final String stashProject
+    private final String stashRepo
     private static String MESSAGE_CONFLICTED = "Build was successful but unable to merge pull request. Most likely the pull request was modified during the build (new commits or changing status)."
 
     StashRestApiImpl(String stashRepo, String stashProject, String stashHost, String stashUser, String stashPassword) {
-        if(stashRepo) {
-            this.stashRepo = stashRepo
-        } else {
-            throw new Exception("missing stashRepo parameter")
-        }
-
-        if(stashProject) {
-            this.stashProject = stashProject
-        } else {
-            throw new Exception("missing stashProject parameter")
-        }
-
-        if(stashHost) {
-            this.stashHost = stashHost
-        } else {
-            throw new Exception("missing stashHost parameter")
-        }
-
-        if(stashUser) {
-            this.stashUser = stashUser
-        } else {
-            throw new Exception("missing stashUser parameter")
-        }
-
-        if(stashPassword) {
-            this.stashPassword = stashPassword
-        } else {
-            throw new Exception("missing stashPassword parameter")
-        }
+        assert stashRepo, "missing stashRepo parameter"
+        assert stashProject, "missing stashProject parameter"
+        assert stashHost, "missing stashHost parameter"
+        assert stashUser, "missing stashUser parameter"
+        assert stashPassword, "missing stashPassword parameter"
+        this.stashRepo = stashRepo
+        this.stashProject = stashProject
+        this.stashHost = stashHost
+        this.stashUser = stashUser
+        this.stashPassword = stashPassword
     }
 
     private GString getRestPath() {
