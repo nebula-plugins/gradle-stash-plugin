@@ -13,8 +13,8 @@ import org.gradle.api.tasks.Optional
  *
  */
 class SyncNextPullRequestTask extends StashTask {
-    int CONSISTENCY_POLL_RETRY_COUNT = 20
-    long CONSISTENCY_POLL_RETRY_DELAY_MS = 250
+    int consistencyPollRetryCount = 20
+    long consistencyPollRetryDeplayMs = 250
 
     Logger logger
     String buildPath
@@ -96,11 +96,11 @@ class SyncNextPullRequestTask extends StashTask {
     public Map retryStash(String localCommit, Map pullRequest) {
         logger.info("Local latest commit does not match Pull Request latest commit. Polling Stash for consistency with commit: ${localCommit}")
         def fromBranch = pullRequest.fromRef.displayId
-        def timeout = System.currentTimeMillis() + CONSISTENCY_POLL_RETRY_DELAY_MS
+        def timeout = System.currentTimeMillis() + consistencyPollRetryDeplayMs
         def stashCommit
-        for (int retryCount = 0; retryCount < CONSISTENCY_POLL_RETRY_COUNT; retryCount++) {
+        for (int retryCount = 0; retryCount < consistencyPollRetryCount; retryCount++) {
             if (timeout > System.currentTimeMillis()) continue
-            timeout = System.currentTimeMillis() + CONSISTENCY_POLL_RETRY_DELAY_MS
+            timeout = System.currentTimeMillis() + consistencyPollRetryDeplayMs
             def updatedPR = stash.getPullRequest(Integer.parseInt(pullRequest.id))
             stashCommit = updatedPR.fromRef.latestChangeset.trim()
             logger.info("Comparing stash head commit '$stashCommit' to local head commit '$localCommit'")
