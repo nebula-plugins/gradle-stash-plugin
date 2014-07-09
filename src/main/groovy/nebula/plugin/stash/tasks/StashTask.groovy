@@ -32,14 +32,12 @@ abstract class StashTask extends DefaultTask {
 
     @TaskAction
     void runAction() {
-        createStashClient()
+        stash = createStashClient()
         executeStashCommand()
     }
 
     private StashRestApi createStashClient() {
-        stash = stash ?: new StashRestApiImpl(getStashRepo(), getStashProject(), getStashHost(), getStashUser(), getStashPassword())
-        stash.logger = project.logger
-        stash
+        stash ?: new StashRestApiImpl(getStashRepo(), getStashProject(), getStashHost(), getStashUser(), getStashPassword())
     }
 
     abstract void executeStashCommand()

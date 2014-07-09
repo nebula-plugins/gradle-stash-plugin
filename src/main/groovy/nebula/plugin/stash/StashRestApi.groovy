@@ -4,9 +4,10 @@ import groovyx.net.http.ContentType
 import groovyx.net.http.HTTPBuilder
 import groovyx.net.http.Method
 import org.gradle.api.logging.Logger
+import org.gradle.api.logging.Logging
 
+import static groovyx.net.http.ContentType.JSON
 import static groovyx.net.http.Method.*
-import static groovyx.net.http.ContentType.*
 
 public interface StashRestApi {
     static final String RPM_BUILD_KEY = "Family_Build"
@@ -29,18 +30,15 @@ public interface StashRestApi {
     public List<Map> getBuilds(String changeSet)
     public Map getBuildStats(String changeSet)
     public List<Map> getBranchesMatching(String branchName)
-    public Logger setLogger(Logger logger)
 }
 
 public class StashRestApiImpl implements StashRestApi {
-
+    private final Logger logger = Logging.getLogger(StashRestApiImpl)
     private String stashHost
     private String stashUser
     private String stashPassword
     private String stashProject
     private String stashRepo
-
-    public Logger logger
     private static String MESSAGE_CONFLICTED = "Build was successful but unable to merge pull request. Most likely the pull request was modified during the build (new commits or changing status)."
 
     public StashRestApiImpl(String stashRepo, String stashProject, String stashHost, String stashUser, String stashPassword) {
@@ -248,13 +246,7 @@ public class StashRestApiImpl implements StashRestApi {
     }
 
     private log(msg){
-        if (this.logger != null)
-            logger.info msg
-    }
-
-    @Override
-    public Logger setLogger(Logger logger) {
-        this.logger = logger
+        logger.info msg
     }
 }
 
