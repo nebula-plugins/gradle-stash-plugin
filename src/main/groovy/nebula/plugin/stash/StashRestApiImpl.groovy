@@ -95,7 +95,7 @@ class StashRestApiImpl implements StashRestApi {
     }
 
     @Override
-    Map commentPullRequest(int prId, String comment) {
+    Map commentPullRequest(Long prId, String comment) {
         def path = getRestPath() + "pull-requests/$prId/comments"
         return stashPostJson(path, ['text': comment])
     }
@@ -162,7 +162,7 @@ class StashRestApiImpl implements StashRestApi {
     }
 
     @Override
-    public Map getPullRequest(int id)
+    public Map getPullRequest(Long id)
     {
         def path = getRestPath() + "pull-requests/$id"
         return stashGetJson(path)

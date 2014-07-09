@@ -89,7 +89,7 @@ class MergeBuiltPullRequestsTaskFuncTest {
 
     @Test
     public void mergeBuiltPullRequest() {
-        def pr = [id:1, version: 0, fromRef: [latestChangeset: "abc123"]]
+        def pr = [id:1L, version: 0, fromRef: [latestChangeset: "abc123"]]
         def build = [key: StashRestApi.RPM_BUILD_KEY, state: StashRestApi.SUCCESSFUL_BUILD_STATE, url: "http://netflix.com/"]
         when(mockStash.getPullRequests(project.mergeBuiltPullRequests.targetBranch)).thenReturn([pr])
         when(mockStash.getBuilds(pr.fromRef.latestChangeset)).thenReturn([build])
@@ -107,7 +107,7 @@ class MergeBuiltPullRequestsTaskFuncTest {
 
     @Test
     public void declineBuiltPullRequest() {
-        def pr = [id:1, version: 0, fromRef: [latestChangeset: "abc123"]]
+        def pr = [id:1L, version: 0, fromRef: [latestChangeset: "abc123"]]
         def build = [key: StashRestApi.RPM_BUILD_KEY, state: StashRestApi.FAILED_BUILD_STATE, url: "http://netflix.com/"]
         when(mockStash.getPullRequests(project.mergeBuiltPullRequests.targetBranch)).thenReturn([pr])
         when(mockStash.getBuilds(pr.fromRef.latestChangeset)).thenReturn([build])

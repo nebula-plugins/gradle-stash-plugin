@@ -5,8 +5,8 @@ import org.gradle.api.tasks.Input
 class ClosePullRequestAfterBuildTask extends StashTask {
     static final String MESSAGE_CONFLICTED = "Build was successful but unable to merge pull request. Most likely the pull request was modified during the build (new commits or changing status)."
     static final String MESSAGE_SUCCESSFUL = "Build was successful. Merging pull request."
-    @Input def pullRequestVersion
-    @Input def pullRequestId
+    @Input Long pullRequestVersion
+    @Input Long pullRequestId
 
     @Override
     void executeStashCommand() {

@@ -7,15 +7,15 @@ import org.gradle.api.tasks.Optional
 import java.text.SimpleDateFormat
 
 public class MergeBranchTask extends StashTask {
-    @Input def pullFromBranch
-    @Input def mergeToBranch
-    @Input @Optional def remoteName
-    @Input def repoUrl
-    @Input def workingPath
-    @Input @Optional def autoMergeBranch
-    @Input @Optional def mergeMessage
-    @Input @Optional def repoName
-    @Input @Optional def acceptFilter
+    @Input String pullFromBranch
+    @Input String mergeToBranch
+    @Input @Optional String remoteName
+    @Input String repoUrl
+    @Input String workingPath
+    @Input @Optional String autoMergeBranch
+    @Input @Optional String mergeMessage
+    @Input @Optional String repoName
+    @Input @Optional Boolean acceptFilter
     File path
     File clonePath
 

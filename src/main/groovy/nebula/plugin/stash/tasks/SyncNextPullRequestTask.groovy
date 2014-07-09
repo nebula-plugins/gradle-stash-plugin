@@ -17,7 +17,7 @@ class SyncNextPullRequestTask extends StashTask {
 
     String buildPath
     @Input String checkoutDir
-    @Input @Optional targetBranch
+    @Input @Optional String targetBranch
 
     @Override
     void executeStashCommand() {

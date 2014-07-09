@@ -11,12 +11,12 @@ interface StashRestApi {
     static final String INPROGRESS_BUILD_STATE = "INPROGRESS"
     static final String FAILED_BUILD_STATE = "FAILED"
     Map postBuildStatus(String changeSet, HashMap body)
-    Map commentPullRequest(int prId, String comment)
+    Map commentPullRequest(Long prId, String comment)
     Map postPullRequest(fromBranch, toBranch, title, description)
     Map mergePullRequest(HashMap pullRequest)
     Map declinePullRequest(HashMap pullRequest)
     List<Map> getPullRequests(String branch)
-    Map getPullRequest(int id)
+    Map getPullRequest(Long id)
     void deleteBranch(String branchName)
     List<Map> getBuilds(String changeSet)
     Map getBuildStats(String changeSet)

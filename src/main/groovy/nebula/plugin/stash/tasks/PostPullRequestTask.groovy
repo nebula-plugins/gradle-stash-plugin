@@ -3,10 +3,10 @@ package nebula.plugin.stash.tasks
 import org.gradle.api.tasks.Input
 
 class PostPullRequestTask extends StashTask {
-    @Input prFromBranch
-    @Input prToBranch
-    @Input prTitle
-    @Input prDescription
+    @Input String prFromBranch
+    @Input String prToBranch
+    @Input String prTitle
+    @Input String prDescription
 
     @Override
     void executeStashCommand() {
