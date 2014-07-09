@@ -1,7 +1,6 @@
 package nebula.plugin.stash.tasks
 
 import org.gradle.api.GradleException
-import org.gradle.api.logging.Logger
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 
@@ -22,7 +21,6 @@ public class MergeBranchTask extends StashTask {
 
     @Override
     void executeStashCommand() {
-        final Logger logger = project.logger
         remoteName = remoteName ?: "origin"
         autoMergeBranch = autoMergeBranch ?: "automerge-$pullFromBranch-to-$mergeToBranch"
         mergeMessage = mergeMessage ?: "Down-merged branch '$pullFromBranch' into '$mergeToBranch' ($autoMergeBranch)"                                       

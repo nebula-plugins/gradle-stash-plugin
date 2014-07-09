@@ -12,9 +12,9 @@ class PostPullRequestTask extends StashTask {
     void executeStashCommand() {
         try {
             def pr = stash.postPullRequest(prFromBranch, prToBranch, prTitle, prDescription)
-            project.logger.info "Finished postPullRequest: ${pr.dump()}"
+            logger.info "Finished postPullRequest: ${pr.dump()}"
         } catch (Throwable e) {
-            project.logger.error "Unexpected error in postPullRequest"
+            logger.error "Unexpected error in postPullRequest"
             e.printStackTrace()
             throw e
         }

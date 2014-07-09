@@ -2,7 +2,6 @@ package nebula.plugin.stash.tasks
 
 import nebula.plugin.stash.StashRestApi
 import org.gradle.api.GradleException
-import org.gradle.api.logging.Logger
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 
@@ -16,15 +15,12 @@ class SyncNextPullRequestTask extends StashTask {
     int consistencyPollRetryCount = 20
     long consistencyPollRetryDeplayMs = 250
 
-    Logger logger
     String buildPath
     @Input String checkoutDir
     @Input @Optional targetBranch
 
     @Override
     void executeStashCommand() {
-        logger = project.logger
-
         buildPath = project.buildDir.getPath().toString()
 
         logger.info("checking for open pull requests")

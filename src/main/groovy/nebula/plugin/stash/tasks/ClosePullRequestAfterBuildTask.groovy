@@ -12,19 +12,19 @@ class ClosePullRequestAfterBuildTask extends StashTask {
     void executeStashCommand() {
         def targetBranch = "[Unable to determine target branch]"
         def originBranch = "[Unable to determine origin branch]"
-        project.logger.info("Attempting to close Pull Request id $pullRequestId at version $pullRequestVersion.")
+        logger.info("Attempting to close Pull Request id $pullRequestId at version $pullRequestVersion.")
         try {
             def pr = stash.mergePullRequest([id:pullRequestId, version:pullRequestVersion])
             targetBranch = pr.toRef.displayId
             originBranch = pr.fromRef.displayId
             stash.commentPullRequest(pullRequestId, MESSAGE_SUCCESSFUL)
-            project.logger.info("Finished processing pull request: ${pullRequestId}")
+            logger.info("Finished processing pull request: ${pullRequestId}")
         } catch (Throwable e) {
-            project.logger.error("Unexpected error in merge process: ${e.dump()}")
+            logger.error("Unexpected error in merge process: ${e.dump()}")
             stash.commentPullRequest(pullRequestId, MESSAGE_CONFLICTED)
             throw e
         }
-        project.logger.info("Closed pull request and commented ($targetBranch -> $originBranch)")
+        logger.info("Closed pull request and commented ($targetBranch -> $originBranch)")
     }
 }
 

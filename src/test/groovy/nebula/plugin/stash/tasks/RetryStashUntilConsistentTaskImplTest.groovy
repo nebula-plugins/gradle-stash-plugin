@@ -1,19 +1,15 @@
 package nebula.plugin.stash.tasks
 
-import org.gradle.testfixtures.ProjectBuilder
-import org.gradle.api.GradleException
-import org.gradle.api.Project
-import org.junit.Test
-import org.junit.Before
-
 import nebula.plugin.stash.StashRestApi
 import nebula.plugin.stash.util.ExternalProcess
-
-import org.gradle.api.logging.Logger
+import org.gradle.api.GradleException
+import org.gradle.api.Project
+import org.gradle.testfixtures.ProjectBuilder
+import org.junit.Before
+import org.junit.Test
 
 import static org.junit.Assert.*
 import static org.mockito.Mockito.*
-
 
 public class RetryStashUntilConsistentTaskImplTest {
     StashRestApi mockStash
@@ -29,7 +25,6 @@ public class RetryStashUntilConsistentTaskImplTest {
         task = project.tasks.syncNextPullRequest
         task.stash = mockStash
         task.consistencyPollRetryDeplayMs = 0
-        task.logger = mock(Logger.class)
     }
 
     @Test
@@ -89,7 +84,6 @@ class MergeAndSyncPullRequestTest {
         project.apply plugin: 'gradle-stash'
         task = project.tasks.syncNextPullRequest
         task.consistencyPollRetryDeplayMs = 0
-        task.logger = mock(Logger.class)
         cmd = task.cmd = mock(ExternalProcess.class)
         task.checkoutDir = '/root/beer'
     }
@@ -160,7 +154,6 @@ public class IsValidPullRequestsTaskTest {
         mockStash = mock(StashRestApi.class)
         task = project.tasks.syncNextPullRequest
         task.stash = mockStash
-        task.logger = mock(Logger.class)
     }
 
     @Test

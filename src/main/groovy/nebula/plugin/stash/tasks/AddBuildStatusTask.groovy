@@ -17,9 +17,9 @@ class AddBuildStatusTask extends StashTask {
      * @return The commit hash if found, Null if not
      */
     def getCurrentCommit() {
-        project.logger.info("getting the sha for the HEAD of the current directory")
+        logger.info("getting the sha for the HEAD of the current directory")
         def currentSha = cmd.execute("git rev-parse HEAD", System.getProperty("user.dir"))
-        project.logger.info("currentSha : ${currentSha}")
+        logger.info("currentSha : ${currentSha}")
         return currentSha
     }
     
@@ -30,13 +30,13 @@ class AddBuildStatusTask extends StashTask {
         if(buildCommit) {
             commit = buildCommit
         } else {
-            project.logger.info("finding commit")        
+            logger.info("finding commit")
             commit = getCurrentCommit()
             if(!commit) {
                 throw new GradleException("unable to determine the commit hash")
             }
         }
-        project.logger.info("using commit : ${commit}")
+        logger.info("using commit : ${commit}")
         stash.postBuildStatus(commit, [state:buildState, key:buildKey, name:buildName, url:buildUrl, description:project.buildDescription])
     } 
 }
