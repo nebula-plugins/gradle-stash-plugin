@@ -118,3 +118,28 @@ Most of the tasks provided by the `gradle-stash` plugin do not provide sensible 
 up to the plugin user to provide and assign values. If you want to conveniently set properties without having to change your
 build script, please have a look at the [gradle-override-plugin](https://github.com/nebula-plugins/gradle-override-plugin).
 
+If you are transitioning from a previous version of the plugin, there a various ways to set properties. Here're some
+options including an example that demonstrates the use case:
+
+#### Using project properties
+
+On the command line provide a project project via `-PtargetBranch=master`.
+
+In your build script, parse the provided project property and assign it to the task property:
+
+    mergeBuiltPullRequests.targetBranch = project.hasProperty('targetBranch') ? project.getProperty('targetBranch') : null
+
+#### Using system properties
+
+On the command line provide the a project project via `-Dtarget.branch=master`.
+
+In your build script, parse the provided system property and assign it to the task property:
+
+    mergeBuiltPullRequests.targetBranch = System.getProperty('target.branch')
+
+#### Using the override plugin
+
+On the command line provide the path to your project as system property with the prefix `override.` e.g. `-Doverride.mergeBuiltPullRequests.targetBranch=master`.
+There's not need to change the build script. The override plugin takes care of resolving the specific property, converting
+the value to the correct data type and assigning the value.
+
