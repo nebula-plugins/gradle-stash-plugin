@@ -7,7 +7,8 @@ import nebula.plugin.stash.util.ExternalProcessImpl
 
 import org.gradle.api.Project
 import org.gradle.api.tasks.Input;
-import org.gradle.api.tasks.Optional;
+import org.gradle.api.tasks.Optional
+import org.gradle.api.tasks.TaskValidationException;
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Test
 import org.junit.Before
@@ -23,18 +24,25 @@ class MergeBranchTaskTest {
     @Before
     public void setup() {
         project = ProjectBuilder.builder().build()
+        String dummyValue = "foo"
+
+        project.tasks.withType(MergeBranchTask) {
+            stashRepo = dummyValue
+            stashProject = dummyValue
+            stashUser = dummyValue
+            stashPassword = dummyValue
+            stashHost = dummyValue
+        }
     }
 
     @Test
     public void createsTheRightClass() {
-        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.apply plugin: 'gradle-stash'
         assertTrue(project.tasks.mergeBranch instanceof MergeBranchTask)
     }
     
     @Test
     public void canConfigurePullFromBranch() {       
-        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.ext.pullFromBranch = "bar"
         project.apply plugin: 'gradle-stash'
         assertEquals("bar", project.tasks.mergeBranch.pullFromBranch)
@@ -42,43 +50,37 @@ class MergeBranchTaskTest {
     
     @Test
     public void canConfigureMergeToBranch() {
-        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.ext.mergeToBranch = "mine"
         project.apply plugin: 'gradle-stash'
         assertEquals("mine", project.tasks.mergeBranch.mergeToBranch)
     }
     @Test
     public void canConfigureRemoteName() {
-        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.ext.remoteName = "remote"
         project.apply plugin: 'gradle-stash'
         assertEquals("remote", project.tasks.mergeBranch.remoteName)
     }
     @Test
     public void canConfigureRepoUrl() {       
-        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.ext.repoUrl = "http://builds/mine"
         project.apply plugin: 'gradle-stash'
         assertEquals("http://builds/mine", project.tasks.mergeBranch.repoUrl)
     }
     @Test
     public void canConfigureWorkingPath() {
-        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.ext.workingPath = "/working/path"
         project.apply plugin: 'gradle-stash'
         assertEquals("/working/path", project.tasks.mergeBranch.workingPath)
     }
     @Test
     public void canConfigureAutoMergeBranch() {
-        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.ext.autoMergeBranch = "auto-merge"
-        project.apply plugin: 'gradle-stash'        
+        project.apply plugin: 'gradle-stash'
         assertEquals("auto-merge", project.tasks.mergeBranch.autoMergeBranch)
     }
     
     @Test
     public void canConfigurMergeMessage() {
-        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.ext.mergeMessage = "merge message"
         project.apply plugin: 'gradle-stash'
         assertEquals("merge message", project.tasks.mergeBranch.mergeMessage)
@@ -86,16 +88,13 @@ class MergeBranchTaskTest {
     
     @Test
     public void canConfigureRepoName() {
-        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.ext.repoName = "stashRepo"
         project.apply plugin: 'gradle-stash'
-        
         assertEquals("stashRepo", project.tasks.mergeBranch.repoName)
     }
     
     @Test
     public void failsIfPullFromBranchNotProvided() {
-        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.ext.mergeToBranch = "branch"
         project.ext.stashRepoUrl = "http://foo/bar"
         project.ext.workingPath = "/foo/bar"
@@ -104,7 +103,6 @@ class MergeBranchTaskTest {
     
     @Test
     public void failsIfMergeToBranchNotProvided() {
-        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.ext.pullFromBranch = "branch"
         project.ext.stashRepoUrl = "http://foo/bar"
         project.ext.workingPath = "/foo/bar"
@@ -113,7 +111,6 @@ class MergeBranchTaskTest {
     
     @Test
     public void failsIfstashRepoUrlNotProvided() {
-        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.ext.pullFromBranch = "branch"
         project.ext.mergeToBranch = "branch"
         project.ext.workingPath = "/foo/bar"
@@ -122,7 +119,6 @@ class MergeBranchTaskTest {
     
     @Test
     public void failsIfWorkingPathNotProvided() {
-        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.ext.pullFromBranch = "branch"
         project.ext.mergeToBranch = "branch"
         project.ext.repoUrl = "http://foo/bar"
@@ -133,9 +129,9 @@ class MergeBranchTaskTest {
         try {
             project.apply plugin: 'gradle-stash'
             project.mergeBranch.execute()
-            fail("should have thrown a GradleException")
-        } catch (org.gradle.api.tasks.TaskValidationException e) {
-            assertTrue(e.cause.message ==~ ".*$missingParam.*")
+            fail("should have thrown a validation exception")
+        } catch (TaskValidationException e) {
+            assertEquals("No value has been specified for property '$missingParam'.".toString(), e.cause.message)
         }
     }
 }
