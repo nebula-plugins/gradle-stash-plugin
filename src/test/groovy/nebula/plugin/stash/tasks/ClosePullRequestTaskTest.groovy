@@ -21,17 +21,16 @@ class ClosePullRequestTaskTest {
     public void setup() {
         project = ProjectBuilder.builder().build()
         project.apply plugin: 'gradle-stash'
+        setDummyStashTaskPropertyValues(project)
     }
 
     @Test
     public void createsTheRightClass() {
-        setDummyStashTaskPropertyValues(project)
         assertTrue(project.tasks.closePullRequest instanceof ClosePullRequestAfterBuildTask)
     }
     
     @Test
     public void canConfigurePullRequestVersion() {
-        setDummyStashTaskPropertyValues(project)
         ClosePullRequestAfterBuildTask task = project.tasks.closePullRequest
         task.pullRequestVersion = 1L
 
@@ -40,7 +39,6 @@ class ClosePullRequestTaskTest {
     
     @Test
     public void canConfigurePullRequestId() {
-        setDummyStashTaskPropertyValues(project)
         ClosePullRequestAfterBuildTask task = project.tasks.closePullRequest
         task.pullRequestId = 10L
 
@@ -49,7 +47,6 @@ class ClosePullRequestTaskTest {
 
     @Test
     public void failsIfPullRequestIdNotProvided() {
-        setDummyStashTaskPropertyValues(project)
         ClosePullRequestAfterBuildTask task = project.tasks.closePullRequest
         task.pullRequestVersion = 1L
         runTaskExpectFail(task, "pullRequestId")
@@ -57,7 +54,6 @@ class ClosePullRequestTaskTest {
     
     @Test
     public void failsIfPullRequestVersionNotProvided() {
-        setDummyStashTaskPropertyValues(project)
         ClosePullRequestAfterBuildTask task = project.tasks.closePullRequest
         task.pullRequestId = 1L
         runTaskExpectFail(task, "pullRequestVersion")

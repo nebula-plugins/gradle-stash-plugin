@@ -22,18 +22,17 @@ class MergeBuiltPullRequestsTaskTest {
     public void setup() {
         project = ProjectBuilder.builder().build()
         project.apply plugin: 'gradle-stash'
+        setDummyStashTaskPropertyValues(project)
     }
 
     @Test
     public void createsTheRightClass() {
-        setDummyStashTaskPropertyValues(project)
         MergeBuiltPullRequestsTask task = project.tasks.mergeBuiltPullRequests
         assertTrue(task instanceof MergeBuiltPullRequestsTask)
     }
 
     @Test
     public void canConfigureTargetBranch() {
-        setDummyStashTaskPropertyValues(project)
         MergeBuiltPullRequestsTask task = project.tasks.mergeBuiltPullRequests
         task.targetBranch = "bar"
 
@@ -42,7 +41,6 @@ class MergeBuiltPullRequestsTaskTest {
 
     @Test
     public void failsIfTargetBranchNotProvided() {
-        setDummyStashTaskPropertyValues(project)
         MergeBuiltPullRequestsTask task = project.tasks.mergeBuiltPullRequests
         runTaskExpectFail(task, "targetBranch")
     }

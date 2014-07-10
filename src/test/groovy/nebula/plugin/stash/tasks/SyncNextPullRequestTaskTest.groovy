@@ -23,17 +23,16 @@ class SyncNextPullRequestTaskTest {
     public void setup() {
         project = ProjectBuilder.builder().build()
         project.apply plugin: 'gradle-stash'
+        setDummyStashTaskPropertyValues(project)
     }
 
     @Test
     public void createsTheRightClass() {
-        setDummyStashTaskPropertyValues(project)
         assertTrue(project.tasks.syncNextPullRequest instanceof SyncNextPullRequestTask)
     }
 
     @Test
     public void canConfigureTargetBranch() {
-        setDummyStashTaskPropertyValues(project)
         SyncNextPullRequestTask task = project.tasks.syncNextPullRequest
         task.targetBranch = "bar"
 
@@ -42,7 +41,6 @@ class SyncNextPullRequestTaskTest {
 
     @Test
     public void failsIfCheckoutDirNotProvided() {
-        setDummyStashTaskPropertyValues(project)
         SyncNextPullRequestTask task = project.tasks.syncNextPullRequest
         runTaskExpectFail(task, "checkoutDir")
     }

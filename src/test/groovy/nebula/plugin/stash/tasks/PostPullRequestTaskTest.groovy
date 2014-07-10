@@ -21,17 +21,16 @@ class PostPullRequestTaskTest {
     public void setup() {
         project = ProjectBuilder.builder().build()
         project.apply plugin: 'gradle-stash'
+        setDummyStashTaskPropertyValues(project)
     }
 
     @Test
     public void createsTheRightClass() {
-        setDummyStashTaskPropertyValues(project)
         assertTrue(project.tasks.postPullRequest instanceof PostPullRequestTask)
     }
     
     @Test
     public void canConfigurePrFromBranch() {
-        setDummyStashTaskPropertyValues(project)
         PostPullRequestTask task = project.tasks.postPullRequest
         task.prFromBranch = "bar"
         assertEquals("bar", task.prFromBranch)
@@ -39,7 +38,6 @@ class PostPullRequestTaskTest {
     
     @Test
     public void canConfigurePrToBranch() {
-        setDummyStashTaskPropertyValues(project)
         PostPullRequestTask task = project.tasks.postPullRequest
         task.prToBranch = "mine"
         assertEquals("mine", task.prToBranch)
@@ -55,7 +53,6 @@ class PostPullRequestTaskTest {
     
     @Test
     public void canConfigurePrDescription() {
-        setDummyStashTaskPropertyValues(project)
         PostPullRequestTask task = project.tasks.postPullRequest
         task.prDescription = "description"
         assertEquals("description", task.prDescription)
@@ -63,7 +60,6 @@ class PostPullRequestTaskTest {
     
     @Test
     public void failsIfPrFromBranchNotProvided() {
-        setDummyStashTaskPropertyValues(project)
         PostPullRequestTask task = project.tasks.postPullRequest
         task.prToBranch = "branch2"
         task.prDescription = "description"
@@ -73,7 +69,6 @@ class PostPullRequestTaskTest {
     
     @Test
     public void failsIfprToBranchNotProvided() {
-        setDummyStashTaskPropertyValues(project)
         PostPullRequestTask task = project.tasks.postPullRequest
         task.prFromBranch = "branch"
         task.prDescription = "description"
@@ -83,7 +78,6 @@ class PostPullRequestTaskTest {
     
     @Test
     public void failsIfprDescriptionNotProvided() {
-        setDummyStashTaskPropertyValues(project)
         PostPullRequestTask task = project.tasks.postPullRequest
         task.prFromBranch = "branch"
         task.prToBranch = "branch2"
@@ -93,7 +87,6 @@ class PostPullRequestTaskTest {
     
     @Test
     public void failsIfPrTitleNotProvided() {
-        setDummyStashTaskPropertyValues(project)
         PostPullRequestTask task = project.tasks.postPullRequest
         task.prFromBranch = "branch"
         task.prToBranch = "branch2"

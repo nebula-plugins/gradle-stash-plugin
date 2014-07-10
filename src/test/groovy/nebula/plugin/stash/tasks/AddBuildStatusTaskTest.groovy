@@ -22,17 +22,16 @@ class AddBuildStatusTaskTest {
     public void setup() {
         project = ProjectBuilder.builder().build()
         project.apply plugin: 'gradle-stash'
+        setDummyStashTaskPropertyValues(project)
     }
 
     @Test
     public void createsTheRightClass() {
-        setDummyStashTaskPropertyValues(project)
         assertTrue(project.tasks.addBuildStatus instanceof AddBuildStatusTask)
     }
 
     @Test
     public void canConfigureBuildState() {
-        setDummyStashTaskPropertyValues(project)
         AddBuildStatusTask task = project.tasks.addBuildStatus
         task.buildState = "INPROGRESS"
         assertEquals("INPROGRESS", task.buildState)
@@ -47,36 +46,30 @@ class AddBuildStatusTaskTest {
     }
     @Test
     public void canConfigureBuildName() {
-        setDummyStashTaskPropertyValues(project)
         AddBuildStatusTask task = project.tasks.addBuildStatus
         task.buildName = "My Build"
         assertEquals("My Build", task.buildName)
     }
     @Test
     public void canConfigureBuildUrl() {
-        setDummyStashTaskPropertyValues(project)
         AddBuildStatusTask task = project.tasks.addBuildStatus
         task.buildUrl = "http://builds/mine"
         assertEquals("http://builds/mine", task.buildUrl)
     }
     @Test
     public void canConfigureBuildDescription() {
-        setDummyStashTaskPropertyValues(project)
         AddBuildStatusTask task = project.tasks.addBuildStatus
         task.buildDescription = "Build Description"
         assertEquals("Build Description", task.buildDescription)
     }
     @Test
     public void canConfigureBuildCommit() {
-        setDummyStashTaskPropertyValues(project)
         AddBuildStatusTask task = project.tasks.addBuildStatus
         task.buildCommit = "AEAEAEAE"
         assertEquals("AEAEAEAE", task.buildCommit)
     }
     @Test
     public void failsIfBuildStateNotProvided() {
-        def key = "buildState"
-        setDummyStashTaskPropertyValues(project)
         AddBuildStatusTask task = project.tasks.addBuildStatus
         task.buildKey = "121"
         task.buildName = "My Build"
@@ -88,7 +81,6 @@ class AddBuildStatusTaskTest {
 
     @Test
     public void failsIfBuildKeyNotProvided() {
-        setDummyStashTaskPropertyValues(project)
         AddBuildStatusTask task = project.tasks.addBuildStatus
         task.buildState = "INPROGRESS"
         task.buildName = "My Build"
@@ -100,7 +92,6 @@ class AddBuildStatusTaskTest {
 
     @Test
     public void failsIfBuildNameNotProvided() {
-        setDummyStashTaskPropertyValues(project)
         AddBuildStatusTask task = project.tasks.addBuildStatus
         task.buildState = "INPROGRESS"
         task.buildKey = "121"
@@ -112,7 +103,6 @@ class AddBuildStatusTaskTest {
 
     @Test
     public void failsIfBuildUrlNotProvided() {
-        setDummyStashTaskPropertyValues(project)
         AddBuildStatusTask task = project.tasks.addBuildStatus
         task.buildState = "INPROGRESS"
         task.buildKey = "121"
@@ -124,7 +114,6 @@ class AddBuildStatusTaskTest {
 
     @Test
     public void failsIfBuildDescriptionNotProvided() {
-        setDummyStashTaskPropertyValues(project)
         AddBuildStatusTask task = project.tasks.addBuildStatus
         task.buildState = "INPROGRESS"
         task.buildKey = "121"
