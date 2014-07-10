@@ -96,7 +96,7 @@ class MergeBranchTaskTest {
     @Test
     public void failsIfPullFromBranchNotProvided() {
         project.ext.mergeToBranch = "branch"
-        project.ext.stashRepoUrl = "http://foo/bar"
+        project.ext.repoUrl = "http://foo/bar"
         project.ext.workingPath = "/foo/bar"
         runTaskExpectFail("pullFromBranch")
     }
@@ -104,7 +104,7 @@ class MergeBranchTaskTest {
     @Test
     public void failsIfMergeToBranchNotProvided() {
         project.ext.pullFromBranch = "branch"
-        project.ext.stashRepoUrl = "http://foo/bar"
+        project.ext.repoUrl = "http://foo/bar"
         project.ext.workingPath = "/foo/bar"
         runTaskExpectFail("mergeToBranch")
     }

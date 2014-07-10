@@ -30,7 +30,7 @@ class MergeBuiltPullRequestsTaskTest {
 
     @Test
     public void failsIfStashRepoNotProvided() {
-        project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = "foo"
+        project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.ext.targetBranch = "bar"
         runTaskExpectFail("stashRepo")
     }

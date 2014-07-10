@@ -30,14 +30,14 @@ class SyncNextPullRequestTaskTest {
 
     @Test
     public void failsIfStashRepoNotProvided() {
-        project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.checkoutDir = "foo"
+        project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = project.ext.checkoutDir = "foo"
         project.ext.targetBranch = "bar"
         runTaskExpectFail("stashRepo")
     }
 
     @Test
     public void failsIfStashProjectNameNotProvided() {
-        project.ext.stashRepo = project.ext.stashUser = project.ext.stashPassword = project.ext.checkoutDir = "foo"
+        project.ext.stashRepo = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = project.ext.checkoutDir = "foo"
         project.ext.targetBranch = "foo"
         runTaskExpectFail("stashProject")
    }
