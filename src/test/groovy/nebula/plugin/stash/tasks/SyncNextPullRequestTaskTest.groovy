@@ -63,8 +63,7 @@ class SyncNextPullRequestTaskTest {
             project.syncNextPullRequest.execute()
             fail("should have thrown a GradleException")
         } catch (Exception e) {
-            println "checking cause message : ${e.cause.message}"
-            assertTrue(e.message ==~ ".*$missingParam.*" || e.cause.message ==~ ".*$missingParam.*")
+            assertEquals("No value has been specified for property '$missingParam'.".toString(), e.cause.message)
         }
     }
 }
