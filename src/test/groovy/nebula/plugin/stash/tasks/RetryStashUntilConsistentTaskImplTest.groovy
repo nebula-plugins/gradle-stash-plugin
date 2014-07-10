@@ -8,6 +8,7 @@ import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Before
 import org.junit.Test
 
+import static nebula.plugin.stash.StashPluginFixture.setDummyStashTaskPropertyValues
 import static org.junit.Assert.*
 import static org.mockito.Mockito.*
 
@@ -19,8 +20,8 @@ public class RetryStashUntilConsistentTaskImplTest {
     @Before
     public void setup() {
         project = ProjectBuilder.builder().build()
-        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.apply plugin: 'gradle-stash'
+        setDummyStashTaskPropertyValues(project)
         mockStash = mock(StashRestApi.class)
         task = project.tasks.syncNextPullRequest
         task.stash = mockStash
@@ -80,8 +81,8 @@ class MergeAndSyncPullRequestTest {
     @Before
     public void setup() {
         project = ProjectBuilder.builder().build()
-        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.apply plugin: 'gradle-stash'
+        setDummyStashTaskPropertyValues(project)
         task = project.tasks.syncNextPullRequest
         task.consistencyPollRetryDeplayMs = 0
         cmd = task.cmd = mock(ExternalProcess.class)
@@ -145,12 +146,11 @@ public class IsValidPullRequestsTaskTest {
     Project project
     SyncNextPullRequestTask task
 
-
     @Before
     public void setup() {
         project = ProjectBuilder.builder().build()
-        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.apply plugin: 'gradle-stash'
+        setDummyStashTaskPropertyValues(project)
         mockStash = mock(StashRestApi.class)
         task = project.tasks.syncNextPullRequest
         task.stash = mockStash
@@ -188,5 +188,4 @@ public class IsValidPullRequestsTaskTest {
         def pr = [id: "10", version: "-2", fromRef: [latestChangeset:"999", cloneUrl: "abc.com/stash"], toRef: [cloneUrl: "abc.com/somethingelse"]]
         assertFalse(task.isValidPullRequest(pr))
     }
-
 }

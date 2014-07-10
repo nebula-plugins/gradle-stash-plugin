@@ -7,11 +7,11 @@ Cloudbees Jenkins snapshot: [![Build Status](https://netflixoss.ci.cloudbees.com
 
 A plugin to run Stash SCM tasks.
 
-Most of the tasks are run against the the Stash REST API, but some of them also require running git commands in the command line.
+Most of the tasks are run against the Stash REST API, but some of them also require running git commands in the command line.
 
 ## Usage
 
-### Applying the Plugin
+### Adding the plugin binary to the build
 
 To include, add the following to your build.gradle
 
@@ -19,13 +19,47 @@ To include, add the following to your build.gradle
         repositories { jcenter() }
 
         dependencies {
-            classpath 'com.netflix.nebula:gradle-stash-plugin:0.9.0'
+            classpath 'com.netflix.nebula:gradle-stash-plugin:1.12.0'
         }
     }
 
+### Provided plugins
+
+The JAR file comes with two plugins:
+
+<table>
+    <tr>
+        <th>Plugin Identifier</th>
+        <th>Depends On</th>
+        <th>Type</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>gradle-stash-base</td>
+        <td>-</td>
+        <td>StashBasePlugin</td>
+        <td>Provides Stash custom task types and exposes extension for configuration.</td>
+    </tr>
+    <tr>
+        <td>gradle-stash</td>
+        <td>gradle-stash-base</td>
+        <td>StashPlugin</td>
+        <td>Provides a set of default Stash tasks.</td>
+    </tr>
+</table>
+
+The `gradle-stash` plugin helps you get started quickly. To use the Stash plugin, include the following code snippet
+in your build script:
+
     apply plugin: 'gradle-stash'
 
-### Tasks Provided
+If you need full control over the creation of your tasks, you will want to use the `gradle-stash-base` plugin. The downside is that each task
+has to be configured individually in your build script. To use the Stash base plugin, include the following code snippet
+in your build script:
+
+    apply plugin: 'gradle-stash-base'
+
+### Tasks provided by `gradle-stash`
 
 * mergeBuiltPullRequests - Any pending Pull Request that has been built prior will be merged or declined automatically
     * targetBranch - Only open pull requests from <targetBranch> will be considered
@@ -57,36 +91,55 @@ To include, add the following to your build.gradle
     * mergeMessage - (Optional, defaults to : Down-merged branch '<pullFromBranch>' into '<mergeToBranch>' (<autoMergeBranch>)).  The message to add to the commit
     * repoName - (Optional, defaults to a name inferred by <repoUrl>)  The subdir to clone to
 
-### Extensions Provided
-These are meant to be passed in on the command line so you don't hardcode credentials in your build.gradle file, via -P<param>=<value>.
+### Extension properties
 
-* stashRepo - The Stash repository
-* stashProject - Stash project name
-* stashHost - Stash host name
-* stashUser - Stash user name
-* stashPassword - Stash password
+The plugin exposes an extension with the following properties:
 
-### Properties that Effect the Plugin
+* `stashRepo` - The Stash repository
+* `stashProject` - The Stash project name
+* `stashHost` - The Stash host name
+* `stashUser` - The Stash user name
+* `stashPassword` - The Stash password
 
-## Example
+#### Example
 
-*build.gradle*
+It's recommended to not hardcode credentials in your `build.gradle` file.
 
-    buildscript {
-        repositories { jcenter() }
-        dependencies {
-            classpath 'com.netflix.nebula:gradle-stash-plugin:0.9.0'
-        }
+    stash {
+        stashRepo = 'example-repo'
+        stashProject = 'example-project'
+        stashHost = 'my-host'
+        stashUser = 'foo'
     }
 
-    apply plugin: 'java'
-    apply plugin: 'gradle-stash'
+### Setting extension and task properties
 
-    repositories {
-        mavenCentral()
-    }
+Most of the tasks provided by the `gradle-stash` plugin do not provide sensible defaults for their input properties. It's
+up to the plugin user to provide and assign values. If you want to conveniently set properties without having to change your
+build script, please have a look at the [gradle-override-plugin](https://github.com/nebula-plugins/gradle-override-plugin).
 
-    dependencies {
-        ...
-    }
+If you are transitioning from a previous version of the plugin, there a various ways to set properties. Here're some
+options including an example that demonstrates the use case:
+
+#### Using project properties
+
+On the command line provide a project project via `-PtargetBranch=master`.
+
+In your build script, parse the provided project property and assign it to the task property:
+
+    mergeBuiltPullRequests.targetBranch = project.hasProperty('targetBranch') ? project.getProperty('targetBranch') : null
+
+#### Using system properties
+
+On the command line provide the a project project via `-Dtarget.branch=master`.
+
+In your build script, parse the provided system property and assign it to the task property:
+
+    mergeBuiltPullRequests.targetBranch = System.getProperty('target.branch')
+
+#### Using the override plugin
+
+On the command line provide the path to your project as system property with the prefix `override.` e.g. `-Doverride.mergeBuiltPullRequests.targetBranch=master`.
+There's not need to change the build script. The override plugin takes care of resolving the specific property, converting
+the value to the correct data type and assigning the value.
 

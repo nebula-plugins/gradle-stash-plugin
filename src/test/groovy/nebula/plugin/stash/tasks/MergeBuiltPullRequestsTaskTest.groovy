@@ -7,7 +7,10 @@ import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Before
 import org.junit.Test
 
-import static org.junit.Assert.*
+import static nebula.plugin.stash.StashPluginFixture.setDummyStashTaskPropertyValues
+import static nebula.plugin.stash.StashTaskAssertion.runTaskExpectFail
+import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertTrue
 import static org.mockito.Matchers.anyString
 import static org.mockito.Matchers.eq
 import static org.mockito.Mockito.*
@@ -18,53 +21,28 @@ class MergeBuiltPullRequestsTaskTest {
     @Before
     public void setup() {
         project = ProjectBuilder.builder().build()
+        project.apply plugin: 'gradle-stash'
+        setDummyStashTaskPropertyValues(project)
     }
 
     @Test
     public void createsTheRightClass() {
-        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
-        project.ext.targetBranch = "bar"
-        project.apply plugin: 'gradle-stash'
-        assertTrue(project.tasks.mergeBuiltPullRequests instanceof MergeBuiltPullRequestsTask)
+        MergeBuiltPullRequestsTask task = project.tasks.mergeBuiltPullRequests
+        assertTrue(task instanceof MergeBuiltPullRequestsTask)
     }
 
     @Test
-    public void failsIfStashRepoNotProvided() {
-        project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
-        project.ext.targetBranch = "bar"
-        runTaskExpectFail("stashRepo")
-    }
+    public void canConfigureTargetBranch() {
+        MergeBuiltPullRequestsTask task = project.tasks.mergeBuiltPullRequests
+        task.targetBranch = "bar"
 
-    @Test
-    public void failsIfStashProjectNotProvided() {
-        project.ext.stashRepo = project.ext.stashHost = project.ext.stashUser = project.ext.stashPassword = "foo"
-        project.ext.targetBranch = "foo"
-        runTaskExpectFail("stashProject")
-   }
-
-    @Test
-    public void canConfigureTargetBranch() {       
-        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
-        project.ext.targetBranch = "bar"
-        project.apply plugin: 'gradle-stash'
-        
-        assertEquals("bar", project.tasks.mergeBuiltPullRequests.targetBranch)
+        assertEquals("bar", task.targetBranch)
     }
 
     @Test
     public void failsIfTargetBranchNotProvided() {
-        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
-        runTaskExpectFail("targetBranch")
-    }
-    
-    private void runTaskExpectFail(String missingParam) {
-        try {
-            project.apply plugin: 'gradle-stash'
-            project.mergeBuiltPullRequests.execute()
-            fail("should have thrown a GradleException")
-        } catch (Exception e) {
-            assertEquals("No value has been specified for property '$missingParam'.".toString(), e.cause.message)
-        }
+        MergeBuiltPullRequestsTask task = project.tasks.mergeBuiltPullRequests
+        runTaskExpectFail(task, "targetBranch")
     }
 }
 
@@ -77,9 +55,13 @@ class MergeBuiltPullRequestsTaskFuncTest {
     @Before
     public void setup() {
         project = ProjectBuilder.builder().build()
-        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
-        project.ext.targetBranch = "bar"
         project.apply plugin: 'gradle-stash'
+        setDummyStashTaskPropertyValues(project)
+
+        project.tasks.withType(MergeBuiltPullRequestsTask) {
+            targetBranch = "bar"
+        }
+
         mockStash = mock(StashRestApi.class)
         task = project.tasks.mergeBuiltPullRequests
         task.stash = mockStash
@@ -90,14 +72,14 @@ class MergeBuiltPullRequestsTaskFuncTest {
     public void mergeBuiltPullRequest() {
         def pr = [id:1L, version: 0, fromRef: [latestChangeset: "abc123"]]
         def build = [key: StashRestApi.RPM_BUILD_KEY, state: StashRestApi.SUCCESSFUL_BUILD_STATE, url: "http://netflix.com/"]
-        when(mockStash.getPullRequests(project.mergeBuiltPullRequests.targetBranch)).thenReturn([pr])
+        when(mockStash.getPullRequests(task.targetBranch)).thenReturn([pr])
         when(mockStash.getBuilds(pr.fromRef.latestChangeset)).thenReturn([build])
         when(mockStash.mergePullRequest([id: pr.id, version: pr.version])).thenReturn(null)
         when(mockStash.commentPullRequest(eq(pr.id), anyString())).thenReturn(null)
 
-        project.tasks.mergeBuiltPullRequests.execute()
+        task.execute()
 
-        verify(mockStash).getPullRequests(eq(project.mergeBuiltPullRequests.targetBranch))
+        verify(mockStash).getPullRequests(eq(task.targetBranch))
         verify(mockStash).getBuilds(eq(pr.fromRef.latestChangeset))
         verify(mockStash).mergePullRequest([id: pr.id, version: pr.version])
         verify(mockStash).commentPullRequest(eq(pr.id), anyString())
@@ -108,14 +90,14 @@ class MergeBuiltPullRequestsTaskFuncTest {
     public void declineBuiltPullRequest() {
         def pr = [id:1L, version: 0, fromRef: [latestChangeset: "abc123"]]
         def build = [key: StashRestApi.RPM_BUILD_KEY, state: StashRestApi.FAILED_BUILD_STATE, url: "http://netflix.com/"]
-        when(mockStash.getPullRequests(project.mergeBuiltPullRequests.targetBranch)).thenReturn([pr])
+        when(mockStash.getPullRequests(task.targetBranch)).thenReturn([pr])
         when(mockStash.getBuilds(pr.fromRef.latestChangeset)).thenReturn([build])
         when(mockStash.mergePullRequest([id: pr.id, version: pr.version])).thenReturn(null)
         when(mockStash.commentPullRequest(eq(pr.id), anyString())).thenReturn(null)
 
-        project.tasks.mergeBuiltPullRequests.execute()
+        task.execute()
 
-        verify(mockStash).getPullRequests(eq(project.mergeBuiltPullRequests.targetBranch))
+        verify(mockStash).getPullRequests(eq(task.targetBranch))
         verify(mockStash).getBuilds(eq(pr.fromRef.latestChangeset))
         verify(mockStash).declinePullRequest([id: pr.id, version: pr.version])
         verify(mockStash).commentPullRequest(eq(pr.id), anyString())
