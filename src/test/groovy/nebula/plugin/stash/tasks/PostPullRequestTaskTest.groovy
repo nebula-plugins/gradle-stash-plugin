@@ -1,18 +1,17 @@
 package nebula.plugin.stash.tasks
 
 import nebula.plugin.stash.StashRestApi
-import nebula.plugin.stash.tasks.PostPullRequestTask;
-
 import org.gradle.api.GradleException
 import org.gradle.api.Project
-import org.gradle.api.tasks.Input;
-import org.gradle.api.tasks.Optional;
 import org.gradle.testfixtures.ProjectBuilder
-import org.junit.Test
 import org.junit.Before
-import org.slf4j.Logger
+import org.junit.Test
 
-import static org.junit.Assert.*
+import static nebula.plugin.stash.StashPluginFixture.setDummyStashTaskPropertyValues
+import static nebula.plugin.stash.StashTaskAssertion.runTaskExpectFail
+import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertTrue
+import static org.mockito.Matchers.anyString
 import static org.mockito.Mockito.*
 
 class PostPullRequestTaskTest {
@@ -21,91 +20,85 @@ class PostPullRequestTaskTest {
     @Before
     public void setup() {
         project = ProjectBuilder.builder().build()
+        project.apply plugin: 'gradle-stash'
     }
 
     @Test
     public void createsTheRightClass() {
-        project.ext.stashRepo = project.ext.projectName = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
-        project.apply plugin: 'gradle-stash'
+        setDummyStashTaskPropertyValues(project)
         assertTrue(project.tasks.postPullRequest instanceof PostPullRequestTask)
     }
     
     @Test
-    public void canConfigurePrFromBranch() {       
-        project.ext.stashRepo = project.ext.projectName = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
-        project.ext.prFromBranch = "bar"
-        project.apply plugin: 'gradle-stash'
-        assertEquals("bar", project.tasks.postPullRequest.prFromBranch)
+    public void canConfigurePrFromBranch() {
+        setDummyStashTaskPropertyValues(project)
+        PostPullRequestTask task = project.tasks.postPullRequest
+        task.prFromBranch = "bar"
+        assertEquals("bar", task.prFromBranch)
     }
     
     @Test
     public void canConfigurePrToBranch() {
-        project.ext.stashRepo = project.ext.projectName = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
-        project.ext.prToBranch = "mine"
-        project.apply plugin: 'gradle-stash'
-        assertEquals("mine", project.tasks.postPullRequest.prToBranch)
+        setDummyStashTaskPropertyValues(project)
+        PostPullRequestTask task = project.tasks.postPullRequest
+        task.prToBranch = "mine"
+        assertEquals("mine", task.prToBranch)
     }
     
     @Test
     public void canConfigurePrTitle() {
-        project.ext.stashRepo = project.ext.projectName = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
-        project.ext.prTitle = "title"
-        project.apply plugin: 'gradle-stash'
-        assertEquals("title", project.tasks.postPullRequest.prTitle)
+        setDummyStashTaskPropertyValues(project)
+        PostPullRequestTask task = project.tasks.postPullRequest
+        task.prTitle = "title"
+        assertEquals("title", task.prTitle)
     }
     
     @Test
-    public void canConfigurePrDescription() {       
-        project.ext.stashRepo = project.ext.projectName = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
-        project.ext.prDescription = "description"
-        project.apply plugin: 'gradle-stash'
-        assertEquals("description", project.tasks.postPullRequest.prDescription)
+    public void canConfigurePrDescription() {
+        setDummyStashTaskPropertyValues(project)
+        PostPullRequestTask task = project.tasks.postPullRequest
+        task.prDescription = "description"
+        assertEquals("description", task.prDescription)
     }
     
     @Test
     public void failsIfPrFromBranchNotProvided() {
-        project.ext.stashRepo = project.ext.stashProject = project.ext.projectName = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
-        project.ext.prToBranch = "branch2"
-        project.ext.prDescription = "description"
-        project.ext.prTitle = "title"
-        runTaskExpectFail("prFromBranch")
+        setDummyStashTaskPropertyValues(project)
+        PostPullRequestTask task = project.tasks.postPullRequest
+        task.prToBranch = "branch2"
+        task.prDescription = "description"
+        task.prTitle = "title"
+        runTaskExpectFail(task, "prFromBranch")
     }
     
     @Test
     public void failsIfprToBranchNotProvided() {
-        project.ext.stashRepo = project.ext.stashProject = project.ext.projectName = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
-        project.ext.prFromBranch = "branch"
-        project.ext.prDescription = "description"
-        project.ext.prTitle = "title"
-        runTaskExpectFail("prToBranch")
+        setDummyStashTaskPropertyValues(project)
+        PostPullRequestTask task = project.tasks.postPullRequest
+        task.prFromBranch = "branch"
+        task.prDescription = "description"
+        task.prTitle = "title"
+        runTaskExpectFail(task, "prToBranch")
     }
     
     @Test
     public void failsIfprDescriptionNotProvided() {
-        project.ext.stashRepo = project.ext.stashProject = project.ext.projectName = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
-        project.ext.prFromBranch = "branch"
-        project.ext.prToBranch = "branch2"
-        project.ext.prTitle = "title"
-        runTaskExpectFail("prDescription")
+        setDummyStashTaskPropertyValues(project)
+        PostPullRequestTask task = project.tasks.postPullRequest
+        task.prFromBranch = "branch"
+        task.prToBranch = "branch2"
+        task.prTitle = "title"
+        runTaskExpectFail(task, "prDescription")
     }
     
     @Test
     public void failsIfPrTitleNotProvided() {
-        project.ext.stashRepo = project.ext.stashProject = project.ext.projectName = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
-        project.ext.prFromBranch = "branch"
-        project.ext.prToBranch = "branch2"
-        project.ext.prDescription = "description"
-        runTaskExpectFail("prTitle")
-    }
-    
-    private void runTaskExpectFail(String missingParam) {
-        try {
-            project.apply plugin: 'gradle-stash'
-            project.postPullRequest.execute()
-            fail("should have thrown a GradleException")
-        } catch (org.gradle.api.tasks.TaskValidationException e) {
-            assertTrue(e.cause.message ==~ ".*$missingParam.*")
-        }
+        setDummyStashTaskPropertyValues(project)
+        PostPullRequestTask task = project.tasks.postPullRequest
+        task.prFromBranch = "branch"
+        task.prToBranch = "branch2"
+        task.prDescription = "description"
+        runTaskExpectFail(task, "prTitle")
     }
 }
 
@@ -116,14 +109,17 @@ class PostPullRequestTaskFunctionalTest {
     @Before
     public void setup() {
         project = ProjectBuilder.builder().build()
-        project.ext.stashRepo = project.ext.stashProject = project.ext.projectName = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
-        project.ext.prFromBranch = "source-branch"
-        project.ext.prToBranch = "target-branch"
-        project.ext.prTitle = "title"
-        project.ext.prDescription = "description"
+        project.apply plugin: 'gradle-stash'
+        setDummyStashTaskPropertyValues(project)
+
+        project.tasks.withType(PostPullRequestTask) {
+            prFromBranch = "source-branch"
+            prToBranch = "target-branch"
+            prTitle = "title"
+            prDescription = "description"
+        }
         
         mockStash = mock(StashRestApi.class)
-        project.apply plugin: 'gradle-stash'
         project.tasks.postPullRequest.stash = mockStash
     }
     

@@ -8,7 +8,10 @@ import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Before
 import org.junit.Test
 
-import static org.junit.Assert.*
+import static nebula.plugin.stash.StashPluginFixture.setDummyStashTaskPropertyValues
+import static nebula.plugin.stash.StashTaskAssertion.runTaskExpectFail
+import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertTrue
 import static org.mockito.Matchers.anyInt
 import static org.mockito.Matchers.anyString
 import static org.mockito.Mockito.*
@@ -19,52 +22,29 @@ class SyncNextPullRequestTaskTest {
     @Before
     public void setup() {
         project = ProjectBuilder.builder().build()
+        project.apply plugin: 'gradle-stash'
     }
 
     @Test
     public void createsTheRightClass() {
-        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
-        project.apply plugin: 'gradle-stash'
+        setDummyStashTaskPropertyValues(project)
         assertTrue(project.tasks.syncNextPullRequest instanceof SyncNextPullRequestTask)
     }
 
     @Test
-    public void failsIfStashRepoNotProvided() {
-        project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = project.ext.checkoutDir = "foo"
-        project.ext.targetBranch = "bar"
-        runTaskExpectFail("stashRepo")
-    }
+    public void canConfigureTargetBranch() {
+        setDummyStashTaskPropertyValues(project)
+        SyncNextPullRequestTask task = project.tasks.syncNextPullRequest
+        task.targetBranch = "bar"
 
-    @Test
-    public void failsIfStashProjectNameNotProvided() {
-        project.ext.stashRepo = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = project.ext.checkoutDir = "foo"
-        project.ext.targetBranch = "foo"
-        runTaskExpectFail("stashProject")
-   }
-
-    @Test
-    public void canConfigureTargetBranch() {       
-        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
-        project.ext.targetBranch = "bar"
-        project.apply plugin: 'gradle-stash'
-        
-        assertEquals("bar", project.tasks.mergeBuiltPullRequests.targetBranch)
+        assertEquals("bar", task.targetBranch)
     }
 
     @Test
     public void failsIfCheckoutDirNotProvided() {
-        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
-        runTaskExpectFail("checkoutDir")
-    }
-    
-    private void runTaskExpectFail(String missingParam) {
-        try {
-            project.apply plugin: 'gradle-stash'
-            project.syncNextPullRequest.execute()
-            fail("should have thrown a GradleException")
-        } catch (Exception e) {
-            assertEquals("No value has been specified for property '$missingParam'.".toString(), e.cause.message)
-        }
+        setDummyStashTaskPropertyValues(project)
+        SyncNextPullRequestTask task = project.tasks.syncNextPullRequest
+        runTaskExpectFail(task, "checkoutDir")
     }
 }
 
@@ -77,11 +57,11 @@ class SyncNextPullRequestTaskFunctionalTest {
     @Before
     public void setup() {
         project = ProjectBuilder.builder().build()
-        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
-        project.extensions.checkoutDir = "/foo/bar"
+        setDummyStashTaskPropertyValues(project)
         project.apply plugin: 'gradle-stash'
         mockStash = mock(StashRestApi.class)
         task = project.tasks.syncNextPullRequest
+        task.checkoutDir = "/foo/bar"
         task.stash = mockStash
         cmd = task.cmd = mock(ExternalProcess.class)
     }
@@ -97,7 +77,6 @@ class SyncNextPullRequestTaskFunctionalTest {
     
     @Test(expected=GradleException.class)
     public void syncNextPullRequestGetPrsFails() {
-        def pr = [id:1, version: 0, fromRef: [latestChangeset: "abc123", displayId: "fromDisplayId"], toRef: [latestChangeset: "def456", displayId: "toDisplayId"]]
         when(cmd.execute(anyString(), anyString())).thenReturn("abc123")
         when(mockStash.getPullRequests(anyString())).thenThrow(new GradleException("mock exception"))
         task.execute()

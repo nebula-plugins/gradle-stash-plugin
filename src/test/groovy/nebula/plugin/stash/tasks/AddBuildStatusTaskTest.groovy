@@ -1,19 +1,19 @@
 package nebula.plugin.stash.tasks
 
 import nebula.plugin.stash.StashRestApi
-import nebula.plugin.stash.tasks.AddBuildStatusTask;
-import nebula.plugin.stash.util.ExternalProcess;
-
-import org.gradle.api.Project
-import org.gradle.api.tasks.Input;
-import org.gradle.testfixtures.ProjectBuilder
-import org.junit.Test
-import org.junit.Before
-import org.slf4j.Logger
+import nebula.plugin.stash.util.ExternalProcess
 import org.gradle.api.GradleException
+import org.gradle.api.Project
+import org.gradle.testfixtures.ProjectBuilder
+import org.junit.Before
+import org.junit.Test
 
-import static org.junit.Assert.*
-import static org.mockito.Mockito.*
+import static nebula.plugin.stash.StashPluginFixture.setDummyStashTaskPropertyValues
+import static nebula.plugin.stash.StashTaskAssertion.runTaskExpectFail
+import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertTrue
+import static org.mockito.Mockito.mock
+import static org.mockito.Mockito.when
 
 class AddBuildStatusTaskTest {
     Project project
@@ -21,183 +21,173 @@ class AddBuildStatusTaskTest {
     @Before
     public void setup() {
         project = ProjectBuilder.builder().build()
+        project.apply plugin: 'gradle-stash'
     }
 
     @Test
     public void createsTheRightClass() {
-        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
-        project.apply plugin: 'gradle-stash'
+        setDummyStashTaskPropertyValues(project)
         assertTrue(project.tasks.addBuildStatus instanceof AddBuildStatusTask)
     }
-    
+
     @Test
-    public void canConfigureBuildState() {       
-        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
-        project.ext.buildState = "INPROGRESS"
-        project.apply plugin: 'gradle-stash'
-        
-        assertEquals("INPROGRESS", project.tasks.addBuildStatus.buildState)
+    public void canConfigureBuildState() {
+        setDummyStashTaskPropertyValues(project)
+        AddBuildStatusTask task = project.tasks.addBuildStatus
+        task.buildState = "INPROGRESS"
+        assertEquals("INPROGRESS", task.buildState)
     }
-    
+
     @Test
     public void canConfigureBuildKey() {
-        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
-        project.ext.buildKey = "121"
-        project.apply plugin: 'gradle-stash'
-        
-        assertEquals("121", project.tasks.addBuildStatus.buildKey)
+        setDummyStashTaskPropertyValues(project)
+        AddBuildStatusTask task = project.tasks.addBuildStatus
+        task.buildKey = "121"
+        assertEquals("121", task.buildKey)
     }
     @Test
     public void canConfigureBuildName() {
-        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
-        project.ext.buildName = "My Build"
-        project.apply plugin: 'gradle-stash'
-        
-        assertEquals("My Build", project.tasks.addBuildStatus.buildName)
+        setDummyStashTaskPropertyValues(project)
+        AddBuildStatusTask task = project.tasks.addBuildStatus
+        task.buildName = "My Build"
+        assertEquals("My Build", task.buildName)
     }
     @Test
-    public void canConfigureBuildUrl() {       
-        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
-        project.ext.buildUrl = "http://builds/mine"
-        project.apply plugin: 'gradle-stash'
-        
-        assertEquals("http://builds/mine", project.tasks.addBuildStatus.buildUrl)
+    public void canConfigureBuildUrl() {
+        setDummyStashTaskPropertyValues(project)
+        AddBuildStatusTask task = project.tasks.addBuildStatus
+        task.buildUrl = "http://builds/mine"
+        assertEquals("http://builds/mine", task.buildUrl)
     }
     @Test
     public void canConfigureBuildDescription() {
-        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
-        project.ext.buildDescription = "Build Description"
-        project.apply plugin: 'gradle-stash'
-        
-        assertEquals("Build Description", project.tasks.addBuildStatus.buildDescription)
+        setDummyStashTaskPropertyValues(project)
+        AddBuildStatusTask task = project.tasks.addBuildStatus
+        task.buildDescription = "Build Description"
+        assertEquals("Build Description", task.buildDescription)
     }
     @Test
     public void canConfigureBuildCommit() {
-        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
-        project.ext.buildCommit = "AEAEAEAE"
-        project.apply plugin: 'gradle-stash'
-        
-        assertEquals("AEAEAEAE", project.tasks.addBuildStatus.buildCommit)
+        setDummyStashTaskPropertyValues(project)
+        AddBuildStatusTask task = project.tasks.addBuildStatus
+        task.buildCommit = "AEAEAEAE"
+        assertEquals("AEAEAEAE", task.buildCommit)
     }
     @Test
     public void failsIfBuildStateNotProvided() {
         def key = "buildState"
-        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
-        project.ext.buildKey = "121"
-        project.ext.buildName = "My Build"
-        project.ext.buildUrl = "http://builds/mine"
-        project.ext.buildDescription = "Build Description"
-        project.ext.buildCommit = "AEAEAEAE"
-        runTaskExpectFail("buildState")
+        setDummyStashTaskPropertyValues(project)
+        AddBuildStatusTask task = project.tasks.addBuildStatus
+        task.buildKey = "121"
+        task.buildName = "My Build"
+        task.buildUrl = "http://builds/mine"
+        task.buildDescription = "Build Description"
+        task.buildCommit = "AEAEAEAE"
+        runTaskExpectFail(task, "buildState")
     }
-    
+
     @Test
     public void failsIfBuildKeyNotProvided() {
-        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
-        project.ext.buildState = "INPROGRESS"
-        project.ext.buildName = "My Build"
-        project.ext.buildUrl = "http://builds/mine"
-        project.ext.buildDescription = "Build Description"
-        project.ext.buildCommit = "AEAEAEAE"
-        runTaskExpectFail("buildKey")
+        setDummyStashTaskPropertyValues(project)
+        AddBuildStatusTask task = project.tasks.addBuildStatus
+        task.buildState = "INPROGRESS"
+        task.buildName = "My Build"
+        task.buildUrl = "http://builds/mine"
+        task.buildDescription = "Build Description"
+        task.buildCommit = "AEAEAEAE"
+        runTaskExpectFail(task, "buildKey")
     }
-    
+
     @Test
     public void failsIfBuildNameNotProvided() {
-        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
-        project.ext.buildState = "INPROGRESS"
-        project.ext.buildKey = "121"
-        project.ext.buildUrl = "http://builds/mine"
-        project.ext.buildDescription = "Build Description"
-        project.ext.buildCommit = "AEAEAEAE"
-        runTaskExpectFail("buildName")
+        setDummyStashTaskPropertyValues(project)
+        AddBuildStatusTask task = project.tasks.addBuildStatus
+        task.buildState = "INPROGRESS"
+        task.buildKey = "121"
+        task.buildUrl = "http://builds/mine"
+        task.buildDescription = "Build Description"
+        task.buildCommit = "AEAEAEAE"
+        runTaskExpectFail(task, "buildName")
     }
-    
+
     @Test
     public void failsIfBuildUrlNotProvided() {
-        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
-        project.ext.buildState = "INPROGRESS"
-        project.ext.buildKey = "121"
-        project.ext.buildName = "My Build"
-        project.ext.buildDescription = "Build Description"
-        project.ext.buildCommit = "AEAEAEAE"
-        runTaskExpectFail("buildUrl")
+        setDummyStashTaskPropertyValues(project)
+        AddBuildStatusTask task = project.tasks.addBuildStatus
+        task.buildState = "INPROGRESS"
+        task.buildKey = "121"
+        task.buildName = "My Build"
+        task.buildDescription = "Build Description"
+        task.buildCommit = "AEAEAEAE"
+        runTaskExpectFail(task, "buildUrl")
     }
-    
+
     @Test
     public void failsIfBuildDescriptionNotProvided() {
-        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
-        project.ext.buildState = "INPROGRESS"
-        project.ext.buildKey = "121"
-        project.ext.buildName = "My Build"
-        project.ext.buildUrl = "http://builds/mine"
-        project.ext.buildCommit = "AEAEAEAE"
-        runTaskExpectFail("buildDescription")
-    }
-    
-    private void runTaskExpectFail(String missingParam) {
-        try {
-            project.apply plugin: 'gradle-stash'
-            project.addBuildStatus.execute()
-            fail("should have thrown a GradleException")
-        } catch (org.gradle.api.tasks.TaskValidationException e) {
-            println e.cause.message
-            assertTrue(e.cause.message ==~ ".*$missingParam.*")
-        }
+        setDummyStashTaskPropertyValues(project)
+        AddBuildStatusTask task = project.tasks.addBuildStatus
+        task.buildState = "INPROGRESS"
+        task.buildKey = "121"
+        task.buildName = "My Build"
+        task.buildUrl = "http://builds/mine"
+        task.buildCommit = "AEAEAEAE"
+        runTaskExpectFail(task, "buildDescription")
     }
 }
 
 class AddBuildStatusTaskFuncTest {
     StashRestApi mockStash
     Project project
-    ExternalProcess cmd
-    AddBuildStatusTask task
 
     @Before
     public void setup() {
         project = ProjectBuilder.builder().build()
-        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
-        project.ext.buildState = "SUCCESSFUL"
-        project.ext.buildKey = "Smoke_Test"
-        project.ext.buildName = "EDGE-Master-Smoke-Test #503"
-        project.ext.buildUrl = "http://builds.netflix.com/job/EDGE-Master-Smoke-Test/503/"
-        project.ext.buildDescription = "Smoke Test"
+        setDummyStashTaskPropertyValues(project)
+
+        project.tasks.withType(AddBuildStatusTask) {
+            buildState = "SUCCESSFUL"
+            buildKey = "Smoke_Test"
+            buildName = "EDGE-Master-Smoke-Test #503"
+            buildUrl = "http://builds.netflix.com/job/EDGE-Master-Smoke-Test/503/"
+            buildDescription = "Smoke Test"
+        }
+
         mockStash = mock(StashRestApi.class)
     }
 
     @Test
     public void addBuildStatusProvidedCommit() {
         // SUCCESSFUL, FAILED and INPROGRESS
-        project.ext.buildCommit = "ABCD"
         project.apply plugin: 'gradle-stash'
-        task = project.tasks.addBuildStatus
-        cmd = task.cmd = mock(ExternalProcess.class)
+        AddBuildStatusTask task = project.tasks.addBuildStatus
+        task.buildCommit = "ABCD"
+        ExternalProcess cmd = task.cmd = mock(ExternalProcess.class)
         project.tasks.addBuildStatus.stash = mockStash
-        when(mockStash.postBuildStatus(project.ext.buildCommit, [state:project.ext.buildState, key:project.ext.buildKey, name:project.ext.buildName, url:project.ext.buildUrl, description:project.project.ext.buildDescription])).thenReturn(null)
+        when(mockStash.postBuildStatus(task.buildCommit, [state:task.buildState, key:task.buildKey, name:task.buildName, url:task.buildUrl, description:task.buildDescription])).thenReturn(null)
         project.tasks.addBuildStatus.execute()
         // nothing to verify since postBuildStatus returns an empty result
     }
-    
+
     @Test
     public void addBuildStatusCalculatedCommit() {
         project.apply plugin: 'gradle-stash'
         project.tasks.addBuildStatus.stash = mockStash
-        task = project.tasks.addBuildStatus
-        cmd = task.cmd = mock(ExternalProcess.class)
+        AddBuildStatusTask task = project.tasks.addBuildStatus
+        ExternalProcess cmd = task.cmd = mock(ExternalProcess.class)
         when(cmd.execute("git rev-parse HEAD", System.getProperty("user.dir"))).thenReturn("FEDCBA\n")
-        when(mockStash.postBuildStatus("FEDCBA", [state:project.ext.buildState, key:project.ext.buildKey, name:project.ext.buildName, url:project.ext.buildUrl, description:project.project.ext.buildDescription])).thenReturn(null)
+        when(mockStash.postBuildStatus("FEDCBA", [state:task.buildState, key:task.buildKey, name:task.buildName, url:task.buildUrl, description:task.buildDescription])).thenReturn(null)
         project.tasks.addBuildStatus.execute()
         // nothing to verify since postBuildStatus returns an empty result 
     }
-    
+
     @Test(expected=GradleException.class)
     public void addBuildStatusCantCalculateCommit() {
         project.apply plugin: 'gradle-stash'
         project.tasks.addBuildStatus.stash = mockStash
-        task = project.tasks.addBuildStatus
-        cmd = task.cmd = mock(ExternalProcess.class)
+        AddBuildStatusTask task = project.tasks.addBuildStatus
+        ExternalProcess cmd = task.cmd = mock(ExternalProcess.class)
         when(cmd.execute("git rev-parse HEAD", System.getProperty("user.dir"))).thenReturn(null)
-        when(mockStash.postBuildStatus("FEDCBA", [state:project.ext.buildState, key:project.ext.buildKey, name:project.ext.buildName, url:project.ext.buildUrl, description:project.project.ext.buildDescription])).thenReturn(null)
+        when(mockStash.postBuildStatus("FEDCBA", [state:task.buildState, key:task.buildKey, name:task.buildName, url:task.buildUrl, description:task.buildDescription])).thenReturn(null)
         project.tasks.addBuildStatus.execute()
     }
 }

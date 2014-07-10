@@ -37,6 +37,6 @@ class AddBuildStatusTask extends StashTask {
             }
         }
         logger.info("using commit : ${commit}")
-        stash.postBuildStatus(commit, [state:buildState, key:buildKey, name:buildName, url:buildUrl, description:project.buildDescription])
+        stash.postBuildStatus(commit, [state:buildState, key:buildKey, name:buildName, url:buildUrl, description:buildDescription])
     } 
 }
