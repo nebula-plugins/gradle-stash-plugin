@@ -37,13 +37,13 @@ The JAR file comes with two plugins:
     <tr>
         <td>gradle-stash-base</td>
         <td>-</td>
-        <td>NebulaStashBasePlugin</td>
+        <td>StashBasePlugin</td>
         <td>Provides Stash custom task types and exposes extension for configuration.</td>
     </tr>
     <tr>
         <td>gradle-stash</td>
         <td>gradle-stash-base</td>
-        <td>NebulaStashPlugin</td>
+        <td>StashPlugin</td>
         <td>Provides a set of default Stash tasks.</td>
     </tr>
 </table>
