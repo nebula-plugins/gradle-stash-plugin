@@ -1,25 +1,15 @@
 package nebula.plugin.stash.tasks
 
-import org.gradle.testfixtures.ProjectBuilder
+import nebula.plugin.stash.StashRestApi
+import nebula.plugin.stash.util.ExternalProcess
 import org.gradle.api.GradleException
 import org.gradle.api.Project
-import org.junit.Test
+import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Before
-
-import nebula.plugin.stash.StashRestApi;
-import nebula.plugin.stash.tasks.SyncNextPullRequestTask;
-import nebula.plugin.stash.util.ExternalProcess
-
-import org.gradle.api.logging.Logger
-import org.mockito.stubbing.Answer
-import org.mockito.invocation.InvocationOnMock
-
-import java.util.Map;
-import java.util.concurrent.TimeUnit
+import org.junit.Test
 
 import static org.junit.Assert.*
 import static org.mockito.Mockito.*
-
 
 public class RetryStashUntilConsistentTaskImplTest {
     StashRestApi mockStash
@@ -34,8 +24,7 @@ public class RetryStashUntilConsistentTaskImplTest {
         mockStash = mock(StashRestApi.class)
         task = project.tasks.syncNextPullRequest
         task.stash = mockStash
-        task.CONSISTENCY_POLL_RETRY_DELAY_MS = 0
-        task.logger = mock(Logger.class)
+        task.consistencyPollRetryDeplayMs = 0
     }
 
     @Test
@@ -69,7 +58,7 @@ public class RetryStashUntilConsistentTaskImplTest {
     public void retrySyncUntilRetryCountIsUp() {
         def pr1 = [id: "10", version: "1", fromRef: [latestChangeset:"999", displayId: "myBranch"]]
         def pr2 = [id: "10", version: "2", fromRef: [latestChangeset:"1000", displayId: "myBranch"]]
-        task.CONSISTENCY_POLL_RETRY_COUNT = 5
+        task.consistencyPollRetryCount = 5
 
         when(mockStash.getPullRequest(Integer.parseInt(pr1.id))).thenReturn(pr1, pr1, pr1, pr1, pr1)
 
@@ -94,8 +83,7 @@ class MergeAndSyncPullRequestTest {
         project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.apply plugin: 'gradle-stash'
         task = project.tasks.syncNextPullRequest
-        task.CONSISTENCY_POLL_RETRY_DELAY_MS = 0
-        task.logger = mock(Logger.class)
+        task.consistencyPollRetryDeplayMs = 0
         cmd = task.cmd = mock(ExternalProcess.class)
         task.checkoutDir = '/root/beer'
     }
@@ -166,7 +154,6 @@ public class IsValidPullRequestsTaskTest {
         mockStash = mock(StashRestApi.class)
         task = project.tasks.syncNextPullRequest
         task.stash = mockStash
-        task.logger = mock(Logger.class)
     }
 
     @Test

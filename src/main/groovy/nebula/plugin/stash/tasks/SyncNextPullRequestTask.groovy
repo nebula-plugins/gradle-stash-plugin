@@ -1,19 +1,9 @@
 package nebula.plugin.stash.tasks
 
-import org.gradle.api.DefaultTask
+import nebula.plugin.stash.StashRestApi
 import org.gradle.api.GradleException
-import org.gradle.api.logging.Logger
-import org.gradle.api.tasks.TaskAction
-
-import nebula.plugin.stash.StashRestApi;
-import nebula.plugin.stash.StashRestApiImpl;
-import nebula.plugin.stash.util.ExternalProcess
-import nebula.plugin.stash.util.ExternalProcessImpl
-
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
-
-import java.util.concurrent.TimeUnit
 
 /**
  * Poll stash pull requests and pick the top one.
@@ -21,26 +11,16 @@ import java.util.concurrent.TimeUnit
  * @author dzapata
  *
  */
-class SyncNextPullRequestTask extends DefaultTask {
-    public static int CONSISTENCY_POLL_RETRY_COUNT = 20
-    public static long CONSISTENCY_POLL_RETRY_DELAY_MS = 250
+class SyncNextPullRequestTask extends StashTask {
+    int consistencyPollRetryCount = 20
+    long consistencyPollRetryDeplayMs = 250
 
-    Logger logger
-    String buildPath
     @Input String checkoutDir
-    @Optional targetBranch
-    StashRestApi stash
-    ExternalProcess cmd = new ExternalProcessImpl()
+    @Input @Optional String targetBranch
 
-    @TaskAction
-    def syncNextPullRequest() {
-        
-        // for unit testing, don't reset if one is passed in
-        stash = !stash ? new StashRestApiImpl(project.stash.stashRepo, project.stash.stashProject, project.stash.stashHost, project.stash.stashUser, project.stash.stashPassword) : stash
-        stash.logger = project.logger
-        logger = project.logger
-
-        buildPath = project.buildDir.getPath().toString()
+    @Override
+    void executeStashCommand() {
+        String buildPath = project.buildDir.getPath().toString()
 
         logger.info("checking for open pull requests")
         targetBranch = targetBranch ?:  "master"
@@ -55,7 +35,7 @@ class SyncNextPullRequestTask extends DefaultTask {
             for (Map pr : allPullReqs)
                 if (isValidPullRequest(pr)) {
                     pr = mergeAndSyncPullRequest(pr)
-                    setPropertiesFile(pr)
+                    setPropertiesFile(pr, buildPath)
                     project.ext.set("pullRequestId", pr.id)
                     project.ext.set("pullRequestVersion", pr.version)
                     project.ext.set("buildCommit", pr.fromRef.latestChangeset.trim())
@@ -111,11 +91,11 @@ class SyncNextPullRequestTask extends DefaultTask {
     public Map retryStash(String localCommit, Map pullRequest) {
         logger.info("Local latest commit does not match Pull Request latest commit. Polling Stash for consistency with commit: ${localCommit}")
         def fromBranch = pullRequest.fromRef.displayId
-        def timeout = System.currentTimeMillis() + CONSISTENCY_POLL_RETRY_DELAY_MS
+        def timeout = System.currentTimeMillis() + consistencyPollRetryDeplayMs
         def stashCommit
-        for (int retryCount = 0; retryCount < CONSISTENCY_POLL_RETRY_COUNT; retryCount++) {
+        for (int retryCount = 0; retryCount < consistencyPollRetryCount; retryCount++) {
             if (timeout > System.currentTimeMillis()) continue
-            timeout = System.currentTimeMillis() + CONSISTENCY_POLL_RETRY_DELAY_MS
+            timeout = System.currentTimeMillis() + consistencyPollRetryDeplayMs
             def updatedPR = stash.getPullRequest(Integer.parseInt(pullRequest.id))
             stashCommit = updatedPR.fromRef.latestChangeset.trim()
             logger.info("Comparing stash head commit '$stashCommit' to local head commit '$localCommit'")
@@ -125,8 +105,8 @@ class SyncNextPullRequestTask extends DefaultTask {
         throw new GradleException("Stash has not asynchronously updated git repo with changes to pull request. $stashCommit != $localCommit")
     }
 
-    public void setPropertiesFile(Map pr) {
-        def propPath = this.buildPath + "/pull-request.properties"
+    private void setPropertiesFile(Map pr, String buildPath) {
+        def propPath = buildPath + "/pull-request.properties"
         logger.info "Writing pull request data to $propPath using ${pr.dump()}"
         Properties prop = new Properties();
         prop.setProperty("pullRequestId", Integer.toString(pr.id));

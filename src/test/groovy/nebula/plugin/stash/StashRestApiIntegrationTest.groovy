@@ -5,7 +5,7 @@ import org.junit.Test
 import static org.junit.Assert.*
 
 
-class StashRestApiTest {
+class StashRestApiIntegrationTest {
     //@Test
     public void addBuildStatusAndQueryItTest() {
         def stash = new StashRestApiImpl()

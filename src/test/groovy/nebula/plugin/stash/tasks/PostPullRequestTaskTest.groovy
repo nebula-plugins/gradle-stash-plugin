@@ -64,7 +64,7 @@ class PostPullRequestTaskTest {
     
     @Test
     public void failsIfPrFromBranchNotProvided() {
-        project.ext.stashRepo = project.ext.projectName = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
+        project.ext.stashRepo = project.ext.stashProject = project.ext.projectName = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.ext.prToBranch = "branch2"
         project.ext.prDescription = "description"
         project.ext.prTitle = "title"
@@ -73,7 +73,7 @@ class PostPullRequestTaskTest {
     
     @Test
     public void failsIfprToBranchNotProvided() {
-        project.ext.stashRepo = project.ext.projectName = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
+        project.ext.stashRepo = project.ext.stashProject = project.ext.projectName = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.ext.prFromBranch = "branch"
         project.ext.prDescription = "description"
         project.ext.prTitle = "title"
@@ -82,7 +82,7 @@ class PostPullRequestTaskTest {
     
     @Test
     public void failsIfprDescriptionNotProvided() {
-        project.ext.stashRepo = project.ext.projectName = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
+        project.ext.stashRepo = project.ext.stashProject = project.ext.projectName = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.ext.prFromBranch = "branch"
         project.ext.prToBranch = "branch2"
         project.ext.prTitle = "title"
@@ -91,7 +91,7 @@ class PostPullRequestTaskTest {
     
     @Test
     public void failsIfPrTitleNotProvided() {
-        project.ext.stashRepo = project.ext.projectName = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
+        project.ext.stashRepo = project.ext.stashProject = project.ext.projectName = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.ext.prFromBranch = "branch"
         project.ext.prToBranch = "branch2"
         project.ext.prDescription = "description"
@@ -116,7 +116,7 @@ class PostPullRequestTaskFunctionalTest {
     @Before
     public void setup() {
         project = ProjectBuilder.builder().build()
-        project.ext.stashRepo = project.ext.projectName = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
+        project.ext.stashRepo = project.ext.stashProject = project.ext.projectName = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.ext.prFromBranch = "source-branch"
         project.ext.prToBranch = "target-branch"
         project.ext.prTitle = "title"

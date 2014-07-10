@@ -31,7 +31,7 @@ class ClosePullRequestTaskTest {
     @Test
     public void canConfigurePullRequestVersion() {
         project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
-        project.ext.pullRequestVersion = "1"
+        project.ext.pullRequestVersion = 1L
         project.apply plugin: 'gradle-stash'
         
         assertEquals(1, project.tasks.closePullRequest.pullRequestVersion)
@@ -40,7 +40,7 @@ class ClosePullRequestTaskTest {
     @Test
     public void canConfigurePullRequestId() {       
         project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
-        project.ext.pullRequestId = "10"
+        project.ext.pullRequestId = 10L
         project.apply plugin: 'gradle-stash'
         
         assertEquals(10, project.tasks.closePullRequest.pullRequestId)
@@ -49,14 +49,14 @@ class ClosePullRequestTaskTest {
     @Test
     public void failsIfPullRequestIdNotProvided() {
         project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
-        project.ext.pullRequestVersion = "1"
+        project.ext.pullRequestVersion = 1L
         runTaskExpectFail("pullRequestId")
     }
     
     @Test
     public void failsIfPullRequestVersionNotProvided() {
         project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
-        project.ext.pullRequestId = "1"
+        project.ext.pullRequestId = 1L
         runTaskExpectFail("pullRequestVersion")
     }
     
@@ -79,8 +79,8 @@ class ClosePullRequestTaskFunctionalTest {
     public void setup() {
         project = ProjectBuilder.builder().build()
         project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
-        project.ext.pullRequestVersion = 1
-        project.ext.pullRequestId = 2
+        project.ext.pullRequestVersion = 1L
+        project.ext.pullRequestId = 2L
         mockStash = mock(StashRestApi.class)
     }
     

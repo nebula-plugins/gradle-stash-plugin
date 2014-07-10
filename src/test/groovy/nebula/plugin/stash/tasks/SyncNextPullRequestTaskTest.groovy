@@ -1,18 +1,16 @@
 package nebula.plugin.stash.tasks
 
-import nebula.plugin.stash.StashRestApi;
-import nebula.plugin.stash.tasks.MergeBuiltPullRequestsTask;
-import nebula.plugin.stash.tasks.SyncNextPullRequestTask;
-import nebula.plugin.stash.util.ExternalProcess;
-
+import nebula.plugin.stash.StashRestApi
+import nebula.plugin.stash.util.ExternalProcess
 import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
-import org.junit.Test
 import org.junit.Before
-import org.slf4j.Logger
+import org.junit.Test
 
 import static org.junit.Assert.*
+import static org.mockito.Matchers.anyInt
+import static org.mockito.Matchers.anyString
 import static org.mockito.Mockito.*
 
 class SyncNextPullRequestTaskTest {
@@ -32,14 +30,14 @@ class SyncNextPullRequestTaskTest {
 
     @Test
     public void failsIfStashRepoNotProvided() {
-        project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.checkoutDir = "foo"
+        project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = project.ext.checkoutDir = "foo"
         project.ext.targetBranch = "bar"
         runTaskExpectFail("stashRepo")
     }
 
     @Test
     public void failsIfStashProjectNameNotProvided() {
-        project.ext.stashRepo = project.ext.stashUser = project.ext.stashPassword = project.ext.checkoutDir = "foo"
+        project.ext.stashRepo = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = project.ext.checkoutDir = "foo"
         project.ext.targetBranch = "foo"
         runTaskExpectFail("stashProject")
    }
@@ -65,8 +63,7 @@ class SyncNextPullRequestTaskTest {
             project.syncNextPullRequest.execute()
             fail("should have thrown a GradleException")
         } catch (Exception e) {
-            println "checking cause message : ${e.cause.message}"
-            assertTrue(e.message ==~ ".*$missingParam.*" || e.cause.message ==~ ".*$missingParam.*")
+            assertEquals("No value has been specified for property '$missingParam'.".toString(), e.cause.message)
         }
     }
 }
@@ -80,7 +77,7 @@ class SyncNextPullRequestTaskFunctionalTest {
     @Before
     public void setup() {
         project = ProjectBuilder.builder().build()
-        project.ext.stashRepo = project.ext.stashProject = project.ext.userstashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
+        project.ext.stashRepo = project.ext.stashProject = project.ext.stashUser = project.ext.stashPassword = project.ext.stashHost = "foo"
         project.extensions.checkoutDir = "/foo/bar"
         project.apply plugin: 'gradle-stash'
         mockStash = mock(StashRestApi.class)

@@ -16,11 +16,11 @@ Most of the tasks are run against the the Stash REST API, but some of them also 
 To include, add the following to your build.gradle
 
     buildscript {
-      repositories { jcenter() }
+        repositories { jcenter() }
 
-      dependencies {
-        classpath 'com.netflix.nebula:gradle-stash-plugin:0.9.0'
-      }
+        dependencies {
+            classpath 'com.netflix.nebula:gradle-stash-plugin:0.9.0'
+        }
     }
 
     apply plugin: 'gradle-stash'
@@ -62,6 +62,7 @@ These are meant to be passed in on the command line so you don't hardcode creden
 
 * stashRepo - The Stash repository
 * stashProject - Stash project name
+* stashHost - Stash host name
 * stashUser - Stash user name
 * stashPassword - Stash password
 
@@ -72,20 +73,20 @@ These are meant to be passed in on the command line so you don't hardcode creden
 *build.gradle*
 
     buildscript {
-      repositories { jcenter() }
-      dependencies {
-        classpath 'com.netflix.nebula:gradle-stash-plugin:0.9.0'
-      }
+        repositories { jcenter() }
+        dependencies {
+            classpath 'com.netflix.nebula:gradle-stash-plugin:0.9.0'
+        }
     }
 
     apply plugin: 'java'
     apply plugin: 'gradle-stash'
 
     repositories {
-      mavenCentral()
+        mavenCentral()
     }
 
     dependencies {
-    ...
+        ...
     }
 

@@ -1,190 +1,70 @@
 package nebula.plugin.stash
 
-import nebula.plugin.stash.StashRestApi;
-import nebula.plugin.stash.StashRestApiImpl;
+import nebula.plugin.stash.tasks.StashTask
+import nebula.test.ProjectSpec
+import org.gradle.api.Task
 
-import org.gradle.api.Project
-import org.gradle.testfixtures.ProjectBuilder
-import org.junit.Test
-
-import static org.junit.Assert.*
-
-class StashRestPluginTest {
-
-    //@Test
-    public void closeSuccessfullyBuiltPullRequest() {
-        def stash = new StashRestApiImpl()
-        //def failedBuild = [state:"FAILED", key:StashRestApi.RPM_BUILD_KEY, name:StashRestApi.RPM_BUILD_KEY + "-45", url:"http://google.com", description:"build failed"]
-        //stash.postBuildStatus("1f98fba51eafd5d3184e10ccdbb4a615545d5464", failedBuild)
-        Project project = ProjectBuilder.builder().build()
+class StashRestPluginTest extends ProjectSpec {
+    def setup() {
         project.apply plugin: 'gradle-stash'
-        project.tasks.mergeBuiltPullRequests.execute()
+        assert project.plugins.hasPlugin(StashRestBasePlugin)
     }
 
-    //@Test
-    public void mergePullReqAfterBuild() {
-        Project project = ProjectBuilder.builder().build()
-        project.targetBranch = "master2"
-        project.checkoutDir = "/Users/atull/dev/git/server-fork"
-        project.apply plugin: 'gradle-stash'
-        project.tasks.syncNextPullRequest.execute()
-        project.ext.set("buildState", "INPROGRESS")
-        project.ext.set("key", StashRestApi.RPM_BUILD_KEY)
-        project.ext.set("url", "http://google.com")
-        project.tasks.addBuildStatus.execute()
-        // build (imagine here)
-        project.ext.set("buildState", "SUCCESSFUL")
-        project.tasks.addBuildStatus.execute()
+    def "Creates custom extension with default values"() {
+        expect:
+        StashPluginExtension extension = project.extensions.findByName(StashRestPlugin.EXTENSION_NAME)
+        extension != null
+        extension.stashRepo == null
+        extension.stashProject == null
+        extension.stashHost == null
+        extension.stashUser == null
+        extension.stashPassword == null
     }
 
-/*
-	@Test
-	public void addMergeBuiltPullRequestsTaskToProject() {
-		Project project = ProjectBuilder.builder().build()
-		project.apply plugin: 'gradle-stash'
-		assertTrue(project.tasks.mergeBuiltPullRequests instanceof MergeBuiltPullRequestsTask)
-	}
-    
-    @Test
-    public void executeMergeBuiltPullRequestsTask() {
-        Project project = ProjectBuilder.builder().build()
-        project.apply plugin: 'gradle-stash'
-        project.tasks.mergeBuiltPullRequests.execute()
-    }
-    
-    @Test
-    public void addSyncNextPullRequestTaskToProject() {
-        Project project = ProjectBuilder.builder().build()
-        project.apply plugin: 'gradle-stash'
-        assertTrue(project.tasks.syncNextPullRequest instanceof SyncNextPullRequestTask)
+    def "Creates default tasks"() {
+        expect:
+        Task mergeBuiltPullRequestsTask = findTask('mergeBuiltPullRequests')
+        mergeBuiltPullRequestsTask.description == 'Any pending Pull Request that has been built prior will be merged or declined automatically.'
+        Task syncNextPullRequestTask = findTask('syncNextPullRequest')
+        syncNextPullRequestTask.description == 'Update a git directory to the branch where the next pull request originates from and apply any merge from master as necessary.'
+        Task closePullRequestTask = findTask('closePullRequest')
+        closePullRequestTask.description == 'After a build this task should be run to apply comments and merge the pull request.'
+        Task addBuildStatusTask = findTask('addBuildStatus')
+        addBuildStatusTask.description == 'Add a build status to a commit.'
+        Task postPullRequestTask = findTask('postPullRequest')
+        postPullRequestTask.description == 'Post a new pull request.'
+        Task mergeBranchTask = findTask('mergeBranch')
+        mergeBranchTask.description == 'Merge any changes from one branch into another.'
     }
 
-    @Test
-    public void executeSyncNextPullRequestTaskMissingCheckoutDir() {
-        Project project = ProjectBuilder.builder().build()
-        assertFalse(project.hasProperty("checkoutDir"))
-        project.apply plugin: 'gradle-stash'
-        project.tasks.syncNextPullRequest.execute()
-    }
-    
-    @Test
-    public void executeSyncNextPullRequestTask() {
-        Project project = ProjectBuilder.builder().build()
-        project.checkoutDir = "/Users/dzapata/code/server-fork"
-        project.apply plugin: 'gradle-stash'
-        project.tasks.syncNextPullRequest.execute()
-    }
-    
-    @Test
-    public void addPostNewDeploymentPullRequestTaskToProject() {
-        Project project = ProjectBuilder.builder().build()
-        project.apply plugin: 'gradle-stash'
-        assertTrue(project.tasks.postNewDeploymentPullRequest instanceof PostNewDeploymentPullRequestTask)
-    }
+    def "Can use extension to set task properties"() {
+        given:
+        String givenStashRepo = 'myRepo'
+        String givenStashProject = 'example'
+        String givenStashHost = 'mytesthost'
+        String givenStashUser = 'foobar'
+        String givenStashPassword = 'qwerty'
 
-    @Test
-    public void executePostNewDeploymentPullRequestTask() {
-        Project project = ProjectBuilder.builder().build()
-        project.apply plugin: 'gradle-stash'
-        project.tasks.postNewDeploymentPullRequest.execute()
-    }
-    */
-    /*
-    @Test
-    public void addAddBuildStatusTaskToProject() {
-        Project project = ProjectBuilder.builder().build()
-        project.apply plugin: 'gradle-stash'
-        assertTrue(project.tasks.addBuildStatus instanceof AddBuildStatus)
-    }
+        when:
+        project.stash {
+            stashRepo = givenStashRepo
+            stashProject = givenStashProject
+            stashHost = givenStashHost
+            stashUser = givenStashUser
+            stashPassword = givenStashPassword
+        }
 
-*/                                     /*
-    //@Test
-    public void executeAddBuildStatusTaskWithCurrentCommit() {
-        Project project = ProjectBuilder.builder().build()
-        project.apply plugin: 'gradle-stash'
-        project.buildState = 'SUCCESSFUL'
-        project.buildKey = StashRestApi.RPM_BUILD_KEY
-        project.buildName = "FOO BAR BUILD NAME"
-        project.buildUrl = "http://builds.netflix.com/job/EDGE-Master-FMLY/419/myConsole"
-        project.buildDescription = "My build description"
-        project.stashRepo = "atf-gradle-plugin"
-        project.stashProject = "EDGE"
-        try {
-            project.tasks.addBuildStatus.execute()
-        } catch (Exception e) {
-            fail("this should have worked, maybe unable to find the current commit sha, or working dir is not a stash repo : ${e.dump()}")
+        then:
+        project.tasks.withType(StashTask) {
+            assert stashRepo == givenStashRepo
+            assert stashProject == givenStashProject
+            assert stashHost == givenStashHost
+            assert stashUser == givenStashUser
+            assert stashPassword == givenStashPassword
         }
     }
-    
-    //@Test
-    public void executeAddBuildStatusTaskWithCommitDetection() {
-        Project project = ProjectBuilder.builder().build()
-        project.apply plugin: 'gradle-stash'
-        project.buildCommit = "f18e86bbd850806114035fd498c0f317e4e89a4f"
-        project.buildState = 'SUCCESSFUL'
-        project.buildKey = StashRestApi.RPM_BUILD_KEY
-        project.buildName = "FOO BAR BUILD NAME"
-        project.buildUrl = "http://builds.netflix.com/job/EDGE-Master-FMLY/419/myConsole"
-        project.buildDescription = "My build description"
-        project.stashRepo = "atf-gradle-plugin"
-        project.stashProject = "EDGE"
-        try {
-            project.tasks.addBuildStatus.execute()
-        } catch (Exception e) {
-            fail("expected task to pass since we provide a proper commit hash ${e.dump()}")
-        }
-    }
-    
-    //@Test
-    public void executeAddBuildStatusTaskFail() {
-        Project project = ProjectBuilder.builder().build()
-        project.apply plugin: 'gradle-stash'
-        project.buildCommit = "FOOBAR"
-        project.buildState = 'SUCCESSFUL'
-        project.buildKey = StashRestApi.RPM_BUILD_KEY
-        project.buildName = "FOO BAR BUILD NAME"
-        project.buildUrl = "http://builds.netflix.com/job/EDGE-Master-FMLY/419/myConsole"
-        project.buildDescription = "My build description"
-        try {
-            project.tasks.addBuildStatus.execute()
-            fail("expected task to fail since the commit hash is the short version")
-        } catch (Exception e) {
-        
-        }
-    }
-    
-    @Test
-    public void addPostPullRequestTaskToProject() {
-        Project project = ProjectBuilder.builder().build()
-        project.apply plugin: 'gradle-stash'
-        assertTrue(project.tasks.postPullRequest instanceof PostNewPullRequestTask)
-    }
 
-    @Test
-    public void executePostPullRequestTask() {
-        Project project = ProjectBuilder.builder().build()
-        project.apply plugin: 'gradle-stash'
-        project.stashRepo = "server-pipeline"
-        project.stashProject = "EDGE"
-        project.prFromBranch = "dzapata"
-        project.prToBranch = "master"
-        project.prTitle = "title"
-        project.prDescription = "description"
-        project.tasks.postPullRequest.execute()
+    private Task findTask(String taskName) {
+        project.tasks.findByName(taskName)
     }
- */
-    //@Test
-    public void mergeBranchTask() {
-        Project project = ProjectBuilder.builder().build()
-        project.apply plugin: 'gradle-stash'
-
-        project.ext.set("pullFromBranch", "a")
-        project.ext.set("mergeToBranch", "master")
-        project.ext.set("remoteName", "origin")
-        project.ext.set("repoUrl", "/Users/atull/gitTest")
-        project.ext.set("workingPath", "/Users/atull/tmp")
-
-        project.tasks.mergeBranches.execute()
-    }
-
 }
