@@ -103,7 +103,7 @@ class CreateBranchTaskFunctionalTest {
         project.tasks.createBranch.stash = mockStash
         project.tasks.createBranch.ignoreIfExists = true
 
-        when(mockStash.getBranchesMatching(anyString())).thenReturn([[foo : "bar"]])
+        when(mockStash.getBranchesMatching(anyString())).thenReturn([[displayId : "new-branch"]])
         project.tasks.createBranch.execute()
 
         verify(mockStash, never()).createBranch(anyString(), anyString())
