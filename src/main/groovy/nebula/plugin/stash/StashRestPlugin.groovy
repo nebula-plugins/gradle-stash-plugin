@@ -38,5 +38,9 @@ class StashRestPlugin implements Plugin<Project> {
         project.task("mergeBranch", type: MergeBranchTask) {
             description = "Merge any changes from one branch into another."
         }
+
+        project.task("createBranch", type: CreateBranchTask) {
+            description = "Create a new branch."
+        }
     }
 }
