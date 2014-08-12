@@ -31,8 +31,16 @@ class StashRestApiImpl implements StashRestApi {
         this.stashPassword = stashPassword
     }
 
+    private GString getRestApiPath(apiName) {
+        "/rest/${apiName}/1.0/projects/${stashProject}/repos/${stashRepo}/"
+    }
+
     private GString getRestPath() {
-        "/rest/api/1.0/projects/${stashProject}/repos/${stashRepo}/"
+        getRestApiPath 'api'
+    }
+
+    private GString getBranchUtilsRestPath() {
+        getRestApiPath 'branch-utils'
     }
 
     private String getBasicAuthHeader() {
@@ -180,6 +188,12 @@ class StashRestApiImpl implements StashRestApi {
         return prs
     }
 
+    @Override
+    void createBranch(String branchName, String startPoint)
+    {
+        def path = getBranchUtilsRestPath() + "branches"
+        stashPostJson(path, [name:branchName, startPoint:startPoint]) 
+    }
 
     @Override
     void deleteBranch(String branchName)
