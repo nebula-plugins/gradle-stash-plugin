@@ -14,8 +14,10 @@ public class CreateBranchTask extends StashTask {
     @Override
     void executeStashCommand() {
         if (ignoreIfExists) {
-            def existingBranch = stash.getBranchesMatching(branchName)
-            if (existingBranch.size > 0) return
+            def existingBranch = stash
+                    .getBranchesMatching(branchName)
+                    .find { b -> b.displayId == branchName }
+            if (existingBranch) return
         }
 
         stash.createBranch(branchName, startPoint)
