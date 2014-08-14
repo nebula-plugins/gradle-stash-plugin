@@ -87,7 +87,7 @@ class MergeBuiltPullRequestsTaskFuncTest {
     }
 
     @Test
-    public void declineBuiltPullRequest() {
+    public void dontDeclineFailedBuildPullRequest() { // EDGE-1738 : don't decline reopened PRs
         def pr = [id:1L, version: 0, fromRef: [latestChangeset: "abc123"]]
         def build = [key: StashRestApi.RPM_BUILD_KEY, state: StashRestApi.FAILED_BUILD_STATE, url: "http://netflix.com/"]
         when(mockStash.getPullRequests(task.targetBranch)).thenReturn([pr])
@@ -99,8 +99,8 @@ class MergeBuiltPullRequestsTaskFuncTest {
 
         verify(mockStash).getPullRequests(eq(task.targetBranch))
         verify(mockStash).getBuilds(eq(pr.fromRef.latestChangeset))
-        verify(mockStash).declinePullRequest([id: pr.id, version: pr.version])
-        verify(mockStash).commentPullRequest(eq(pr.id), anyString())
+        verify(mockStash, never()).declinePullRequest([id: pr.id, version: pr.version])
+        verify(mockStash, never()).commentPullRequest(eq(pr.id), anyString())
         verify(mockStash, never()).mergePullRequest([id: pr.id, version: pr.version])
     }
 }

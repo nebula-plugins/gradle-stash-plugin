@@ -48,9 +48,9 @@ class MergeBuiltPullRequestsTask extends StashTask {
             stash.mergePullRequest([id: pr.id, version: pr.version])
             stash.commentPullRequest(pr.id, "Commit has already been built successfully. See ${build.url}")
         } else if (build.state == StashRestApi.FAILED_BUILD_STATE) {
-            // If failed then decline and comment
-            stash.declinePullRequest([id: pr.id, version: pr.version])
-            stash.commentPullRequest(pr.id, "Commit has already been built and failed. See ${build.url}")
+            // EDGE-1738 : don't decline reopened PRs
+            //stash.declinePullRequest([id: pr.id, version: pr.version])
+            //stash.commentPullRequest(pr.id, "Commit has already been built and failed. See ${build.url}")
         } else if (build.state == StashRestApi.INPROGRESS_BUILD_STATE) {
             logger.info("can't close a pull request with a build in progress")
         }
