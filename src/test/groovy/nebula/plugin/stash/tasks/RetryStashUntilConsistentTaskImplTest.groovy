@@ -158,7 +158,7 @@ public class IsValidPullRequestsTaskTest {
 
     @Test
     public void isValidPullRequestForNonInProgressRpmBuild() {
-        def pr = [id: "10", version: "-2", fromRef: [latestChangeset:"999", cloneUrl: "abc.com/stash"], toRef: [cloneUrl: "abc.com/stash"]]
+        def pr = [id: "10", version: "-2", fromRef: [latestChangeset:"999", repository: [cloneUrl: "abc.com/stash"]], toRef: [repository : [cloneUrl: "abc.com/stash"]]]
 
         Map b1 = new HashMap()
         b1.put("key", StashRestApi.RPM_BUILD_KEY)
@@ -173,7 +173,7 @@ public class IsValidPullRequestsTaskTest {
 
     @Test
     public void isInvalidPullRequestForNonInProgressRpmBuild() {
-        def pr = [id: "10", version: "-2", fromRef: [latestChangeset:"999", cloneUrl: "abc.com/stash"], toRef: [cloneUrl: "abc.com/stash"]]
+        def pr = [id: "10", version: "-2", fromRef: [latestChangeset:"999", repository: [cloneUrl: "abc.com/stash"]], toRef: [repository : [cloneUrl: "abc.com/stash"]]]
 
         Map b1 = new HashMap()
         b1.put("key", StashRestApi.RPM_BUILD_KEY)
@@ -185,7 +185,7 @@ public class IsValidPullRequestsTaskTest {
 
     @Test
     public void ignoresPullRequestsFromDifferentForks() {
-        def pr = [id: "10", version: "-2", fromRef: [latestChangeset:"999", cloneUrl: "abc.com/stash"], toRef: [cloneUrl: "abc.com/somethingelse"]]
+        def pr = [id: "10", version: "-2", fromRef: [latestChangeset:"999", repository: [cloneUrl: "abc.com/stash"]], toRef: [repository : [cloneUrl: "abc.com/somethingelse"]]]
         assertFalse(task.isValidPullRequest(pr))
     }
 }

@@ -66,7 +66,7 @@ class SyncNextPullRequestTaskFunctionalTest {
     
     @Test
     public void syncNextPullRequest() {
-        def pr = [id:1, version: 0, fromRef: [latestChangeset: "abc123", displayId: "fromDisplayId"], toRef: [latestChangeset: "def456", displayId: "toDisplayId"]]
+        def pr = [id:1, version: 0, fromRef: [latestChangeset: "abc123", displayId: "fromDisplayId", repository: [cloneUrl: "abc.com/stash"]], toRef: [latestChangeset: "def456", displayId: "toDisplayId", repository: [cloneUrl: "abc.com/stash"]]]
         when(cmd.execute(anyString(), anyString())).thenReturn("abc123")
         when(mockStash.getPullRequests(anyString())).thenReturn([pr])
         when(mockStash.getPullRequest(anyInt())).thenReturn(pr)
@@ -82,7 +82,7 @@ class SyncNextPullRequestTaskFunctionalTest {
     
     @Test
     public void syncNextPullRequestInvalidPr() { //nothing should get processed, task should pass
-        def pr = [id:1, version: 0, fromRef: [latestChangeset: "abc123", displayId: "fromDisplayId"], toRef: [latestChangeset: "def456", displayId: "toDisplayId"]]
+        def pr = [id:1, version: 0, fromRef: [latestChangeset: "abc123", displayId: "fromDisplayId", repository: [cloneUrl: "abc.com/stash"]], toRef: [latestChangeset: "def456", displayId: "toDisplayId", repository: [cloneUrl: "abc.com/stash"]]]
         def build = [key: StashRestApi.RPM_BUILD_KEY, state: StashRestApi.INPROGRESS_BUILD_STATE, url: "http://netflix.com/"]
         when(cmd.execute(anyString(), anyString())).thenReturn("abc123")
         when(mockStash.getBuilds(anyString())).thenReturn([build])
@@ -93,7 +93,7 @@ class SyncNextPullRequestTaskFunctionalTest {
     
     @Test(expected=GradleException.class)
     public void syncNextPullRequestUnableToMerge() { //nothing should get processed, task should pass
-        def pr = [id:1, version: 0, fromRef: [latestChangeset: "abc123", displayId: "fromDisplayId"], toRef: [latestChangeset: "def456", displayId: "toDisplayId"]]
+        def pr = [id:1, version: 0, fromRef: [latestChangeset: "abc123", displayId: "fromDisplayId", repository: [cloneUrl: "abc.com/stash"]], toRef: [latestChangeset: "def456", displayId: "toDisplayId", repository: [cloneUrl: "abc.com/stash"]]]
         when(cmd.execute(anyString(), anyString())).thenReturn("Automatic merge failed")
         when(mockStash.getPullRequests(anyString())).thenReturn([pr])
         task.execute()
