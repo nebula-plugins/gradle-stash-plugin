@@ -53,7 +53,7 @@ class SyncNextPullRequestTask extends StashTask {
 
     public boolean isValidPullRequest(Map pr) {
         def builds = stash.getBuilds(pr.fromRef.latestChangeset.toString())
-        if (pr.fromRef.cloneUrl != pr.toRef.cloneUrl) {
+        if (pr.fromRef.repository.cloneUrl != pr.toRef.repository.cloneUrl) {
             logger.info("Ignoring pull requests from other fork: $pr")
             return false
         }
