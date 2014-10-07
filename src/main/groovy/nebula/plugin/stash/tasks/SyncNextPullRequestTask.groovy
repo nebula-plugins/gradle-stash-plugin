@@ -25,7 +25,7 @@ class SyncNextPullRequestTask extends StashTask {
         logger.info("checking for open pull requests")
         targetBranch = targetBranch ?:  "master"
         logger.info("Finding Pull Requests targeting $targetBranch.")
-
+        Map currentPr = [:]
         try {
             def allPullReqs = stash.getPullRequests(targetBranch)
             if(allPullReqs.size() <= 0) {
@@ -34,6 +34,7 @@ class SyncNextPullRequestTask extends StashTask {
             
             for (Map pr : allPullReqs)
                 if (isValidPullRequest(pr)) {
+                    currentPr = pr
                     pr = mergeAndSyncPullRequest(pr)
                     setPropertiesFile(pr, buildPath)
                     project.ext.set("pullRequestId", pr.id)
@@ -43,7 +44,9 @@ class SyncNextPullRequestTask extends StashTask {
                     break
                 }
         } catch (Throwable e) {
-            logger.info("Closing pull request due to failure.")
+            logger.info("Declining pull request due to failure.")
+            stash.commentPullRequest(currentPr.id,"unable to process this pull request, there is likely a merge conflict")
+            stash.declinePullRequest(currentPr)
             throw new GradleException("Unexpected error(s) in sync process: ${e.dump()}")
         } finally {
             logger.info("Finished task SyncNextPullRequestTask.")

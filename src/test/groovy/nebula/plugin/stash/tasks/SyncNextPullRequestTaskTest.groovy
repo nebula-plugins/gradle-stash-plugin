@@ -12,6 +12,7 @@ import static nebula.plugin.stash.StashPluginFixture.setDummyStashTaskPropertyVa
 import static nebula.plugin.stash.StashTaskAssertion.runTaskExpectFail
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertTrue
+import static org.junit.Assert.fail
 import static org.mockito.Matchers.anyInt
 import static org.mockito.Matchers.anyString
 import static org.mockito.Mockito.*
@@ -79,7 +80,7 @@ class SyncNextPullRequestTaskFunctionalTest {
         when(mockStash.getPullRequests(anyString())).thenThrow(new GradleException("mock exception"))
         task.execute()
     }
-    
+
     @Test
     public void syncNextPullRequestInvalidPr() { //nothing should get processed, task should pass
         def pr = [id:1, version: 0, fromRef: [latestChangeset: "abc123", displayId: "fromDisplayId", repository: [cloneUrl: "abc.com/stash"]], toRef: [latestChangeset: "def456", displayId: "toDisplayId", repository: [cloneUrl: "abc.com/stash"]]]
@@ -91,12 +92,19 @@ class SyncNextPullRequestTaskFunctionalTest {
         verify(mockStash).getBuilds(anyString())
     }
     
-    @Test(expected=GradleException.class)
+    @Test
     public void syncNextPullRequestUnableToMerge() { //nothing should get processed, task should pass
         def pr = [id:1, version: 0, fromRef: [latestChangeset: "abc123", displayId: "fromDisplayId", repository: [cloneUrl: "abc.com/stash"]], toRef: [latestChangeset: "def456", displayId: "toDisplayId", repository: [cloneUrl: "abc.com/stash"]]]
         when(cmd.execute(anyString(), anyString())).thenReturn("Automatic merge failed")
         when(mockStash.getPullRequests(anyString())).thenReturn([pr])
-        task.execute()
+        try {
+            task.execute()
+            fail("should have thrown a GradleException")
+        } catch (GradleException e) {
+            // pass
+            verify(mockStash).commentPullRequest(anyLong(), anyString())
+            verify(mockStash).declinePullRequest(anyMap())
+        }
     }
 }
 
