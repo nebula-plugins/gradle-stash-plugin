@@ -5,14 +5,12 @@ import nebula.plugin.stash.util.ExternalProcess
 import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 
 import static nebula.plugin.stash.StashPluginFixture.setDummyStashTaskPropertyValues
 import static nebula.plugin.stash.StashTaskAssertion.runTaskExpectFail
-import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertTrue
-import static org.junit.Assert.fail
 import static org.mockito.Matchers.anyInt
 import static org.mockito.Matchers.anyString
 import static org.mockito.Mockito.*
@@ -29,7 +27,7 @@ class SyncNextPullRequestTaskTest {
 
     @Test
     public void createsTheRightClass() {
-        assertTrue(project.tasks.syncNextPullRequest instanceof SyncNextPullRequestTask)
+        Assert.assertTrue(project.tasks.syncNextPullRequest instanceof SyncNextPullRequestTask)
     }
 
     @Test
@@ -37,7 +35,7 @@ class SyncNextPullRequestTaskTest {
         SyncNextPullRequestTask task = project.tasks.syncNextPullRequest
         task.targetBranch = "bar"
 
-        assertEquals("bar", task.targetBranch)
+        Assert.assertEquals("bar", task.targetBranch)
     }
 
     @Test
@@ -106,6 +104,64 @@ class SyncNextPullRequestTaskFunctionalTest {
             verify(mockStash).declinePullRequest(anyMap())
         }
     }
+
+    @Test
+    public void syncNextPullRequestWithSingleReviewerNotApproved() { //nothing should get processed, task should pass
+        def pr = [id:1, version: 0, fromRef: [latestChangeset: "abc123", displayId: "fromDisplayId", repository: [cloneUrl: "abc.com/stash"]],
+                  toRef: [latestChangeset: "def456", displayId: "toDisplayId", repository: [cloneUrl: "abc.com/stash"]],
+                    reviewers : [[approved : false, user : [displayName : "Bob Reviewer"]]]
+        ]
+        when(cmd.execute(anyString(), anyString())).thenReturn("abc123")
+        when(mockStash.getPullRequests(anyString())).thenReturn([pr])
+        task.execute()
+        Assert.assertFalse(project.hasProperty("pullRequestId"))
+        Assert.assertFalse(project.hasProperty("pullRequestVersion"))
+        Assert.assertFalse(project.hasProperty("buildCommit"))
+    }
+
+    @Test
+    public void syncNextPullRequestWithMultipleReviewersNotApproved() { //nothing should get processed, task should pass
+        def pr = [id:1, version: 0, fromRef: [latestChangeset: "abc123", displayId: "fromDisplayId", repository: [cloneUrl: "abc.com/stash"]],
+                  toRef: [latestChangeset: "def456", displayId: "toDisplayId", repository: [cloneUrl: "abc.com/stash"]],
+                  reviewers : [[approved : true, user : [displayName : "Bob Reviewer"]], [approved : false, user : [displayName : "Joe Reviewer"]]
+                           ]
+        ]
+        when(cmd.execute(anyString(), anyString())).thenReturn("abc123")
+        when(mockStash.getPullRequests(anyString())).thenReturn([pr])
+        task.execute()
+        Assert.assertFalse(project.hasProperty("pullRequestId"))
+        Assert.assertFalse(project.hasProperty("pullRequestVersion"))
+        Assert.assertFalse(project.hasProperty("buildCommit"))
+    }
+
+
+    @Test
+    public void syncNextPullRequestWithSingleReviewerApproved() { //nothing should get processed, task should pass
+        def pr = [id:1, version: 0, fromRef: [latestChangeset: "abc123", displayId: "fromDisplayId", repository: [cloneUrl: "abc.com/stash"]],
+                  toRef: [latestChangeset: "def456", displayId: "toDisplayId", repository: [cloneUrl: "abc.com/stash"]],
+                  reviewers : [[approved : true, user : [displayName : "Bob Reviewer"]]]
+        ]
+        when(cmd.execute(anyString(), anyString())).thenReturn("abc123")
+        when(mockStash.getPullRequests(anyString())).thenReturn([pr])
+        task.execute()
+        Assert.assertTrue(project.hasProperty("pullRequestId"))
+        Assert.assertTrue(project.hasProperty("pullRequestVersion"))
+        Assert.assertTrue(project.hasProperty("buildCommit"))
+    }
+
+
+    @Test
+    public void syncNextPullRequestWithMultipleReviewersApproved() { //nothing should get processed, task should pass
+        def pr = [id:1, version: 0, fromRef: [latestChangeset: "abc123", displayId: "fromDisplayId", repository: [cloneUrl: "abc.com/stash"]],
+                  toRef: [latestChangeset: "def456", displayId: "toDisplayId", repository: [cloneUrl: "abc.com/stash"]],
+                  reviewers : [[approved : true, user : [displayName : "Bob Reviewer"]], [approved : true, user : [displayName : "Joe Reviewer"]]
+                  ]
+        ]
+        when(cmd.execute(anyString(), anyString())).thenReturn("abc123")
+        when(mockStash.getPullRequests(anyString())).thenReturn([pr])
+        task.execute()
+        Assert.assertTrue(project.hasProperty("pullRequestId"))
+        Assert.assertTrue(project.hasProperty("pullRequestVersion"))
+        Assert.assertTrue(project.hasProperty("buildCommit"))
+    }
 }
-
-

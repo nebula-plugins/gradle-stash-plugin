@@ -54,15 +54,30 @@ class SyncNextPullRequestTask extends StashTask {
     }
 
 
+    /**
+     * A pull request is valid if:
+     *  * it's not from a fork, source and target clone urls dont match (todo)
+     *  * if it's not currently building
+     *  * if it has reviewers and all the reviewers have approved it
+     */
     public boolean isValidPullRequest(Map pr) {
         def builds = stash.getBuilds(pr.fromRef.latestChangeset.toString())
         if (pr.fromRef.repository.cloneUrl != pr.toRef.repository.cloneUrl) {
             logger.info("Ignoring pull requests from other fork: $pr")
             return false
         }
-        for (Map build : builds)
-            if (StashRestApi.RPM_BUILD_KEY == build.key && StashRestApi.INPROGRESS_BUILD_STATE == build.state)
+        for (Map build : builds) {
+            if (StashRestApi.RPM_BUILD_KEY == build.key && StashRestApi.INPROGRESS_BUILD_STATE == build.state) {
                 return false // return true if the pull request does not have an in progress RPM build
+            }
+        }
+
+        for (Map reviewer : pr.reviewers) {
+            if(!reviewer.approved) {
+                logger.info("reviewer has not approved the PR : ${reviewer.user.displayName}")
+                return false
+            }
+        }
         return true
     }
 
