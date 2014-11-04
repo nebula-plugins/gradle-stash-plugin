@@ -44,7 +44,12 @@ class MergeBuiltPullRequestsTask extends StashTask {
         logger.info("build.state == ${build.state}")
         
         if (build.state == StashRestApi.SUCCESSFUL_BUILD_STATE) {
-            // If a successful rpm build then merge and comment
+            for (Map reviewer : pr.reviewers) {
+                if(!reviewer.approved) {
+                    logger.info("reviewer has not approved the PR : ${reviewer.user.displayName}")
+                    return
+                }
+            }            // If a successful rpm build then merge and comment
             stash.mergePullRequest([id: pr.id, version: pr.version])
             stash.commentPullRequest(pr.id, "Commit has already been built successfully. See ${build.url}")
         } else if (build.state == StashRestApi.FAILED_BUILD_STATE) {
