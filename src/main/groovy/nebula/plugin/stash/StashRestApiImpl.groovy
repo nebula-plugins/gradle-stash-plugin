@@ -160,7 +160,7 @@ class StashRestApiImpl implements StashRestApi {
         if(object) {
             path += "/${object}"
         }
-        return stashGetJson(path).values().each {
+        return stashGetJson(path).values.each {
             branches << it
         }
         return branches
