@@ -36,7 +36,7 @@ class StashRestApiImpl implements StashRestApi {
     }
 
     private GString getBranchUtilsRestPath() {
-        "/rest/branch-utils/api/1.0/projects/${stashProject}/repos/${stashRepo}/"
+        "/rest/branch-utils/1.0/projects/${stashProject}/repos/${stashRepo}/"
     }
 
     private String getBasicAuthHeader() {
