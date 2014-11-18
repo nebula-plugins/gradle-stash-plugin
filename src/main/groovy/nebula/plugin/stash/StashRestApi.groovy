@@ -15,7 +15,9 @@ interface StashRestApi {
     Map postPullRequest(fromBranch, toBranch, title, description)
     Map mergePullRequest(HashMap pullRequest)
     Map declinePullRequest(HashMap pullRequest)
-    List<Map> getPullRequests(String branch)
+    List<Map> getBranchInfo(String object) throws Exception
+    List<Map> getPullRequests(String at)
+    List<Map> getPullRequests(String at, String state, String order)
     Map getPullRequest(Long id)
     void deleteBranch(String branchName)
     List<Map> getBuilds(String changeSet)

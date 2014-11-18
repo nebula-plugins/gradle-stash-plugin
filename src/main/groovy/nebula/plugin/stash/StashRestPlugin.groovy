@@ -38,5 +38,9 @@ class StashRestPlugin implements Plugin<Project> {
         project.task("mergeBranch", type: MergeBranchTask) {
             description = "Merge any changes from one branch into another."
         }
+
+        project.task("openPostPullRequestIfNotOnBranchTask", type: OpenPostPullRequestIfNotOnBranchTask) {
+            description = "Open a pull request from one branch to another if it contains a certain commit"
+        }
     }
 }
