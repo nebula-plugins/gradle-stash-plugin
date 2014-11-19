@@ -27,7 +27,7 @@ class SyncNextPullRequestTask extends StashTask {
         logger.info("Finding Pull Requests targeting $targetBranch.")
         Map currentPr = [:]
         try {
-            def allPullReqs = stash.getPullRequests(targetBranch)
+            def allPullReqs = stash.getPullRequests(targetBranch, "OPEN", "OLDEST")
             if(allPullReqs.size() <= 0) {
                 logger.info("no pull requests to merge")
             }

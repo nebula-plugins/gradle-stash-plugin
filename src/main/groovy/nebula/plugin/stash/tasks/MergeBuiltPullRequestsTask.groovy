@@ -10,7 +10,7 @@ class MergeBuiltPullRequestsTask extends StashTask {
     void executeStashCommand() {
         try {
             logger.info("Finding Pull Requests targeting $targetBranch.")
-            List<Map> pullRequests = stash.getPullRequests(targetBranch)
+            List<Map> pullRequests = stash.getPullRequests(targetBranch, "OPEN", "OLDEST")
             for (def pr : pullRequests) {
                 println "PR : ${pr.dump()}"
                 assert(pr.containsKey("fromRef"))

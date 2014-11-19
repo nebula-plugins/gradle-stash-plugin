@@ -72,14 +72,14 @@ class MergeBuiltPullRequestsTaskFuncTest {
     public void mergeBuiltPullRequest() {
         def pr = [id:1L, version: 0, fromRef: [latestChangeset: "abc123"]]
         def build = [key: StashRestApi.RPM_BUILD_KEY, state: StashRestApi.SUCCESSFUL_BUILD_STATE, url: "http://netflix.com/"]
-        when(mockStash.getPullRequests(task.targetBranch)).thenReturn([pr])
+        when(mockStash.getPullRequests(task.targetBranch, "OPEN", "OLDEST")).thenReturn([pr])
         when(mockStash.getBuilds(pr.fromRef.latestChangeset)).thenReturn([build])
         when(mockStash.mergePullRequest([id: pr.id, version: pr.version])).thenReturn(null)
         when(mockStash.commentPullRequest(eq(pr.id), anyString())).thenReturn(null)
 
         task.execute()
 
-        verify(mockStash).getPullRequests(eq(task.targetBranch))
+        verify(mockStash).getPullRequests(eq(task.targetBranch), eq("OPEN"), eq("OLDEST"))
         verify(mockStash).getBuilds(eq(pr.fromRef.latestChangeset))
         verify(mockStash).mergePullRequest([id: pr.id, version: pr.version])
         verify(mockStash).commentPullRequest(eq(pr.id), anyString())
@@ -90,14 +90,14 @@ class MergeBuiltPullRequestsTaskFuncTest {
     public void dontDeclineFailedBuildPullRequest() { // EDGE-1738 : don't decline reopened PRs
         def pr = [id:1L, version: 0, fromRef: [latestChangeset: "abc123"]]
         def build = [key: StashRestApi.RPM_BUILD_KEY, state: StashRestApi.FAILED_BUILD_STATE, url: "http://netflix.com/"]
-        when(mockStash.getPullRequests(task.targetBranch)).thenReturn([pr])
+        when(mockStash.getPullRequests(task.targetBranch, "OPEN", "OLDEST")).thenReturn([pr])
         when(mockStash.getBuilds(pr.fromRef.latestChangeset)).thenReturn([build])
         when(mockStash.mergePullRequest([id: pr.id, version: pr.version])).thenReturn(null)
         when(mockStash.commentPullRequest(eq(pr.id), anyString())).thenReturn(null)
 
         task.execute()
 
-        verify(mockStash).getPullRequests(eq(task.targetBranch))
+        verify(mockStash).getPullRequests(eq(task.targetBranch), eq("OPEN"), eq("OLDEST"))
         verify(mockStash).getBuilds(eq(pr.fromRef.latestChangeset))
         verify(mockStash, never()).declinePullRequest([id: pr.id, version: pr.version])
         verify(mockStash, never()).commentPullRequest(eq(pr.id), anyString())
@@ -111,14 +111,14 @@ class MergeBuiltPullRequestsTaskFuncTest {
                     reviewers : [[approved : false, user : [displayName : "Bob Reviewer"]]]
         ]
         def build = [key: StashRestApi.RPM_BUILD_KEY, state: StashRestApi.SUCCESSFUL_BUILD_STATE, url: "http://netflix.com/"]
-        when(mockStash.getPullRequests(task.targetBranch)).thenReturn([pr])
+        when(mockStash.getPullRequests(task.targetBranch, "OPEN", "OLDEST")).thenReturn([pr])
         when(mockStash.getBuilds(pr.fromRef.latestChangeset)).thenReturn([build])
         when(mockStash.mergePullRequest([id: pr.id, version: pr.version])).thenReturn(null)
         when(mockStash.commentPullRequest(eq(pr.id), anyString())).thenReturn(null)
 
         task.execute()
 
-        verify(mockStash).getPullRequests(eq(task.targetBranch))
+        verify(mockStash).getPullRequests(eq(task.targetBranch), eq("OPEN"), eq("OLDEST"))
         verify(mockStash).getBuilds(eq(pr.fromRef.latestChangeset))
         verify(mockStash, never()).mergePullRequest([id: pr.id, version: pr.version])
         verify(mockStash, never()).commentPullRequest(eq(pr.id), anyString())
@@ -133,14 +133,14 @@ class MergeBuiltPullRequestsTaskFuncTest {
                            ]
         ]
         def build = [key: StashRestApi.RPM_BUILD_KEY, state: StashRestApi.SUCCESSFUL_BUILD_STATE, url: "http://netflix.com/"]
-        when(mockStash.getPullRequests(task.targetBranch)).thenReturn([pr])
+        when(mockStash.getPullRequests(task.targetBranch, "OPEN", "OLDEST")).thenReturn([pr])
         when(mockStash.getBuilds(pr.fromRef.latestChangeset)).thenReturn([build])
         when(mockStash.mergePullRequest([id: pr.id, version: pr.version])).thenReturn(null)
         when(mockStash.commentPullRequest(eq(pr.id), anyString())).thenReturn(null)
 
         task.execute()
 
-        verify(mockStash).getPullRequests(eq(task.targetBranch))
+        verify(mockStash).getPullRequests(eq(task.targetBranch), eq("OPEN"), eq("OLDEST"))
         verify(mockStash).getBuilds(eq(pr.fromRef.latestChangeset))
         verify(mockStash, never()).mergePullRequest([id: pr.id, version: pr.version])
         verify(mockStash, never()).commentPullRequest(eq(pr.id), anyString())
@@ -154,14 +154,14 @@ class MergeBuiltPullRequestsTaskFuncTest {
                   reviewers : [[approved : true, user : [displayName : "Bob Reviewer"]]]
         ]
         def build = [key: StashRestApi.RPM_BUILD_KEY, state: StashRestApi.SUCCESSFUL_BUILD_STATE, url: "http://netflix.com/"]
-        when(mockStash.getPullRequests(task.targetBranch)).thenReturn([pr])
+        when(mockStash.getPullRequests(task.targetBranch, "OPEN", "OLDEST")).thenReturn([pr])
         when(mockStash.getBuilds(pr.fromRef.latestChangeset)).thenReturn([build])
         when(mockStash.mergePullRequest([id: pr.id, version: pr.version])).thenReturn(null)
         when(mockStash.commentPullRequest(eq(pr.id), anyString())).thenReturn(null)
 
         task.execute()
 
-        verify(mockStash).getPullRequests(eq(task.targetBranch))
+        verify(mockStash).getPullRequests(eq(task.targetBranch), eq("OPEN"), eq("OLDEST"))
         verify(mockStash).getBuilds(eq(pr.fromRef.latestChangeset))
         verify(mockStash).mergePullRequest([id: pr.id, version: pr.version])
         verify(mockStash).commentPullRequest(eq(pr.id), anyString())
@@ -176,14 +176,14 @@ class MergeBuiltPullRequestsTaskFuncTest {
                   ]
         ]
         def build = [key: StashRestApi.RPM_BUILD_KEY, state: StashRestApi.SUCCESSFUL_BUILD_STATE, url: "http://netflix.com/"]
-        when(mockStash.getPullRequests(task.targetBranch)).thenReturn([pr])
+        when(mockStash.getPullRequests(task.targetBranch, "OPEN", "OLDEST")).thenReturn([pr])
         when(mockStash.getBuilds(pr.fromRef.latestChangeset)).thenReturn([build])
         when(mockStash.mergePullRequest([id: pr.id, version: pr.version])).thenReturn(null)
         when(mockStash.commentPullRequest(eq(pr.id), anyString())).thenReturn(null)
 
         task.execute()
 
-        verify(mockStash).getPullRequests(eq(task.targetBranch))
+        verify(mockStash).getPullRequests(eq(task.targetBranch), eq("OPEN"), eq("OLDEST"))
         verify(mockStash).getBuilds(eq(pr.fromRef.latestChangeset))
         verify(mockStash).mergePullRequest([id: pr.id, version: pr.version])
         verify(mockStash).commentPullRequest(eq(pr.id), anyString())

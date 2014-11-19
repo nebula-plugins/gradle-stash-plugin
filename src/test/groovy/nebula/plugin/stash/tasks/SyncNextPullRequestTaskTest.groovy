@@ -67,7 +67,7 @@ class SyncNextPullRequestTaskFunctionalTest {
     public void syncNextPullRequest() {
         def pr = [id:1, version: 0, fromRef: [latestChangeset: "abc123", displayId: "fromDisplayId", repository: [cloneUrl: "abc.com/stash"]], toRef: [latestChangeset: "def456", displayId: "toDisplayId", repository: [cloneUrl: "abc.com/stash"]]]
         when(cmd.execute(anyString(), anyString())).thenReturn("abc123")
-        when(mockStash.getPullRequests(anyString())).thenReturn([pr])
+        when(mockStash.getPullRequests(anyString(), anyString(), anyString())).thenReturn([pr])
         when(mockStash.getPullRequest(anyInt())).thenReturn(pr)
         task.execute()
     }
@@ -75,7 +75,7 @@ class SyncNextPullRequestTaskFunctionalTest {
     @Test(expected=GradleException.class)
     public void syncNextPullRequestGetPrsFails() {
         when(cmd.execute(anyString(), anyString())).thenReturn("abc123")
-        when(mockStash.getPullRequests(anyString())).thenThrow(new GradleException("mock exception"))
+        when(mockStash.getPullRequests(anyString(), anyString(), anyString())).thenThrow(new GradleException("mock exception"))
         task.execute()
     }
 
@@ -85,7 +85,7 @@ class SyncNextPullRequestTaskFunctionalTest {
         def build = [key: StashRestApi.RPM_BUILD_KEY, state: StashRestApi.INPROGRESS_BUILD_STATE, url: "http://netflix.com/"]
         when(cmd.execute(anyString(), anyString())).thenReturn("abc123")
         when(mockStash.getBuilds(anyString())).thenReturn([build])
-        when(mockStash.getPullRequests(anyString())).thenReturn([pr])
+        when(mockStash.getPullRequests(anyString(), anyString(), anyString())).thenReturn([pr])
         task.execute()
         verify(mockStash).getBuilds(anyString())
     }
@@ -94,7 +94,7 @@ class SyncNextPullRequestTaskFunctionalTest {
     public void syncNextPullRequestUnableToMerge() { //nothing should get processed, task should pass
         def pr = [id:1, version: 0, fromRef: [latestChangeset: "abc123", displayId: "fromDisplayId", repository: [cloneUrl: "abc.com/stash"]], toRef: [latestChangeset: "def456", displayId: "toDisplayId", repository: [cloneUrl: "abc.com/stash"]]]
         when(cmd.execute(anyString(), anyString())).thenReturn("Automatic merge failed")
-        when(mockStash.getPullRequests(anyString())).thenReturn([pr])
+        when(mockStash.getPullRequests(anyString(), anyString(), anyString())).thenReturn([pr])
         try {
             task.execute()
             fail("should have thrown a GradleException")
@@ -112,7 +112,7 @@ class SyncNextPullRequestTaskFunctionalTest {
                     reviewers : [[approved : false, user : [displayName : "Bob Reviewer"]]]
         ]
         when(cmd.execute(anyString(), anyString())).thenReturn("abc123")
-        when(mockStash.getPullRequests(anyString())).thenReturn([pr])
+        when(mockStash.getPullRequests(anyString(), anyString(), anyString())).thenReturn([pr])
         task.execute()
         Assert.assertFalse(project.hasProperty("pullRequestId"))
         Assert.assertFalse(project.hasProperty("pullRequestVersion"))
@@ -127,7 +127,7 @@ class SyncNextPullRequestTaskFunctionalTest {
                            ]
         ]
         when(cmd.execute(anyString(), anyString())).thenReturn("abc123")
-        when(mockStash.getPullRequests(anyString())).thenReturn([pr])
+        when(mockStash.getPullRequests(anyString(), anyString(), anyString())).thenReturn([pr])
         task.execute()
         Assert.assertFalse(project.hasProperty("pullRequestId"))
         Assert.assertFalse(project.hasProperty("pullRequestVersion"))
@@ -142,7 +142,7 @@ class SyncNextPullRequestTaskFunctionalTest {
                   reviewers : [[approved : true, user : [displayName : "Bob Reviewer"]]]
         ]
         when(cmd.execute(anyString(), anyString())).thenReturn("abc123")
-        when(mockStash.getPullRequests(anyString())).thenReturn([pr])
+        when(mockStash.getPullRequests(anyString(), anyString(), anyString())).thenReturn([pr])
         task.execute()
         Assert.assertTrue(project.hasProperty("pullRequestId"))
         Assert.assertTrue(project.hasProperty("pullRequestVersion"))
@@ -158,7 +158,7 @@ class SyncNextPullRequestTaskFunctionalTest {
                   ]
         ]
         when(cmd.execute(anyString(), anyString())).thenReturn("abc123")
-        when(mockStash.getPullRequests(anyString())).thenReturn([pr])
+        when(mockStash.getPullRequests(anyString(), anyString(), anyString())).thenReturn([pr])
         task.execute()
         Assert.assertTrue(project.hasProperty("pullRequestId"))
         Assert.assertTrue(project.hasProperty("pullRequestVersion"))
