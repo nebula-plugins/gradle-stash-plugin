@@ -116,7 +116,7 @@ class SyncNextPullRequestTask extends StashTask {
             //if (timeout > System.currentTimeMillis()) continue
             //timeout = System.currentTimeMillis() + consistencyPollRetryDeplayMs
             logger.info("getting latest PR info for ${pullRequest.id}")
-            def updatedPR = stash.getPullRequest(Integer.parseInt(pullRequest.id))
+            def updatedPR = stash.getPullRequest(pullRequest.id)
             stashCommit = updatedPR.fromRef.latestChangeset.trim()
             logger.info("Comparing stash head commit '$stashCommit' to local head commit '$localCommit'")
             if (stashCommit == localCommit)
