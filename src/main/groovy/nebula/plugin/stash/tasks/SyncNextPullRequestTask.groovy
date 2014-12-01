@@ -13,7 +13,7 @@ import org.gradle.api.tasks.Optional
  */
 class SyncNextPullRequestTask extends StashTask {
     int consistencyPollRetryCount = 20
-    long consistencyPollRetryDeplayMs = 250
+    //long consistencyPollRetryDeplayMs = 250
 
     @Input String checkoutDir
     @Input @Optional String targetBranch
@@ -109,16 +109,19 @@ class SyncNextPullRequestTask extends StashTask {
     public Map retryStash(String localCommit, Map pullRequest) {
         logger.info("Local latest commit does not match Pull Request latest commit. Polling Stash for consistency with commit: ${localCommit}")
         def fromBranch = pullRequest.fromRef.displayId
-        def timeout = System.currentTimeMillis() + consistencyPollRetryDeplayMs
+        //def timeout = System.currentTimeMillis() + consistencyPollRetryDeplayMs
         def stashCommit
         for (int retryCount = 0; retryCount < consistencyPollRetryCount; retryCount++) {
-            if (timeout > System.currentTimeMillis()) continue
-            timeout = System.currentTimeMillis() + consistencyPollRetryDeplayMs
+            logger.info("retry ${retryCount}")
+            //if (timeout > System.currentTimeMillis()) continue
+            //timeout = System.currentTimeMillis() + consistencyPollRetryDeplayMs
+            logger.info("getting latest PR info for ${pullRequest.id}")
             def updatedPR = stash.getPullRequest(Integer.parseInt(pullRequest.id))
             stashCommit = updatedPR.fromRef.latestChangeset.trim()
             logger.info("Comparing stash head commit '$stashCommit' to local head commit '$localCommit'")
             if (stashCommit == localCommit)
                 return updatedPR
+            sleep(1000)
         }
         throw new GradleException("Stash has not asynchronously updated git repo with changes to pull request. $stashCommit != $localCommit")
     }
