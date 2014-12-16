@@ -81,11 +81,10 @@ class StashRestApiImpl implements StashRestApi {
                 return json
             }
 
-            response.failure = { resp ->
-                log "Failing"
-                throw new Exception("Unexpected error: ${resp.statusLine.statusCode} : ${resp.statusLine.reasonPhrase} \n" +
-                        "| request data: ${requestBody}\n" +
-                        "| response data: ${resp.data}")
+            response.failure = { resp, reader ->
+                log "Error message: ${reader?.errors?.message}"
+                throw new Exception("Unexpected error: ${reader?.errors?.message} ${resp.statusLine.statusCode} : ${resp.statusLine.reasonPhrase} \n" +
+                        "| request body: ${requestBody}\n")
             }
         }
     }
