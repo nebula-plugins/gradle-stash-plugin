@@ -90,6 +90,11 @@ in your build script:
     * autoMergeBranch - (Optional, defaults to automerge-<pullFromBranch>-to-<mergeToBranch>)  The intermediate branch to use for the merge.  If the merge fails, this is the branch you can check out to manually fix.
     * mergeMessage - (Optional, defaults to : Down-merged branch '<pullFromBranch>' into '<mergeToBranch>' (<autoMergeBranch>)).  The message to add to the commit
     * repoName - (Optional, defaults to a name inferred by <repoUrl>)  The subdir to clone to
+* openPostPullRequestIfNotOnBranchTask - Open a pull request if a specified commit is not on the target branch if: the commit is the head of a branch and a pull request isn't already open for the same source and target branch.  This is useful as a post-push task to make sure that code you just released is on the main line (master).
+    * prCommit - The source commit
+    * prToBranch - The target branch to merge to
+    * prTitle - The pull request title
+    * prDescription - The pull request description
 
 ### Extension properties
 

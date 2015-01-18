@@ -13,7 +13,7 @@ import org.gradle.api.tasks.Optional
  */
 class SyncNextPullRequestTask extends StashTask {
     int consistencyPollRetryCount = 20
-    long consistencyPollRetryDeplayMs = 250
+    //long consistencyPollRetryDeplayMs = 250
 
     @Input String checkoutDir
     @Input @Optional String targetBranch
@@ -25,15 +25,16 @@ class SyncNextPullRequestTask extends StashTask {
         logger.info("checking for open pull requests")
         targetBranch = targetBranch ?:  "master"
         logger.info("Finding Pull Requests targeting $targetBranch.")
-
+        Map currentPr = [:]
         try {
-            def allPullReqs = stash.getPullRequests(targetBranch)
+            def allPullReqs = stash.getPullRequests(targetBranch, "OPEN", "OLDEST")
             if(allPullReqs.size() <= 0) {
                 logger.info("no pull requests to merge")
             }
             
             for (Map pr : allPullReqs)
                 if (isValidPullRequest(pr)) {
+                    currentPr = pr
                     pr = mergeAndSyncPullRequest(pr)
                     setPropertiesFile(pr, buildPath)
                     project.ext.set("pullRequestId", pr.id)
@@ -43,7 +44,9 @@ class SyncNextPullRequestTask extends StashTask {
                     break
                 }
         } catch (Throwable e) {
-            logger.info("Closing pull request due to failure.")
+            logger.info("Declining pull request due to failure.")
+            stash.commentPullRequest(currentPr.id,"unable to process this pull request, there is likely a merge conflict")
+            stash.declinePullRequest(currentPr)
             throw new GradleException("Unexpected error(s) in sync process: ${e.dump()}")
         } finally {
             logger.info("Finished task SyncNextPullRequestTask.")
@@ -51,15 +54,30 @@ class SyncNextPullRequestTask extends StashTask {
     }
 
 
+    /**
+     * A pull request is valid if:
+     *  * it's not from a fork, source and target clone urls dont match (todo)
+     *  * if it's not currently building
+     *  * if it has reviewers and all the reviewers have approved it
+     */
     public boolean isValidPullRequest(Map pr) {
         def builds = stash.getBuilds(pr.fromRef.latestChangeset.toString())
-        if (pr.fromRef.cloneUrl != pr.toRef.cloneUrl) {
+        if (pr.fromRef.repository.cloneUrl != pr.toRef.repository.cloneUrl) {
             logger.info("Ignoring pull requests from other fork: $pr")
             return false
         }
-        for (Map build : builds)
-            if (StashRestApi.RPM_BUILD_KEY == build.key && StashRestApi.INPROGRESS_BUILD_STATE == build.state)
+        for (Map build : builds) {
+            if (StashRestApi.RPM_BUILD_KEY == build.key && StashRestApi.INPROGRESS_BUILD_STATE == build.state) {
                 return false // return true if the pull request does not have an in progress RPM build
+            }
+        }
+
+        for (Map reviewer : pr.reviewers) {
+            if(!reviewer.approved) {
+                logger.info("reviewer has not approved the PR : ${reviewer.user.displayName}")
+                return false
+            }
+        }
         return true
     }
 
@@ -91,16 +109,19 @@ class SyncNextPullRequestTask extends StashTask {
     public Map retryStash(String localCommit, Map pullRequest) {
         logger.info("Local latest commit does not match Pull Request latest commit. Polling Stash for consistency with commit: ${localCommit}")
         def fromBranch = pullRequest.fromRef.displayId
-        def timeout = System.currentTimeMillis() + consistencyPollRetryDeplayMs
+        //def timeout = System.currentTimeMillis() + consistencyPollRetryDeplayMs
         def stashCommit
         for (int retryCount = 0; retryCount < consistencyPollRetryCount; retryCount++) {
-            if (timeout > System.currentTimeMillis()) continue
-            timeout = System.currentTimeMillis() + consistencyPollRetryDeplayMs
-            def updatedPR = stash.getPullRequest(Integer.parseInt(pullRequest.id))
+            logger.info("retry ${retryCount}")
+            //if (timeout > System.currentTimeMillis()) continue
+            //timeout = System.currentTimeMillis() + consistencyPollRetryDeplayMs
+            logger.info("getting latest PR info for ${pullRequest.id}")
+            def updatedPR = stash.getPullRequest(pullRequest.id)
             stashCommit = updatedPR.fromRef.latestChangeset.trim()
             logger.info("Comparing stash head commit '$stashCommit' to local head commit '$localCommit'")
             if (stashCommit == localCommit)
                 return updatedPR
+            sleep(1000)
         }
         throw new GradleException("Stash has not asynchronously updated git repo with changes to pull request. $stashCommit != $localCommit")
     }

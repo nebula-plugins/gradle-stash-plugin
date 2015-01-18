@@ -10,7 +10,7 @@ class MergeBuiltPullRequestsTask extends StashTask {
     void executeStashCommand() {
         try {
             logger.info("Finding Pull Requests targeting $targetBranch.")
-            List<Map> pullRequests = stash.getPullRequests(targetBranch)
+            List<Map> pullRequests = stash.getPullRequests(targetBranch, "OPEN", "OLDEST")
             for (def pr : pullRequests) {
                 println "PR : ${pr.dump()}"
                 assert(pr.containsKey("fromRef"))
@@ -44,13 +44,18 @@ class MergeBuiltPullRequestsTask extends StashTask {
         logger.info("build.state == ${build.state}")
         
         if (build.state == StashRestApi.SUCCESSFUL_BUILD_STATE) {
-            // If a successful rpm build then merge and comment
+            for (Map reviewer : pr.reviewers) {
+                if(!reviewer.approved) {
+                    logger.info("reviewer has not approved the PR : ${reviewer.user.displayName}")
+                    return
+                }
+            }            // If a successful rpm build then merge and comment
             stash.mergePullRequest([id: pr.id, version: pr.version])
             stash.commentPullRequest(pr.id, "Commit has already been built successfully. See ${build.url}")
         } else if (build.state == StashRestApi.FAILED_BUILD_STATE) {
-            // If failed then decline and comment
-            stash.declinePullRequest([id: pr.id, version: pr.version])
-            stash.commentPullRequest(pr.id, "Commit has already been built and failed. See ${build.url}")
+            // EDGE-1738 : don't decline reopened PRs
+            //stash.declinePullRequest([id: pr.id, version: pr.version])
+            //stash.commentPullRequest(pr.id, "Commit has already been built and failed. See ${build.url}")
         } else if (build.state == StashRestApi.INPROGRESS_BUILD_STATE) {
             logger.info("can't close a pull request with a build in progress")
         }

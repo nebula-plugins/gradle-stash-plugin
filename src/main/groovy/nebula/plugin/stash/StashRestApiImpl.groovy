@@ -43,6 +43,10 @@ class StashRestApiImpl implements StashRestApi {
         getRestApiPath 'branch-utils'
     }
 
+    private GString getBranchUtilsRestPath() {
+        "/rest/branch-utils/1.0/projects/${stashProject}/repos/${stashRepo}/"
+    }
+
     private String getBasicAuthHeader() {
         "Basic " + "$stashUser:$stashPassword".getBytes('iso-8859-1').encodeBase64()
     }
@@ -74,7 +78,7 @@ class StashRestApiImpl implements StashRestApi {
         httpRequest(DELETE, JSON, path, queryParams, builder.toString())
     }
 
-    private Map httpRequest(Method method, ContentType contentType, String path, HashMap queryParams, String requestBody = '') {
+    private Map httpRequest(Method method, ContentType contentType, String path, HashMap queryParams, String requestBody = '') throws Exception {
         new HTTPBuilder(stashHost).request(method, contentType) { req ->
             uri.path = path
             uri.query = queryParams
@@ -85,11 +89,10 @@ class StashRestApiImpl implements StashRestApi {
                 return json
             }
 
-            response.failure = { resp ->
-                log "Failing"
-                throw new Exception("Unexpected error: ${resp.statusLine.statusCode} : ${resp.statusLine.reasonPhrase} \n" +
-                        "| request data: ${requestBody}\n" +
-                        "| response data: ${resp.data}")
+            response.failure = { resp, reader ->
+                log "Error message: ${reader?.errors?.message}"
+                throw new Exception("Unexpected error: ${reader?.errors?.message} ${resp.statusLine.statusCode} : ${resp.statusLine.reasonPhrase} \n" +
+                        "| request body: ${requestBody}\n")
             }
         }
     }
@@ -158,12 +161,52 @@ class StashRestApiImpl implements StashRestApi {
     }
 
     @Override
+    List<Map> getBranchInfo(String object = null) throws Exception {
+        String path = getBranchUtilsRestPath() + "branches/info"
+        def branches = []
+        if(object) {
+            path += "/${object}"
+        }
+        return stashGetJson(path).values.each {
+            branches << it
+        }
+        return branches
+    }
+
+    @Override
+    List<Map> getPullRequests(String branch, String state, String order)
+    {
+        branch = branch.trim()
+        def path = getRestPath() + "pull-requests/"
+        def prs = []
+        HashMap params = [:]
+        if(branch) {
+            params << [at : "refs/heads/$branch"]
+        }
+        if(state) {
+            params << [state : state]
+        }
+        if(order) {
+            params << [order : order]
+        }
+
+        stashGetJson(path, params).values.each {
+            prs << it
+        }
+        return prs
+    }
+
+    @Override
     List<Map> getPullRequests(String branch)
     {
         branch = branch.trim()
         def path = getRestPath() + "pull-requests/"
         def prs = []
-        stashGetJson(path, [at:"refs/heads/$branch"]).values.each {
+        HashMap params = [:]
+        if(branch) {
+            params << [at : "refs/heads/$branch"]
+        }
+        stashGetJson(path, params).values.each {
             prs << it
         }
         return prs

@@ -38,4 +38,17 @@ class StashRestApiIntegrationTest {
         println "mergeResult = ${JSONUtility.jsonFromMap($mergeResult)}"
         assertEquals("After merging a pull request it is in MERGED state", "OPEN", mergeResult.state)
     }
+
+
+    //@Test
+    public void mergePullRequest409() {
+        def stashRepo=""
+        def stashProject=""
+        def stashHost=""
+        def stashUser=""
+        def stashPassword=""
+        def stash = new StashRestApiImpl(stashRepo, stashProject, stashHost, stashUser, stashPassword)
+        def pr = [id: 5L, version: 10]
+        def result = stash.mergePullRequest(pr)
+    }
 }

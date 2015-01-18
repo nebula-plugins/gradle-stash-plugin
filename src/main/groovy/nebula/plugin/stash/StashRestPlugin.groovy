@@ -42,5 +42,9 @@ class StashRestPlugin implements Plugin<Project> {
         project.task("createBranch", type: CreateBranchTask) {
             description = "Create a new branch."
         }
+
+	project.task("openPostPullRequestIfNotOnBranchTask", type: OpenPostPullRequestIfNotOnBranchTask) {
+            description = "Open a pull request from one branch to another if it contains a certain commit"
+        }
     }
 }
