@@ -43,10 +43,6 @@ class StashRestApiImpl implements StashRestApi {
         getRestApiPath 'branch-utils'
     }
 
-    private GString getBranchUtilsRestPath() {
-        "/rest/branch-utils/1.0/projects/${stashProject}/repos/${stashRepo}/"
-    }
-
     private String getBasicAuthHeader() {
         "Basic " + "$stashUser:$stashPassword".getBytes('iso-8859-1').encodeBase64()
     }
