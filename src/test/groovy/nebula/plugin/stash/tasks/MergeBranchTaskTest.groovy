@@ -153,7 +153,7 @@ class MergeBranchTaskFunctionalTest {
     @Test
     public void mergeBranchTask() {
         project.tasks.mergeBranch.stash = mockStash
-        project.tasks.mergeBranch.path = mockFile
+        project.tasks.mergeBranch.repoPath = mockFile
         
         when(mockFile.isDirectory()).thenReturn(true)
         when(mockFile.exists()).thenReturn(true, false)
@@ -183,7 +183,7 @@ class MergeBranchTaskFunctionalTest {
     public void mergeBranchTaskFail() {
         MergeBranchTask task = project.tasks.mergeBranch
         task.stash = mockStash
-        task.path = mockFile
+        task.repoPath = mockFile
         
         when(mockFile.isDirectory()).thenReturn(true)
         when(mockFile.exists()).thenReturn(true)
@@ -195,7 +195,7 @@ class MergeBranchTaskFunctionalTest {
     public void mergeBranchTaskPushFails() {
         MergeBranchTask task = project.tasks.mergeBranch
         task.stash = mockStash
-        task.path = mockFile
+        task.repoPath = mockFile
         
         when(mockFile.isDirectory()).thenReturn(true)
         when(mockFile.exists()).thenReturn(true, false)
@@ -215,7 +215,7 @@ class MergeBranchTaskFunctionalTest {
     public void mergeBranchTaskDeleteCloneDirReturnsFalse() {
         MergeBranchTask task = project.tasks.mergeBranch
         task.stash = mockStash
-        task.path = mockFile
+        task.repoPath = mockFile
         
         when(mockFile.isDirectory()).thenReturn(true)
         when(mockFile.exists()).thenReturn(true)
@@ -237,7 +237,7 @@ class MergeBranchTaskFunctionalTest {
     public void mergeBranchTaskDeleteCloneDirThrowsException() {
         MergeBranchTask task = project.tasks.mergeBranch
         task.stash = mockStash
-        task.path = mockFile
+        task.repoPath = mockFile
         
         when(mockFile.isDirectory()).thenReturn(true)
         when(mockFile.exists()).thenReturn(true).thenThrow(new SecurityException("mock security exception") )

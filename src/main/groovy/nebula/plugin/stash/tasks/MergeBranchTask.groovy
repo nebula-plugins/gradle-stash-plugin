@@ -16,7 +16,7 @@ public class MergeBranchTask extends StashTask {
     @Input @Optional String mergeMessage
     @Input @Optional String repoName
     @Input @Optional Boolean acceptFilter
-    File path
+    File repoPath
     File clonePath
 
     @Override
@@ -33,9 +33,9 @@ public class MergeBranchTask extends StashTask {
         if (clonePath.exists())
             failTask("Cannot clone. Path already exists '$workingPath'")
         cmd.execute("git clone $repoUrl $repoName", shortPath)
-        path = !path ? new File(workingPath) : path
-        logger.info "path : ${path.dump()}"
-        if (!path.exists() || !path.isDirectory())
+        repoPath = !repoPath ? new File(workingPath) : repoPath
+        logger.info "path : ${repoPath.dump()}"
+        if (!repoPath.exists() || !repoPath.isDirectory())
             failTask("Cannot access git repo path '$workingPath'")
         // make sure auto-merge branch exists on the server, if not, error out
         //https://stash/rest/api/1.0/projects/EDGE/repos/server-fork/branches?base&details&filterText=automerge-dz-testing-to-master&orderBy
@@ -91,8 +91,8 @@ public class MergeBranchTask extends StashTask {
         logger.info("Completed merge from '$pullFromBranch' to '$mergeToBranch'.")
         try {
             // path.exists() is really for working around mocking not mocking deleteDir for testing
-            if(path.exists() && !path.deleteDir()) { // this could return false or throw an exception
-                failTask("Could not delete git clone directory used for merging : ${path.toString()}")
+            if(repoPath.exists() && !repoPath.deleteDir()) { // this could return false or throw an exception
+                failTask("Could not delete git clone directory used for merging : ${repoPath.toString()}")
             }
         } catch (Throwable e) {
             StringWriter sw = new StringWriter()

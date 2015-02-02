@@ -152,7 +152,6 @@ class StashRestApiImpl implements StashRestApi {
         return stashPostJson(path, [:],[version: pullRequest.version])
     }
 
-    @Override
     List<Map> getBranchInfo(String object = null) throws Exception {
         String path = getBranchUtilsRestPath() + "branches/info"
         def branches = []
