@@ -216,6 +216,7 @@ class MergeBranchTaskFunctionalTest {
         MergeBranchTask task = project.tasks.mergeBranch
         task.stash = mockStash
         task.pathFile = mockFile
+        task.repoPath = mockFile
         
         when(mockFile.isDirectory()).thenReturn(true)
         when(mockFile.exists()).thenReturn(true)
@@ -238,6 +239,7 @@ class MergeBranchTaskFunctionalTest {
         MergeBranchTask task = project.tasks.mergeBranch
         task.stash = mockStash
         task.pathFile = mockFile
+        task.repoPath = mockFile
         
         when(mockFile.isDirectory()).thenReturn(true)
         when(mockFile.exists()).thenReturn(true).thenThrow(new SecurityException("mock security exception") )
