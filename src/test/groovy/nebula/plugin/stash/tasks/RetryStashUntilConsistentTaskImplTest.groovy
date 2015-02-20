@@ -162,7 +162,7 @@ public class IsValidPullRequestsTaskTest {
 
         Map b1 = new HashMap()
         b1.put("key", StashRestApi.RPM_BUILD_KEY)
-        b1.put("state", StashRestApi.SUCCESSFUL_BUILD_STATE)
+        b1.put("state", StashRestApi.FAILED_BUILD_STATE)
         Map b2 = new HashMap()
         b2.put("key", StashRestApi.BAKE_BUILD_KEY)
         b2.put("state", StashRestApi.INPROGRESS_BUILD_STATE)
@@ -172,7 +172,19 @@ public class IsValidPullRequestsTaskTest {
     }
 
     @Test
-    public void isInvalidPullRequestForNonInProgressRpmBuild() {
+    public void isInvalidPullRequestForSuccessfulRpmBuild() {
+        def pr = [id: 10, version: -2, fromRef: [latestChangeset:"999", repository: [cloneUrl: "abc.com/stash"]], toRef: [repository : [cloneUrl: "abc.com/stash"]]]
+
+        Map b1 = new HashMap()
+        b1.put("key", StashRestApi.RPM_BUILD_KEY)
+        b1.put("state", StashRestApi.SUCCESSFUL_BUILD_STATE)
+
+        when(mockStash.getBuilds(pr.fromRef.latestChangeset.toString())).thenReturn([b1])
+        assertFalse(task.isValidPullRequest(pr))
+    }
+
+    @Test
+    public void isInvalidPullRequestForInProgressRpmBuild() {
         def pr = [id: 10, version: -2, fromRef: [latestChangeset:"999", repository: [cloneUrl: "abc.com/stash"]], toRef: [repository : [cloneUrl: "abc.com/stash"]]]
 
         Map b1 = new HashMap()

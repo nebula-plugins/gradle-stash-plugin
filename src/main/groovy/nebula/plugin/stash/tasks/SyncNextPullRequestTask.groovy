@@ -67,7 +67,9 @@ class SyncNextPullRequestTask extends StashTask {
             return false
         }
         for (Map build : builds) {
-            if (StashRestApi.RPM_BUILD_KEY == build.key && StashRestApi.INPROGRESS_BUILD_STATE == build.state) {
+            // this should allow failed family builds to be rerun if the pr is reopened, but builds which passed and are opened to not get rebuilt
+            if (StashRestApi.RPM_BUILD_KEY == build.key &&
+                    (StashRestApi.INPROGRESS_BUILD_STATE == build.state || StashRestApi.SUCCESSFUL_BUILD_STATE == build.state)) {
                 return false // return true if the pull request does not have an in progress RPM build
             }
         }
