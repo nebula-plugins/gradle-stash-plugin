@@ -1,22 +1,20 @@
 package nebula.plugin.stash.tasks
-
 import nebula.plugin.stash.StashRestApi
 import org.gradle.api.Project
+import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Before
 import org.junit.Test
-import org.gradle.testfixtures.ProjectBuilder
-import org.gradle.api.tasks.TaskExecutionException
 
 import static nebula.plugin.stash.StashPluginFixture.setDummyStashTaskPropertyValues
 import static nebula.plugin.stash.StashTaskAssertion.runTaskExpectFail
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertTrue
 import static org.mockito.Matchers.anyString
+import static org.mockito.Matchers.eq
 import static org.mockito.Mockito.mock
 import static org.mockito.Mockito.never
 import static org.mockito.Mockito.verify
 import static org.mockito.Mockito.when
-
 /**
  * Created by dzapata on 11/17/14.
  */
@@ -90,6 +88,7 @@ class OpenPostPullRequestIfNotOnBranchTaskFunctionalTest {
     StashRestApi mockStash
     Project project
     final String testCommit = "commit"
+    final String testRepo = "foo-repo"
     final String testBranch = "foo-branch"
     final String testTitle = "title"
     final String testDescription = "description"
@@ -119,7 +118,7 @@ class OpenPostPullRequestIfNotOnBranchTaskFunctionalTest {
 
         verify(mockStash, never()).getBranchesMatching()
         verify(mockStash, never()).getPullRequests(anyString(), anyString(), anyString())
-        verify(mockStash, never()).postPullRequest(anyString(), anyString(), anyString(), anyString())
+        verify(mockStash, never()).postPullRequest(anyString(), anyString(), anyString(), anyString(), anyString())
     }
 
     @Test
@@ -135,7 +134,7 @@ class OpenPostPullRequestIfNotOnBranchTaskFunctionalTest {
 
         verify(mockStash, never()).getBranchesMatching()
         verify(mockStash, never()).getPullRequests(anyString(), anyString(), anyString())
-        verify(mockStash, never()).postPullRequest(anyString(), anyString(), anyString(), anyString())
+        verify(mockStash, never()).postPullRequest(anyString(), anyString(), anyString(), anyString(), anyString())
     }
 
     @Test
@@ -153,7 +152,7 @@ class OpenPostPullRequestIfNotOnBranchTaskFunctionalTest {
 
         verify(mockStash, never()).getBranchesMatching()
         verify(mockStash, never()).getPullRequests(anyString(), anyString(), anyString())
-        verify(mockStash, never()).postPullRequest(anyString(), anyString(), anyString(), anyString())
+        verify(mockStash, never()).postPullRequest(anyString(), anyString(), anyString(), anyString(), anyString())
     }
 
     @Test
@@ -169,7 +168,7 @@ class OpenPostPullRequestIfNotOnBranchTaskFunctionalTest {
 
         project.tasks.openPostPullRequestIfNotOnBranchTask.execute()
 
-        verify(mockStash, never()).postPullRequest(anyString(), anyString(), anyString(), anyString())
+        verify(mockStash, never()).postPullRequest(anyString(), anyString(), anyString(), anyString(), anyString())
     }
 
     @Test
@@ -189,7 +188,7 @@ class OpenPostPullRequestIfNotOnBranchTaskFunctionalTest {
             assertTrue(e.cause.message.contains("assert"))
         }
         verify(mockStash, never()).getPullRequests(anyString(), anyString(), anyString())
-        verify(mockStash, never()).postPullRequest(anyString(), anyString(), anyString(), anyString())
+        verify(mockStash, never()).postPullRequest(anyString(), anyString(), anyString(), anyString(), anyString())
     }
 
     @Test
@@ -203,7 +202,7 @@ class OpenPostPullRequestIfNotOnBranchTaskFunctionalTest {
         when(mockStash.getBranchInfo(testCommit)).thenReturn(branchInfoResponse)
         when(mockStash.getBranchesMatching("branch-a")).thenReturn(matchingBranchResponse)
         when(mockStash.getPullRequests(testBranch, "OPEN", null)).thenReturn(openPrsResponse)
-        when(mockStash.postPullRequest("branch-a", testBranch, testTitle, testDescription)).thenReturn(postPullRequestResponse)
+        when(mockStash.postPullRequest(eq("branch-a"), anyString(), eq(testBranch), eq(testTitle), eq(testDescription))).thenReturn(postPullRequestResponse)
 
         project.tasks.openPostPullRequestIfNotOnBranchTask.execute()
     }
