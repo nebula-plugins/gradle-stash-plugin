@@ -37,12 +37,19 @@ class PostPullRequestTaskTest {
     }
     
     @Test
+    public void canConfigurePrToRepo() {
+        PostPullRequestTask task = project.tasks.postPullRequest
+        task.prToRepo = "mine"
+        assertEquals("mine", task.prToRepo)
+    }
+
+    @Test
     public void canConfigurePrToBranch() {
         PostPullRequestTask task = project.tasks.postPullRequest
         task.prToBranch = "mine"
         assertEquals("mine", task.prToBranch)
     }
-    
+
     @Test
     public void canConfigurePrTitle() {
         setDummyStashTaskPropertyValues(project)
@@ -107,6 +114,7 @@ class PostPullRequestTaskFunctionalTest {
 
         project.tasks.withType(PostPullRequestTask) {
             prFromBranch = "source-branch"
+            prToRepo = "target-repo"
             prToBranch = "target-branch"
             prTitle = "title"
             prDescription = "description"
@@ -119,15 +127,15 @@ class PostPullRequestTaskFunctionalTest {
     @Test
     public void postPullRequest() {
         def pr = [id:1, version: 0, fromRef: [latestChangeset: "abc123"], toRef: [latestChangeset: "def456"]]
-        when(mockStash.postPullRequest(anyString(), anyString(), anyString(), anyString())).thenReturn(pr)
+        when(mockStash.postPullRequest(anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(pr)
         project.tasks.postPullRequest.execute()
-        verify(mockStash).postPullRequest(anyString(), anyString(), anyString(), anyString())
+        verify(mockStash).postPullRequest(anyString(), anyString(), anyString(), anyString(), anyString())
     }
 
     @Test(expected = GradleException.class)
     public void postPullRequestFails() {
         def pr = [id:1, version: 0, fromRef: [latestChangeset: "abc123"], toRef: [latestChangeset: "def456"]]
-        when(mockStash.postPullRequest(anyString(), anyString(), anyString(), anyString())).thenThrow(new GradleException("mock exception"))
+        when(mockStash.postPullRequest(anyString(), anyString(), anyString(), anyString(), anyString())).thenThrow(new GradleException("mock exception"))
         project.tasks.postPullRequest.execute()
     }    
 }

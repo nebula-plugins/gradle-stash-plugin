@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat
 
 public class MergeBranchTask extends StashTask {
     @Input String pullFromBranch
+    String mergeToRepo = stashRepo
     @Input String mergeToBranch
     @Input @Optional String remoteName
     @Input String repoUrl
@@ -80,7 +81,7 @@ public class MergeBranchTask extends StashTask {
         logger.info("Push successful.")
         if (!(pushResults ==~ /[\s\S]*Everything up-to-date[\s\S]*/) && !autoMergeRev.equals(targetBranchRev)) {
             try {
-                stash.postPullRequest(autoMergeBranch, mergeToBranch, "Auto merge $pullFromBranch to $mergeToBranch", mergeMessage)
+                stash.postPullRequest(autoMergeBranch, mergeToRepo, mergeToBranch, "Auto merge $pullFromBranch to $mergeToBranch", mergeMessage)
             } catch (Throwable e) {
                 logger.error("Problem opening pull request")
                 failTask("Problem opening pull request : ${e.getMessage()}")

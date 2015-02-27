@@ -12,7 +12,7 @@ interface StashRestApi {
     static final String FAILED_BUILD_STATE = "FAILED"
     Map postBuildStatus(String changeSet, HashMap body)
     Map commentPullRequest(Long prId, String comment)
-    Map postPullRequest(fromBranch, toBranch, title, description)
+    Map postPullRequest(fromBranch, toRepo, toBranch, title, description)
     Map mergePullRequest(HashMap pullRequest)
     Map declinePullRequest(HashMap pullRequest)
     List<Map> getBranchInfo(String object) throws Exception

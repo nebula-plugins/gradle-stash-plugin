@@ -10,6 +10,7 @@ import org.gradle.api.tasks.Input
  */
 class OpenPostPullRequestIfNotOnBranchTask extends StashTask {
     @Input String prCommit
+    String prToRepo = stashRepo
     @Input String prToBranch
     @Input String prTitle
     @Input String prDescription
@@ -47,7 +48,7 @@ class OpenPostPullRequestIfNotOnBranchTask extends StashTask {
 
                 if(openPrs.size() == 0 || !matchingPr) {
                     logger.info("posting a pull request : ${prFromBranch} ${prToBranch} ${prTitle} ${prDescription}")
-                    def postPrResult = stash.postPullRequest(prFromBranch, prToBranch, prTitle, prDescription)
+                    def postPrResult = stash.postPullRequest(prFromBranch, prToRepo, prToBranch, prTitle, prDescription)
                     logger.info("post PR response : ${postPrResult}")
                     logger.info("successfully posted PR : ${postPrResult.link.url}")
                 } else {
