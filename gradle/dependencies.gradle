@@ -1,0 +1,115 @@
+/*
+ * Copyright 2015 Netflix, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+ext {
+    versions = [:]
+    libraries = [:]
+}
+
+versions.es = '1.4.4'
+versions.guava = '18.0'
+versions.jackson = '2.5.1'
+versions.slf4j = '1.7.7'
+
+libraries.guava = "com.google.guava:guava:$versions.guava"
+libraries.hamcrest = "org.hamcrest:hamcrest-all:1.3"
+
+configurations.all {
+    resolutionStrategy {
+        eachDependency { details ->
+            switch (details.requested.name) {
+                case 'guava':
+                    details.useTarget libraries.guava
+                    break
+                case 'junit':
+                case 'junit-dep':
+                    details.useTarget 'junit:junit:4.11'
+                    break
+                case 'slf4j-api':
+                    details.useVersion versions.slf4j
+                    break
+                case 'log4j':
+                    details.useTarget "org.slf4j:log4j-over-slf4j:$versions.slf4j"
+                    break
+                case 'commons-logging':
+                    details.useTarget "org.slf4j:jcl-over-slf4j:$versions.slf4j"
+                    break
+                case 'hamcrest-core':
+                    // ElasticSearchIntegrationTest requires hamcrest-all, but it doesn't come in transitively
+                    details.useTarget libraries.hamcrest
+                    break
+            }
+        }
+    }
+}
+
+configurations {
+    provided
+}
+
+sourceSets {
+    main {
+        compileClasspath += configurations.provided
+    }
+}
+
+javadoc {
+    classpath += configurations.provided
+}
+
+idea {
+    module {
+        scopes.PROVIDED.plus += [configurations.provided]
+    }
+}
+
+dependencies {
+    compile libraries.guava
+    compile 'org.projectlombok:lombok:1.16.2'
+    compile 'com.google.code.findbugs:jsr305:3.0.0'
+
+    compile "org.elasticsearch:elasticsearch:$versions.es"
+    compile 'joda-time:joda-time:2.7'
+    compile('net.logstash.logback:logstash-logback-encoder:4.2') {
+        exclude group: 'ch.qos.logback', module: 'logback-core' // Already on Gradle classpath
+    }
+    compile "com.fasterxml.jackson.core:jackson-databind:$versions.jackson"
+    compile "com.fasterxml.jackson.datatype:jackson-datatype-joda:$versions.jackson"
+
+    provided 'com.netflix.nebula:gradle-info-plugin:1.9.+'
+
+    testCompile "com.netflix.nebula:nebula-test:$gradle.gradleVersion.+"
+    testCompile "com.google.guava:guava-testlib:$versions.guava"
+    testCompile 'com.github.tlrx:elasticsearch-test:1.2.1'
+}
+
+// Attempt to get out of Gradle dependency hell (at least somewhat reflect the runtime classloading scheme ) by
+// reordering the runtime classpath so gradleApi() comes after other runtime classpath dependencies
+
+// Ideally, this would be provided, conflict resolved configuration, but all of Gradle's libraries are not published
+configurations {
+    gradleApi
+}
+
+dependencies {
+    gradleApi gradleApi()
+}
+
+sourceSets.each {
+    it.compileClasspath = it.compileClasspath - configurations.gradleApi + configurations.gradleApi
+    it.runtimeClasspath = it.runtimeClasspath - configurations.gradleApi + configurations.gradleApi
+}
