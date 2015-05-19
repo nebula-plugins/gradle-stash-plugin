@@ -25,7 +25,7 @@ public class RetryStashUntilConsistentTaskImplTest {
         mockStash = mock(StashRestApi.class)
         task = project.tasks.syncNextPullRequest
         task.stash = mockStash
-        task.consistencyPollRetryDeplayMs = 0
+        //task.consistencyPollRetryDeplayMs = 0
     }
 
     @Test
@@ -84,7 +84,7 @@ class MergeAndSyncPullRequestTest {
         project.apply plugin: 'gradle-stash'
         setDummyStashTaskPropertyValues(project)
         task = project.tasks.syncNextPullRequest
-        task.consistencyPollRetryDeplayMs = 0
+        //task.consistencyPollRetryDeplayMs = 0
         cmd = task.cmd = mock(ExternalProcess.class)
         task.checkoutDir = '/root/beer'
     }
