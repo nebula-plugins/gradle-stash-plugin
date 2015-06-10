@@ -66,6 +66,7 @@ in your build script:
 * syncNextPullRequest - Update a git directory to the branch where the next pull request originates from and apply any merge from master as necessary
     * checkoutDir - The directory to run the git commands in.  You should already have you repo cloned in <checkoutDir>
     * targetBranch - (Optional, defaults to master) Only pull requests from <targetBranch> will be considered
+    * requireOnlyOneApprover - (Optional, defaults to false) Only require one reviewer to approve in order to sync the PR (vs all reviewers to approve)
 * closePullRequest - After a build this task should be run to apply comments and merge the pull request
     * pullRequestId - The pull request id to close
     * pullRequestVersion - The pull request version to close.  This must match the latest version on the Stash server or the pull request won't close

@@ -134,9 +134,8 @@ class SyncNextPullRequestTaskFunctionalTest {
         Assert.assertFalse(project.hasProperty("buildCommit"))
     }
 
-
     @Test
-    public void syncNextPullRequestWithSingleReviewerApproved() { //nothing should get processed, task should pass
+    public void syncNextPullRequestWithSingleReviewerApproved() {
         def pr = [id:1, version: 0, fromRef: [latestChangeset: "abc123", displayId: "fromDisplayId", repository: [cloneUrl: "abc.com/stash"]],
                   toRef: [latestChangeset: "def456", displayId: "toDisplayId", repository: [cloneUrl: "abc.com/stash"]],
                   reviewers : [[approved : true, user : [displayName : "Bob Reviewer"]]]
@@ -149,9 +148,8 @@ class SyncNextPullRequestTaskFunctionalTest {
         Assert.assertTrue(project.hasProperty("buildCommit"))
     }
 
-
     @Test
-    public void syncNextPullRequestWithMultipleReviewersApproved() { //nothing should get processed, task should pass
+    public void syncNextPullRequestWithMultipleReviewersApproved() {
         def pr = [id:1, version: 0, fromRef: [latestChangeset: "abc123", displayId: "fromDisplayId", repository: [cloneUrl: "abc.com/stash"]],
                   toRef: [latestChangeset: "def456", displayId: "toDisplayId", repository: [cloneUrl: "abc.com/stash"]],
                   reviewers : [[approved : true, user : [displayName : "Bob Reviewer"]], [approved : true, user : [displayName : "Joe Reviewer"]]
@@ -163,5 +161,53 @@ class SyncNextPullRequestTaskFunctionalTest {
         Assert.assertTrue(project.hasProperty("pullRequestId"))
         Assert.assertTrue(project.hasProperty("pullRequestVersion"))
         Assert.assertTrue(project.hasProperty("buildCommit"))
+    }
+
+    @Test
+    public void syncNextPullRequestWithOnlyOneReviewersApproved() {
+        def pr = [id:1, version: 0, fromRef: [latestChangeset: "abc123", displayId: "fromDisplayId", repository: [cloneUrl: "abc.com/stash"]],
+                  toRef: [latestChangeset: "def456", displayId: "toDisplayId", repository: [cloneUrl: "abc.com/stash"]],
+                  reviewers : [[approved : true, user : [displayName : "Bob Reviewer"]], [approved : false, user : [displayName : "Joe Reviewer"]]
+                  ]
+        ]
+        when(cmd.execute(anyString(), anyString())).thenReturn("abc123")
+        when(mockStash.getPullRequests(anyString(), anyString(), anyString())).thenReturn([pr])
+        task.requireOnlyOneApprover = true
+        task.execute()
+        Assert.assertTrue(project.hasProperty("pullRequestId"))
+        Assert.assertTrue(project.hasProperty("pullRequestVersion"))
+        Assert.assertTrue(project.hasProperty("buildCommit"))
+    }
+
+    @Test
+    public void syncNextPullRequestWithAllReviewersApproved() {
+        def pr = [id:1, version: 0, fromRef: [latestChangeset: "abc123", displayId: "fromDisplayId", repository: [cloneUrl: "abc.com/stash"]],
+                  toRef: [latestChangeset: "def456", displayId: "toDisplayId", repository: [cloneUrl: "abc.com/stash"]],
+                  reviewers : [[approved : true, user : [displayName : "Bob Reviewer"]], [approved : true, user : [displayName : "Joe Reviewer"]]
+                  ]
+        ]
+        when(cmd.execute(anyString(), anyString())).thenReturn("abc123")
+        when(mockStash.getPullRequests(anyString(), anyString(), anyString())).thenReturn([pr])
+        task.requireOnlyOneApprover = true
+        task.execute()
+        Assert.assertTrue(project.hasProperty("pullRequestId"))
+        Assert.assertTrue(project.hasProperty("pullRequestVersion"))
+        Assert.assertTrue(project.hasProperty("buildCommit"))
+    }
+
+    @Test
+    public void syncNextPullRequestWithMultipleReviewersNotApprovedRequireOne() { //nothing should get processed, task should pass
+        def pr = [id:1, version: 0, fromRef: [latestChangeset: "abc123", displayId: "fromDisplayId", repository: [cloneUrl: "abc.com/stash"]],
+                  toRef: [latestChangeset: "def456", displayId: "toDisplayId", repository: [cloneUrl: "abc.com/stash"]],
+                  reviewers : [[approved : false, user : [displayName : "Bob Reviewer"]], [approved : false, user : [displayName : "Joe Reviewer"]]
+                  ]
+        ]
+        when(cmd.execute(anyString(), anyString())).thenReturn("abc123")
+        when(mockStash.getPullRequests(anyString(), anyString(), anyString())).thenReturn([pr])
+        task.requireOnlyOneApprover = true
+        task.execute()
+        Assert.assertFalse(project.hasProperty("pullRequestId"))
+        Assert.assertFalse(project.hasProperty("pullRequestVersion"))
+        Assert.assertFalse(project.hasProperty("buildCommit"))
     }
 }

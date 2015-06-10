@@ -17,6 +17,7 @@ class SyncNextPullRequestTask extends StashTask {
 
     @Input String checkoutDir
     @Input @Optional String targetBranch
+    @Input boolean requireOnlyOneApprover = false
 
     @Override
     void executeStashCommand() {
@@ -74,13 +75,27 @@ class SyncNextPullRequestTask extends StashTask {
             }
         }
 
+        // check reviewers approvals
+        boolean atLeastOneApproved = false
+        boolean allApproved = true
         for (Map reviewer : pr.reviewers) {
-            if(!reviewer.approved) {
-                logger.info("reviewer has not approved the PR : ${reviewer.user.displayName}")
-                return false
+            if(reviewer.approved) {
+                atLeastOneApproved = true
+            } else {
+                allApproved = false
             }
         }
-        return true
+
+        if (allApproved) {
+            logger.info("all reviewers approved the PR, syncing ${pr.id}")
+            return true
+        } else if(requireOnlyOneApprover && atLeastOneApproved) {
+            logger.info("at least one reviewer approved and atLeastOneApproved == true, syncing ${pr.id}")
+            return true
+        } else {
+            logger.info("need more reviewer approvals for ${pr.id}, requireOnlyOneApprover : ${requireOnlyOneApprover}")
+            return false
+        }
     }
 
     public Map mergeAndSyncPullRequest(Map pr) {
