@@ -32,7 +32,7 @@ class OpenPostPullRequestIfNotOnBranchTask extends StashTask {
             if(branches.size() == 0) {
                 throw new RuntimeException("could not determine source branch for this commit : ${prCommit}")
             } else if (branches.size() > 1 && !onTargetBranch) {
-                throw new RuntimeException("multiple (non-${prToBranch}) branches have this commit : ${prCommit}")
+                throw new RuntimeException("multiple (non-${prToBranch}) branches have this commit : ${prCommit}, branches : ${branches}")
             } else if (!onTargetBranch) {
                 def matchingBranches = stash.getBranchesMatching(prFromBranch)
                 Map result = matchingBranches.find {
