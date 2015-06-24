@@ -1,6 +1,6 @@
 buildscript {
     repositories { jcenter() }
-    dependencies { classpath 'com.netflix.nebula:nebula-plugin-plugin:2.0.2' }
+    dependencies { classpath 'com.netflix.nebula:nebula-plugin-plugin:2.2.0' }
 }
 
 description 'Gradle plugin to do various Stash SCM tasks'

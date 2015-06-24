@@ -17,8 +17,8 @@ public class MergeBranchTask extends StashTask {
     @Input @Optional String mergeMessage
     @Input @Optional String repoName
     @Input @Optional Boolean acceptFilter
-    String path
-    File pathFile
+    String repoPath
+    File repoFile
     File clonePath
 
     @Override
@@ -35,13 +35,13 @@ public class MergeBranchTask extends StashTask {
         if (clonePath.exists())
             failTask("Cannot clone. Path already exists '$workingPath'")
         cmd.execute("git clone $repoUrl $repoName", shortPath)
-        if(!pathFile && path) {
-            pathFile = new File(path)
+        if(!repoFile && repoPath) {
+            repoFile = new File(repoPath)
         }
-        def pathFile = pathFile ?: new File(workingPath)
-        logger.info "path : ${pathFile}"
-        if (!pathFile.exists() || !pathFile.isDirectory())
-            failTask("Cannot access git repo path '$workingPath'")
+        def repoFile = repoFile ?: new File(workingPath)
+        logger.info "repoPath : ${repoFile}"
+        if (!repoFile.exists() || !repoFile.isDirectory())
+            failTask("Cannot access git repo repoPath '$workingPath'")
         // make sure auto-merge branch exists on the server, if not, error out
         //https://stash/rest/api/1.0/projects/EDGE/repos/server-fork/branches?base&details&filterText=automerge-dz-testing-to-master&orderBy
         def branches = stash.getBranchesMatching(autoMergeBranch)
@@ -96,8 +96,8 @@ public class MergeBranchTask extends StashTask {
         logger.info("Completed merge from '$pullFromBranch' to '$mergeToBranch'.")
         try {
             // path.exists() is really for working around mocking not mocking deleteDir for testing
-            if(pathFile.exists() && !pathFile.deleteDir()) { // this could return false or throw an exception
-                failTask("Could not delete git clone directory used for merging : ${pathFile.toString()}")
+            if(repoFile.exists() && !repoFile.deleteDir()) { // this could return false or throw an exception
+                failTask("Could not delete git clone directory used for merging : ${repoFile.toString()}")
             }
         } catch (Throwable e) {
             StringWriter sw = new StringWriter()
