@@ -129,7 +129,7 @@ class StashRestApiImpl implements StashRestApi {
                 toRef: [
                         id: "refs/heads/$toBranch",
                         repository: [
-                                slug: toRepo,
+                                slug: stashRepo,
                                 name: null,
                                 project: [
                                         key: stashProject
