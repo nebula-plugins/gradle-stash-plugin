@@ -19,7 +19,7 @@ To include, add the following to your build.gradle
         repositories { jcenter() }
 
         dependencies {
-            classpath 'com.netflix.nebula:gradle-stash-plugin:1.12.0'
+            classpath 'com.netflix.nebula:gradle-stash-plugin:2.2.7'
         }
     }
 

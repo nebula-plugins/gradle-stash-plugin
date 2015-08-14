@@ -49,7 +49,7 @@ class StashRestApiImpl implements StashRestApi {
         return httpRequest(GET, JSON, path, queryParams)
     }
 
-    private Map stashPostJson(String path, HashMap postBody = [], HashMap queryParams = [])
+    private Map stashPostJson(String path, Map postBody = [], Map queryParams = [])
     {
         log "POST: \n$path \n$postBody"
         def builder = new groovy.json.JsonBuilder(postBody)
@@ -60,7 +60,7 @@ class StashRestApiImpl implements StashRestApi {
         return httpRequest(POST, JSON, path, queryParams, builder.toString())
     }
 
-    private void stashDeleteJson(String path, HashMap postBody = [], HashMap queryParams = [])
+    private void stashDeleteJson(String path, Map postBody = [], Map queryParams = [])
     {
         log "DELETE: \n$path \n$postBody"
         def builder = new groovy.json.JsonBuilder()
@@ -70,7 +70,7 @@ class StashRestApiImpl implements StashRestApi {
         httpRequest(DELETE, JSON, path, queryParams, builder.toString())
     }
 
-    private Map httpRequest(Method method, ContentType contentType, String path, HashMap queryParams, String requestBody = '') throws Exception {
+    private Map httpRequest(Method method, ContentType contentType, String path, Map queryParams, String requestBody = '') throws Exception {
         new HTTPBuilder(stashHost).request(method, contentType) { req ->
             uri.path = path
             uri.query = queryParams
@@ -90,7 +90,7 @@ class StashRestApiImpl implements StashRestApi {
     }
 
     @Override
-    Map postBuildStatus(String changeSet, HashMap body) {
+    Map postBuildStatus(String changeSet, Map body) {
         changeSet = changeSet.trim()
         def path = "/rest/build-status/1.0/commits/${changeSet}"
         validateKeys(body, ["state", "key", "url"])
@@ -142,7 +142,7 @@ class StashRestApiImpl implements StashRestApi {
     }
 
     @Override
-    Map mergePullRequest(HashMap pullRequest)
+    Map mergePullRequest(Map pullRequest)
     {
         def path = getRestPath() + "pull-requests/${pullRequest.id}/merge"
         validateKeys(pullRequest, ["id", "version"])
@@ -150,7 +150,7 @@ class StashRestApiImpl implements StashRestApi {
     }
 
     @Override
-    Map declinePullRequest(HashMap pullRequest)
+    Map declinePullRequest(Map pullRequest)
     {
         def path = getRestPath() + "pull-requests/${pullRequest.id}/decline"
         validateKeys(pullRequest, ["id", "version"])
@@ -251,7 +251,7 @@ class StashRestApiImpl implements StashRestApi {
         return stashGetJson(path)
     }
 
-    private static void validateKeys(HashMap body, keys) {
+    private static void validateKeys(Map body, keys) {
         for(key in keys)
             if (!body.containsKey(key) || body[key] == null)
                 throw new Exception("Body missing required keys: $key")
