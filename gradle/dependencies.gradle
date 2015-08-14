@@ -90,7 +90,7 @@ dependencies {
     compile "com.fasterxml.jackson.core:jackson-databind:$versions.jackson"
     compile "com.fasterxml.jackson.datatype:jackson-datatype-joda:$versions.jackson"
 
-    provided 'com.netflix.nebula:gradle-info-plugin:1.9.+'
+    provided 'com.netflix.nebula:gradle-info-plugin:2.2.+'
 
     testCompile "com.netflix.nebula:nebula-test:$gradle.gradleVersion.+"
     testCompile "com.google.guava:guava-testlib:$versions.guava"

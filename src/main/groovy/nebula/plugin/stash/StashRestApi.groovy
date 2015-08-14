@@ -10,11 +10,11 @@ interface StashRestApi {
     static final String SUCCESSFUL_BUILD_STATE = "SUCCESSFUL"
     static final String INPROGRESS_BUILD_STATE = "INPROGRESS"
     static final String FAILED_BUILD_STATE = "FAILED"
-    Map postBuildStatus(String changeSet, HashMap body)
+    Map postBuildStatus(String changeSet, Map body)
     Map commentPullRequest(Long prId, String comment)
     Map postPullRequest(fromBranch, toRepo, toBranch, title, description)
-    Map mergePullRequest(HashMap pullRequest)
-    Map declinePullRequest(HashMap pullRequest)
+    Map mergePullRequest(Map pullRequest)
+    Map declinePullRequest(Map pullRequest)
     List<Map> getBranchInfo(String object) throws Exception
     List<Map> getPullRequests(String at)
     List<Map> getPullRequests(String at, String state, String order)
