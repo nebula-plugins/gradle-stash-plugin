@@ -43,13 +43,13 @@ class StashRestApiImpl implements StashRestApi {
         "Basic " + "$stashUser:$stashPassword".getBytes('iso-8859-1').encodeBase64()
     }
 
-    private Map stashGetJson(String path, HashMap queryParams = [])
+    private Map stashGetJson(String path, HashMap queryParams = [:])
     {
         log "GET: \n$path"
         return httpRequest(GET, JSON, path, queryParams)
     }
 
-    private Map stashPostJson(String path, Map postBody = [], Map queryParams = [])
+    private Map stashPostJson(String path, Map postBody = [:], Map queryParams = [:])
     {
         log "POST: \n$path \n$postBody"
         def builder = new groovy.json.JsonBuilder(postBody)
@@ -60,7 +60,7 @@ class StashRestApiImpl implements StashRestApi {
         return httpRequest(POST, JSON, path, queryParams, builder.toString())
     }
 
-    private void stashDeleteJson(String path, Map postBody = [], Map queryParams = [])
+    private void stashDeleteJson(String path, Map postBody = [:], Map queryParams = [:])
     {
         log "DELETE: \n$path \n$postBody"
         def builder = new groovy.json.JsonBuilder()
