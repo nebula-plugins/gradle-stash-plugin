@@ -33,7 +33,7 @@ class SyncNextPullRequestTask extends StashTask {
                 logger.info("no pull requests to merge")
             }
             
-            for (Map pr : allPullReqs)
+            for (HashMap pr : allPullReqs)
                 if (isValidPullRequest(pr)) {
                     currentPr = pr
                     pr = mergeAndSyncPullRequest(pr)
