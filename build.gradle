@@ -49,10 +49,17 @@ apply from: 'https://raw.githubusercontent.com/nebula-plugins/nebula-core/1a495c
 
 pluginBundle {
     plugins {
-        dependencyLock {
-            id = 'gradle-stash-plugin'
-            displayName = 'Stash Plugin'
+        gradleStash {
+            id = 'nebula.gradle-stash'
+            displayName = 'Nebula Stash Plugin'
             description = project.description
+            tags = ['nebula', 'scm', 'stash']
+        }
+
+        gradleStashBase {
+            id = 'nebula.gradle-stash-base'
+            displayName = 'Nebula Stash Base Plugin'
+            description = 'Sets up some common '
             tags = ['nebula', 'scm', 'stash']
         }
     }
