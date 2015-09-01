@@ -1,9 +1,9 @@
 gradle-stash-plugin
 =============================
-[![Build Status](https://travis-ci.org/nebula-plugins/projects/gradle-stash-plugin.svg?branch=master)](https://travis-ci.org/nebula-plugins/projects/gradle-stash-plugin)
-[![Coverage Status](https://coveralls.io/repos/nebula-plugins/projects/gradle-stash-plugin/badge.svg?branch=masterservice=github)](https://coveralls.io/github/nebula-plugins/projects/gradle-stash-plugin?branch=master)
-[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/nebula-plugins/projects/gradle-stash-plugin?utm_source=badgeutm_medium=badgeutm_campaign=pr-badge)
-[![Apache 2.0](https://img.shields.io/github/license/nebula-plugins/projects/gradle-stash-plugin.svg)](http://www.apache.org/licenses/LICENSE-2.0)
+[![Build Status](https://travis-ci.org/nebula-plugins/gradle-stash-plugin.svg?branch=master)](https://travis-ci.org/nebula-plugins/projects/gradle-stash-plugin)
+[![Coverage Status](https://coveralls.io/repos/nebula-plugins/gradle-stash-plugin/badge.svg?branch=masterservice=github)](https://coveralls.io/github/nebula-plugins/projects/gradle-stash-plugin?branch=master)
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/nebula-plugins/gradle-stash-plugin?utm_source=badgeutm_medium=badgeutm_campaign=pr-badge)
+[![Apache 2.0](https://img.shields.io/github/license/nebula-plugins/gradle-stash-plugin.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 
 
 Cloudbees Jenkins release: [![Build Status](https://netflixoss.ci.cloudbees.com/job/nebula-plugins/job/gradle-stash-plugin-release/badge/icon)](https://netflixoss.ci.cloudbees.com/job/nebula-plugins/job/gradle-stash-plugin-release/)
