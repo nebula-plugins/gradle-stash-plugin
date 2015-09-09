@@ -21,7 +21,7 @@ class MergeBuiltPullRequestsTaskTest {
     @Before
     public void setup() {
         project = ProjectBuilder.builder().build()
-        project.apply plugin: 'gradle-stash'
+        project.apply plugin: 'nebula.gradle-stash'
         setDummyStashTaskPropertyValues(project)
     }
 
@@ -55,7 +55,7 @@ class MergeBuiltPullRequestsTaskFuncTest {
     @Before
     public void setup() {
         project = ProjectBuilder.builder().build()
-        project.apply plugin: 'gradle-stash'
+        project.apply plugin: 'nebula.gradle-stash'
         setDummyStashTaskPropertyValues(project)
 
         project.tasks.withType(MergeBuiltPullRequestsTask) {

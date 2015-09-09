@@ -16,7 +16,7 @@ class StashRestPluginIntegrationTest extends ProjectSpec {
         def stash = new StashRestApiImpl()
         //def failedBuild = [state:"FAILED", key:StashRestApi.RPM_BUILD_KEY, name:StashRestApi.RPM_BUILD_KEY + "-45", url:"http://google.com", description:"build failed"]
         //stash.postBuildStatus("1f98fba51eafd5d3184e10ccdbb4a615545d5464", failedBuild)
-        project.apply plugin: 'gradle-stash'
+        project.apply plugin: 'nebula.gradle-stash'
         project.tasks.mergeBuiltPullRequests.execute()
     }
 
@@ -24,7 +24,7 @@ class StashRestPluginIntegrationTest extends ProjectSpec {
     public void mergePullReqAfterBuild() {
         project.targetBranch = "master2"
         project.checkoutDir = "/Users/atull/dev/git/server-fork"
-        project.apply plugin: 'gradle-stash'
+        project.apply plugin: 'nebula.gradle-stash'
         project.tasks.syncNextPullRequest.execute()
         project.ext.set("buildState", "INPROGRESS")
         project.ext.set("key", StashRestApi.RPM_BUILD_KEY)
@@ -38,59 +38,59 @@ class StashRestPluginIntegrationTest extends ProjectSpec {
 /*
 	@Test
 	public void addMergeBuiltPullRequestsTaskToProject() {
-		project.apply plugin: 'gradle-stash'
+		project.apply plugin: 'nebula.gradle-stash'
 		assertTrue(project.tasks.mergeBuiltPullRequests instanceof MergeBuiltPullRequestsTask)
 	}
     
     @Test
     public void executeMergeBuiltPullRequestsTask() {
-        project.apply plugin: 'gradle-stash'
+        project.apply plugin: 'nebula.gradle-stash'
         project.tasks.mergeBuiltPullRequests.execute()
     }
     
     @Test
     public void addSyncNextPullRequestTaskToProject() {
-        project.apply plugin: 'gradle-stash'
+        project.apply plugin: 'nebula.gradle-stash'
         assertTrue(project.tasks.syncNextPullRequest instanceof SyncNextPullRequestTask)
     }
 
     @Test
     public void executeSyncNextPullRequestTaskMissingCheckoutDir() {
         assertFalse(project.hasProperty("checkoutDir"))
-        project.apply plugin: 'gradle-stash'
+        project.apply plugin: 'nebula.gradle-stash'
         project.tasks.syncNextPullRequest.execute()
     }
     
     @Test
     public void executeSyncNextPullRequestTask() {
         project.checkoutDir = "/Users/dzapata/code/server-fork"
-        project.apply plugin: 'gradle-stash'
+        project.apply plugin: 'nebula.gradle-stash'
         project.tasks.syncNextPullRequest.execute()
     }
     
     @Test
     public void addPostNewDeploymentPullRequestTaskToProject() {
-        project.apply plugin: 'gradle-stash'
+        project.apply plugin: 'nebula.gradle-stash'
         assertTrue(project.tasks.postNewDeploymentPullRequest instanceof PostNewDeploymentPullRequestTask)
     }
 
     @Test
     public void executePostNewDeploymentPullRequestTask() {
-        project.apply plugin: 'gradle-stash'
+        project.apply plugin: 'nebula.gradle-stash'
         project.tasks.postNewDeploymentPullRequest.execute()
     }
     */
     /*
     @Test
     public void addAddBuildStatusTaskToProject() {
-        project.apply plugin: 'gradle-stash'
+        project.apply plugin: 'nebula.gradle-stash'
         assertTrue(project.tasks.addBuildStatus instanceof AddBuildStatus)
     }
 
 */                                     /*
     //@Test
     public void executeAddBuildStatusTaskWithCurrentCommit() {
-        project.apply plugin: 'gradle-stash'
+        project.apply plugin: 'nebula.gradle-stash'
         project.buildState = 'SUCCESSFUL'
         project.buildKey = StashRestApi.RPM_BUILD_KEY
         project.buildName = "FOO BAR BUILD NAME"
@@ -107,7 +107,7 @@ class StashRestPluginIntegrationTest extends ProjectSpec {
     
     //@Test
     public void executeAddBuildStatusTaskWithCommitDetection() {
-        project.apply plugin: 'gradle-stash'
+        project.apply plugin: 'nebula.gradle-stash'
         project.buildCommit = "f18e86bbd850806114035fd498c0f317e4e89a4f"
         project.buildState = 'SUCCESSFUL'
         project.buildKey = StashRestApi.RPM_BUILD_KEY
@@ -125,7 +125,7 @@ class StashRestPluginIntegrationTest extends ProjectSpec {
     
     //@Test
     public void executeAddBuildStatusTaskFail() {
-        project.apply plugin: 'gradle-stash'
+        project.apply plugin: 'nebula.gradle-stash'
         project.buildCommit = "FOOBAR"
         project.buildState = 'SUCCESSFUL'
         project.buildKey = StashRestApi.RPM_BUILD_KEY
@@ -142,13 +142,13 @@ class StashRestPluginIntegrationTest extends ProjectSpec {
     
     @Test
     public void addPostPullRequestTaskToProject() {
-        project.apply plugin: 'gradle-stash'
+        project.apply plugin: 'nebula.gradle-stash'
         assertTrue(project.tasks.postPullRequest instanceof PostNewPullRequestTask)
     }
 
     @Test
     public void executePostPullRequestTask() {
-        project.apply plugin: 'gradle-stash'
+        project.apply plugin: 'nebula.gradle-stash'
         project.stashRepo = "server-pipeline"
         project.stashProject = "EDGE"
         project.prFromBranch = "dzapata"
@@ -160,7 +160,7 @@ class StashRestPluginIntegrationTest extends ProjectSpec {
  */
     //@Test
     public void mergeBranchTask() {
-        project.apply plugin: 'gradle-stash'
+        project.apply plugin: 'nebula.gradle-stash'
 
         project.ext.set("pullFromBranch", "a")
         project.ext.set("mergeToBranch", "master")

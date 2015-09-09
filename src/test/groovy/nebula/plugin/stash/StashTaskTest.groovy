@@ -12,7 +12,7 @@ class StashTaskTest extends ProjectSpec {
     @Unroll
     def "Fails if input parameter #nullParamName is null"() {
         when:
-        project.apply plugin: 'gradle-stash'
+        project.apply plugin: 'nebula.gradle-stash'
 
         MergeBuiltPullRequestsTask task = project.tasks.mergeBuiltPullRequests
         task.stashRepo = stashRepo

@@ -20,7 +20,7 @@ class ClosePullRequestTaskTest {
     @Before
     public void setup() {
         project = ProjectBuilder.builder().build()
-        project.apply plugin: 'gradle-stash'
+        project.apply plugin: 'nebula.gradle-stash'
         setDummyStashTaskPropertyValues(project)
     }
 
@@ -69,7 +69,7 @@ class ClosePullRequestTaskFunctionalTest {
     @Before
     public void setup() {
         project = ProjectBuilder.builder().build()
-        project.apply plugin: 'gradle-stash'
+        project.apply plugin: 'nebula.gradle-stash'
         setDummyStashTaskPropertyValues(project)
 
         project.tasks.withType(ClosePullRequestAfterBuildTask) {

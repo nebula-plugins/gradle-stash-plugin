@@ -21,7 +21,7 @@ class AddBuildStatusTaskTest {
     @Before
     public void setup() {
         project = ProjectBuilder.builder().build()
-        project.apply plugin: 'gradle-stash'
+        project.apply plugin: 'nebula.gradle-stash'
         setDummyStashTaskPropertyValues(project)
     }
 
@@ -147,7 +147,7 @@ class AddBuildStatusTaskFuncTest {
     @Test
     public void addBuildStatusProvidedCommit() {
         // SUCCESSFUL, FAILED and INPROGRESS
-        project.apply plugin: 'gradle-stash'
+        project.apply plugin: 'nebula.gradle-stash'
         AddBuildStatusTask task = project.tasks.addBuildStatus
         task.buildCommit = "ABCD"
         ExternalProcess cmd = task.cmd = mock(ExternalProcess.class)
@@ -159,7 +159,7 @@ class AddBuildStatusTaskFuncTest {
 
     @Test
     public void addBuildStatusCalculatedCommit() {
-        project.apply plugin: 'gradle-stash'
+        project.apply plugin: 'nebula.gradle-stash'
         project.tasks.addBuildStatus.stash = mockStash
         AddBuildStatusTask task = project.tasks.addBuildStatus
         ExternalProcess cmd = task.cmd = mock(ExternalProcess.class)
@@ -171,7 +171,7 @@ class AddBuildStatusTaskFuncTest {
 
     @Test(expected=GradleException.class)
     public void addBuildStatusCantCalculateCommit() {
-        project.apply plugin: 'gradle-stash'
+        project.apply plugin: 'nebula.gradle-stash'
         project.tasks.addBuildStatus.stash = mockStash
         AddBuildStatusTask task = project.tasks.addBuildStatus
         ExternalProcess cmd = task.cmd = mock(ExternalProcess.class)

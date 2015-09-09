@@ -24,7 +24,7 @@ class MergeBranchTaskTest {
     @Before
     public void setup() {
         project = ProjectBuilder.builder().build()
-        project.apply plugin: 'gradle-stash'
+        project.apply plugin: 'nebula.gradle-stash'
         setDummyStashTaskPropertyValues(project)
     }
 
@@ -145,7 +145,7 @@ class MergeBranchTaskFunctionalTest {
         mockStash = mock(StashRestApi.class)
         mockFile = mock(File.class)
         mockClonePath = mock(File.class)
-        project.apply plugin: 'gradle-stash'
+        project.apply plugin: 'nebula.gradle-stash'
         task = project.tasks.mergeBranch
         cmd = task.cmd = mock(ExternalProcess.class)
     }
@@ -216,7 +216,7 @@ class MergeBranchTaskFunctionalTest {
         MergeBranchTask task = project.tasks.mergeBranch
         task.stash = mockStash
         task.pathFile = mockFile
-        task.repoPath = mockFile
+        task.path = mockFile
         
         when(mockFile.isDirectory()).thenReturn(true)
         when(mockFile.exists()).thenReturn(true)
@@ -239,7 +239,7 @@ class MergeBranchTaskFunctionalTest {
         MergeBranchTask task = project.tasks.mergeBranch
         task.stash = mockStash
         task.pathFile = mockFile
-        task.repoPath = mockFile
+        task.path = mockFile
         
         when(mockFile.isDirectory()).thenReturn(true)
         when(mockFile.exists()).thenReturn(true).thenThrow(new SecurityException("mock security exception") )

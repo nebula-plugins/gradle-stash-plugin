@@ -21,7 +21,7 @@ class SyncNextPullRequestTaskTest {
     @Before
     public void setup() {
         project = ProjectBuilder.builder().build()
-        project.apply plugin: 'gradle-stash'
+        project.apply plugin: 'nebula.gradle-stash'
         setDummyStashTaskPropertyValues(project)
     }
 
@@ -55,7 +55,7 @@ class SyncNextPullRequestTaskFunctionalTest {
     public void setup() {
         project = ProjectBuilder.builder().build()
         setDummyStashTaskPropertyValues(project)
-        project.apply plugin: 'gradle-stash'
+        project.apply plugin: 'nebula.gradle-stash'
         mockStash = mock(StashRestApi.class)
         task = project.tasks.syncNextPullRequest
         task.checkoutDir = "/foo/bar"

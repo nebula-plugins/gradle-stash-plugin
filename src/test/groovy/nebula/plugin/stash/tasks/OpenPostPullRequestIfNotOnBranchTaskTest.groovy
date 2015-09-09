@@ -24,7 +24,7 @@ public class OpenPostPullRequestIfNotOnBranchTaskTest {
     @Before
     public void setup() {
         project = ProjectBuilder.builder().build()
-        project.apply plugin: 'gradle-stash'
+        project.apply plugin: 'nebula.gradle-stash'
         setDummyStashTaskPropertyValues(project)
     }
 
@@ -95,7 +95,7 @@ class OpenPostPullRequestIfNotOnBranchTaskFunctionalTest {
     @Before
     public void setup() {
         project = ProjectBuilder.builder().build()
-        project.apply plugin: 'gradle-stash'
+        project.apply plugin: 'nebula.gradle-stash'
         setDummyStashTaskPropertyValues(project)
 
         project.tasks.withType(OpenPostPullRequestIfNotOnBranchTask) {
