@@ -56,7 +56,7 @@ class StashRestApiImpl implements StashRestApi {
         //def root = builder { postBody }
         //log "root : ${root.dump()}"
         log "builder : ${builder.dump()}"
-//        return httpRequest(POST, JSON, path, queryParams, JSONUtility.jsonFromMap(postBody))
+//        return httpRequest(POST, JSON, pathInRepo, queryParams, JSONUtility.jsonFromMap(postBody))
         return httpRequest(POST, JSON, path, queryParams, builder.toString())
     }
 
@@ -66,7 +66,7 @@ class StashRestApiImpl implements StashRestApi {
         def builder = new groovy.json.JsonBuilder()
         def root = builder { postBody }
         log "builder : " + builder.toString()
-//        return httpRequest(POST, JSON, path, queryParams, JSONUtility.jsonFromMap(postBody))
+//        return httpRequest(POST, JSON, pathInRepo, queryParams, JSONUtility.jsonFromMap(postBody))
         httpRequest(DELETE, JSON, path, queryParams, builder.toString())
     }
 
