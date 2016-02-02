@@ -5,11 +5,6 @@ gradle-stash-plugin
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/nebula-plugins/gradle-stash-plugin?utm_source=badgeutm_medium=badgeutm_campaign=pr-badge)
 [![Apache 2.0](https://img.shields.io/github/license/nebula-plugins/gradle-stash-plugin.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 
-
-Cloudbees Jenkins release: [![Build Status](https://netflixoss.ci.cloudbees.com/job/nebula-plugins/job/gradle-stash-plugin-release/badge/icon)](https://netflixoss.ci.cloudbees.com/job/nebula-plugins/job/gradle-stash-plugin-release/)
-
-Cloudbees Jenkins snapshot: [![Build Status](https://netflixoss.ci.cloudbees.com/job/nebula-plugins/job/gradle-stash-plugin-snapshot/badge/icon)](https://netflixoss.ci.cloudbees.com/job/nebula-plugins/job/gradle-stash-plugin-snapshot/)
-
 A plugin to run Stash SCM tasks.
 
 Most of the tasks are run against the Stash REST API, but some of them also require running git commands in the command line.
@@ -24,7 +19,7 @@ To include, add the following to your build.gradle
         repositories { jcenter() }
 
         dependencies {
-            classpath 'com.netflix.nebula:gradle-stash-plugin:2.2.7'
+            classpath 'com.netflix.nebula:gradle-stash-plugin:3.0.2'
         }
     }
 

@@ -1,3 +1,14 @@
+3.0.2 / 2016-02-02
+==================
+
+* Renamed path property on MergeBranchTask since that hides task.getPath() on gradle tasks
+
+3.0.1 / 2015-xx-xx
+==================
+
+3.0.0 / 2015-xx-xx
+==================
+
 2.2.0 / 2015-2-2
 ===================
 
