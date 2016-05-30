@@ -96,20 +96,3 @@ dependencies {
     testCompile "com.google.guava:guava-testlib:$versions.guava"
     testCompile 'com.github.tlrx:elasticsearch-test:1.2.1'
 }
-
-// Attempt to get out of Gradle dependency hell (at least somewhat reflect the runtime classloading scheme ) by
-// reordering the runtime classpath so gradleApi() comes after other runtime classpath dependencies
-
-// Ideally, this would be provided, conflict resolved configuration, but all of Gradle's libraries are not published
-configurations {
-    gradleApi
-}
-
-dependencies {
-    gradleApi gradleApi()
-}
-
-sourceSets.each {
-    it.compileClasspath = it.compileClasspath - configurations.gradleApi + configurations.gradleApi
-    it.runtimeClasspath = it.runtimeClasspath - configurations.gradleApi + configurations.gradleApi
-}
