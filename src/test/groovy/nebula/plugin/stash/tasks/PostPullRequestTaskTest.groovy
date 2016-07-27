@@ -126,7 +126,7 @@ class PostPullRequestTaskFunctionalTest {
     
     @Test
     public void postPullRequest() {
-        def pr = [id:1, version: 0, fromRef: [latestChangeset: "abc123"], toRef: [latestChangeset: "def456"]]
+        def pr = [id:1, version: 0, fromRef: [latestCommit: "abc123"], toRef: [latestCommit: "def456"]]
         when(mockStash.postPullRequest(anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(pr)
         project.tasks.postPullRequest.execute()
         verify(mockStash).postPullRequest(anyString(), anyString(), anyString(), anyString(), anyString())
@@ -134,7 +134,7 @@ class PostPullRequestTaskFunctionalTest {
 
     @Test(expected = GradleException.class)
     public void postPullRequestFails() {
-        def pr = [id:1, version: 0, fromRef: [latestChangeset: "abc123"], toRef: [latestChangeset: "def456"]]
+        def pr = [id:1, version: 0, fromRef: [latestCommit: "abc123"], toRef: [latestCommit: "def456"]]
         when(mockStash.postPullRequest(anyString(), anyString(), anyString(), anyString(), anyString())).thenThrow(new GradleException("mock exception"))
         project.tasks.postPullRequest.execute()
     }    

@@ -65,7 +65,7 @@ class SyncNextPullRequestTaskFunctionalTest {
     
     @Test
     public void syncNextPullRequest() {
-        def pr = [id:1, version: 0, fromRef: [latestChangeset: "abc123", displayId: "fromDisplayId", repository: [cloneUrl: "abc.com/stash"]], toRef: [latestChangeset: "def456", displayId: "toDisplayId", repository: [cloneUrl: "abc.com/stash"]]]
+        def pr = [id:1, version: 0, fromRef: [latestCommit: "abc123", displayId: "fromDisplayId", repository: [cloneUrl: "abc.com/stash"]], toRef: [latestCommit: "def456", displayId: "toDisplayId", repository: [cloneUrl: "abc.com/stash"]]]
         when(cmd.execute(anyString(), anyString())).thenReturn("abc123")
         when(mockStash.getPullRequests(anyString(), anyString(), anyString())).thenReturn([pr])
         when(mockStash.getPullRequest(anyInt())).thenReturn(pr)
@@ -81,7 +81,7 @@ class SyncNextPullRequestTaskFunctionalTest {
 
     @Test
     public void syncNextPullRequestInvalidPr() { //nothing should get processed, task should pass
-        def pr = [id:1, version: 0, fromRef: [latestChangeset: "abc123", displayId: "fromDisplayId", repository: [cloneUrl: "abc.com/stash"]], toRef: [latestChangeset: "def456", displayId: "toDisplayId", repository: [cloneUrl: "abc.com/stash"]]]
+        def pr = [id:1, version: 0, fromRef: [latestCommit: "abc123", displayId: "fromDisplayId", repository: [cloneUrl: "abc.com/stash"]], toRef: [latestCommit: "def456", displayId: "toDisplayId", repository: [cloneUrl: "abc.com/stash"]]]
         def build = [key: StashRestApi.RPM_BUILD_KEY, state: StashRestApi.INPROGRESS_BUILD_STATE, url: "http://netflix.com/"]
         when(cmd.execute(anyString(), anyString())).thenReturn("abc123")
         when(mockStash.getBuilds(anyString())).thenReturn([build])
@@ -92,7 +92,7 @@ class SyncNextPullRequestTaskFunctionalTest {
     
     @Test
     public void syncNextPullRequestUnableToMerge() { //nothing should get processed, task should pass
-        def pr = [id:1, version: 0, fromRef: [latestChangeset: "abc123", displayId: "fromDisplayId", repository: [cloneUrl: "abc.com/stash"]], toRef: [latestChangeset: "def456", displayId: "toDisplayId", repository: [cloneUrl: "abc.com/stash"]]]
+        def pr = [id:1, version: 0, fromRef: [latestCommit: "abc123", displayId: "fromDisplayId", repository: [cloneUrl: "abc.com/stash"]], toRef: [latestCommit: "def456", displayId: "toDisplayId", repository: [cloneUrl: "abc.com/stash"]]]
         when(cmd.execute(anyString(), anyString())).thenReturn("Automatic merge failed")
         when(mockStash.getPullRequests(anyString(), anyString(), anyString())).thenReturn([pr])
         try {
@@ -107,8 +107,8 @@ class SyncNextPullRequestTaskFunctionalTest {
 
     @Test
     public void syncNextPullRequestWithSingleReviewerNotApproved() { //nothing should get processed, task should pass
-        def pr = [id:1, version: 0, fromRef: [latestChangeset: "abc123", displayId: "fromDisplayId", repository: [cloneUrl: "abc.com/stash"]],
-                  toRef: [latestChangeset: "def456", displayId: "toDisplayId", repository: [cloneUrl: "abc.com/stash"]],
+        def pr = [id:1, version: 0, fromRef: [latestCommit: "abc123", displayId: "fromDisplayId", repository: [cloneUrl: "abc.com/stash"]],
+                  toRef: [latestCommit: "def456", displayId: "toDisplayId", repository: [cloneUrl: "abc.com/stash"]],
                     reviewers : [[approved : false, user : [displayName : "Bob Reviewer"]]]
         ]
         when(cmd.execute(anyString(), anyString())).thenReturn("abc123")
@@ -121,8 +121,8 @@ class SyncNextPullRequestTaskFunctionalTest {
 
     @Test
     public void syncNextPullRequestWithMultipleReviewersNotApproved() { //nothing should get processed, task should pass
-        def pr = [id:1, version: 0, fromRef: [latestChangeset: "abc123", displayId: "fromDisplayId", repository: [cloneUrl: "abc.com/stash"]],
-                  toRef: [latestChangeset: "def456", displayId: "toDisplayId", repository: [cloneUrl: "abc.com/stash"]],
+        def pr = [id:1, version: 0, fromRef: [latestCommit: "abc123", displayId: "fromDisplayId", repository: [cloneUrl: "abc.com/stash"]],
+                  toRef: [latestCommit: "def456", displayId: "toDisplayId", repository: [cloneUrl: "abc.com/stash"]],
                   reviewers : [[approved : true, user : [displayName : "Bob Reviewer"]], [approved : false, user : [displayName : "Joe Reviewer"]]
                            ]
         ]
@@ -136,8 +136,8 @@ class SyncNextPullRequestTaskFunctionalTest {
 
     @Test
     public void syncNextPullRequestWithSingleReviewerApproved() {
-        def pr = [id:1, version: 0, fromRef: [latestChangeset: "abc123", displayId: "fromDisplayId", repository: [cloneUrl: "abc.com/stash"]],
-                  toRef: [latestChangeset: "def456", displayId: "toDisplayId", repository: [cloneUrl: "abc.com/stash"]],
+        def pr = [id:1, version: 0, fromRef: [latestCommit: "abc123", displayId: "fromDisplayId", repository: [cloneUrl: "abc.com/stash"]],
+                  toRef: [latestCommit: "def456", displayId: "toDisplayId", repository: [cloneUrl: "abc.com/stash"]],
                   reviewers : [[approved : true, user : [displayName : "Bob Reviewer"]]]
         ]
         when(cmd.execute(anyString(), anyString())).thenReturn("abc123")
@@ -150,8 +150,8 @@ class SyncNextPullRequestTaskFunctionalTest {
 
     @Test
     public void syncNextPullRequestWithMultipleReviewersApproved() {
-        def pr = [id:1, version: 0, fromRef: [latestChangeset: "abc123", displayId: "fromDisplayId", repository: [cloneUrl: "abc.com/stash"]],
-                  toRef: [latestChangeset: "def456", displayId: "toDisplayId", repository: [cloneUrl: "abc.com/stash"]],
+        def pr = [id:1, version: 0, fromRef: [latestCommit: "abc123", displayId: "fromDisplayId", repository: [cloneUrl: "abc.com/stash"]],
+                  toRef: [latestCommit: "def456", displayId: "toDisplayId", repository: [cloneUrl: "abc.com/stash"]],
                   reviewers : [[approved : true, user : [displayName : "Bob Reviewer"]], [approved : true, user : [displayName : "Joe Reviewer"]]
                   ]
         ]
@@ -165,8 +165,8 @@ class SyncNextPullRequestTaskFunctionalTest {
 
     @Test
     public void syncNextPullRequestWithOnlyOneReviewersApproved() {
-        def pr = [id:1, version: 0, fromRef: [latestChangeset: "abc123", displayId: "fromDisplayId", repository: [cloneUrl: "abc.com/stash"]],
-                  toRef: [latestChangeset: "def456", displayId: "toDisplayId", repository: [cloneUrl: "abc.com/stash"]],
+        def pr = [id:1, version: 0, fromRef: [latestCommit: "abc123", displayId: "fromDisplayId", repository: [cloneUrl: "abc.com/stash"]],
+                  toRef: [latestCommit: "def456", displayId: "toDisplayId", repository: [cloneUrl: "abc.com/stash"]],
                   reviewers : [[approved : true, user : [displayName : "Bob Reviewer"]], [approved : false, user : [displayName : "Joe Reviewer"]]
                   ]
         ]
@@ -181,8 +181,8 @@ class SyncNextPullRequestTaskFunctionalTest {
 
     @Test
     public void syncNextPullRequestWithAllReviewersApproved() {
-        def pr = [id:1, version: 0, fromRef: [latestChangeset: "abc123", displayId: "fromDisplayId", repository: [cloneUrl: "abc.com/stash"]],
-                  toRef: [latestChangeset: "def456", displayId: "toDisplayId", repository: [cloneUrl: "abc.com/stash"]],
+        def pr = [id:1, version: 0, fromRef: [latestCommit: "abc123", displayId: "fromDisplayId", repository: [cloneUrl: "abc.com/stash"]],
+                  toRef: [latestCommit: "def456", displayId: "toDisplayId", repository: [cloneUrl: "abc.com/stash"]],
                   reviewers : [[approved : true, user : [displayName : "Bob Reviewer"]], [approved : true, user : [displayName : "Joe Reviewer"]]
                   ]
         ]
@@ -197,8 +197,8 @@ class SyncNextPullRequestTaskFunctionalTest {
 
     @Test
     public void syncNextPullRequestWithMultipleReviewersNotApprovedRequireOne() { //nothing should get processed, task should pass
-        def pr = [id:1, version: 0, fromRef: [latestChangeset: "abc123", displayId: "fromDisplayId", repository: [cloneUrl: "abc.com/stash"]],
-                  toRef: [latestChangeset: "def456", displayId: "toDisplayId", repository: [cloneUrl: "abc.com/stash"]],
+        def pr = [id:1, version: 0, fromRef: [latestCommit: "abc123", displayId: "fromDisplayId", repository: [cloneUrl: "abc.com/stash"]],
+                  toRef: [latestCommit: "def456", displayId: "toDisplayId", repository: [cloneUrl: "abc.com/stash"]],
                   reviewers : [[approved : false, user : [displayName : "Bob Reviewer"]], [approved : false, user : [displayName : "Joe Reviewer"]]
                   ]
         ]
