@@ -38,7 +38,7 @@ class OpenPostPullRequestIfNotOnBranchTask extends StashTask {
                 Map result = matchingBranches.find {
                     it.displayId == prFromBranch
                 }
-                assert result.latestChangeset.startsWith(prCommit) // prCommit may be the short commit hash, so account for that
+                assert result.latestCommit.startsWith(prCommit) // prCommit may be the short commit hash, so account for that
 
                 // make sure there isn't already a PR for this
                 def openPrs = stash.getPullRequests(prToBranch, "OPEN", null)

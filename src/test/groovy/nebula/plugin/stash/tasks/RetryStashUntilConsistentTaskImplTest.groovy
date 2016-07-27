@@ -29,41 +29,41 @@ public class RetryStashUntilConsistentTaskImplTest {
 
     @Test
     public void syncPullRequest() {
-        def pr1 = [id: 10, version: 1, fromRef: [latestChangeset:"999"]]
-        def pr2 = [id: 10, version: 2, fromRef: [latestChangeset:"1000"]]
+        def pr1 = [id: 10, version: 1, fromRef: [latestCommit:"999"]]
+        def pr2 = [id: 10, version: 2, fromRef: [latestCommit:"1000"]]
         when(mockStash.getPullRequest(pr1.id)).thenReturn(pr2)
 
-        def x = task.retryStash(pr2.fromRef.latestChangeset, pr1)
+        def x = task.retryStash(pr2.fromRef.latestCommit, pr1)
         assertEquals(pr2.id, x.id)
         assertEquals(pr2.version, x.version)
-        assertEquals(pr2.fromRef.latestChangeset, x.fromRef.latestChangeset)
+        assertEquals(pr2.fromRef.latestCommit, x.fromRef.latestCommit)
         verify(mockStash, times(1)).getPullRequest(pr1.id)
     }
 
     @Test
     public void retrySync() {
-        def pr1 = [id: 10, version: 1, fromRef: [latestChangeset:"999", displayId: "myBranch"]]
-        def pr2 = [id: 10, version: 2, fromRef: [latestChangeset:"1000", displayId: "myBranch"]]
+        def pr1 = [id: 10, version: 1, fromRef: [latestCommit:"999", displayId: "myBranch"]]
+        def pr2 = [id: 10, version: 2, fromRef: [latestCommit:"1000", displayId: "myBranch"]]
 
         when(mockStash.getPullRequest(pr1.id)).thenReturn(pr1, pr1, pr2)
 
-        def x = task.retryStash(pr2.fromRef.latestChangeset, pr1)
+        def x = task.retryStash(pr2.fromRef.latestCommit, pr1)
         assertEquals(pr2.id, x.id)
         assertEquals(pr2.version, x.version)
-        assertEquals(pr2.fromRef.latestChangeset, x.fromRef.latestChangeset)
+        assertEquals(pr2.fromRef.latestCommit, x.fromRef.latestCommit)
         verify(mockStash, times(3)).getPullRequest(pr1.id)
     }
 
     @Test
     public void retrySyncUntilRetryCountIsUp() {
-        def pr1 = [id: 10, version: 1, fromRef: [latestChangeset:"999", displayId: "myBranch"]]
-        def pr2 = [id: 10, version: 2, fromRef: [latestChangeset:"1000", displayId: "myBranch"]]
+        def pr1 = [id: 10, version: 1, fromRef: [latestCommit:"999", displayId: "myBranch"]]
+        def pr2 = [id: 10, version: 2, fromRef: [latestCommit:"1000", displayId: "myBranch"]]
         task.consistencyPollRetryCount = 5
 
         when(mockStash.getPullRequest(pr1.id)).thenReturn(pr1, pr1, pr1, pr1, pr1)
 
         try {
-            task.retryStash(pr2.fromRef.latestChangeset, pr1)
+            task.retryStash(pr2.fromRef.latestCommit, pr1)
         } catch (GradleException e) {
             verify(mockStash, times(5)).getPullRequest(pr1.id)
             return
@@ -89,8 +89,8 @@ class MergeAndSyncPullRequestTest {
 
     @Test
     public void mergeMasterIntoBranchAndPush() {
-        def pr = [fromRef: [displayId: "fromBranchName", latestChangeset:"999 "], toRef: [displayId: "toBranchName"]]
-        when(cmd.execute("git rev-parse HEAD", task.checkoutDir)).thenReturn(pr.fromRef.latestChangeset+"\n")
+        def pr = [fromRef: [displayId: "fromBranchName", latestCommit:"999 "], toRef: [displayId: "toBranchName"]]
+        when(cmd.execute("git rev-parse HEAD", task.checkoutDir)).thenReturn(pr.fromRef.latestCommit+"\n")
         when(cmd.execute("git merge origin/${pr.toRef.displayId} --commit", task.checkoutDir)).thenReturn("Okay no problem\n")
 
         def x = task.mergeAndSyncPullRequest(pr)
@@ -104,8 +104,8 @@ class MergeAndSyncPullRequestTest {
 
     @Test
     public void failIfMergeHadConflict() {
-        def pr = [fromRef: [displayId: "fromBranchName", latestChangeset:"999 "], toRef: [displayId: "toBranchName"]]
-        when(cmd.execute("git rev-parse HEAD", task.checkoutDir)).thenReturn(pr.fromRef.latestChangeset+"\n")
+        def pr = [fromRef: [displayId: "fromBranchName", latestCommit:"999 "], toRef: [displayId: "toBranchName"]]
+        when(cmd.execute("git rev-parse HEAD", task.checkoutDir)).thenReturn(pr.fromRef.latestCommit+"\n")
         when(cmd.execute("git merge origin/${pr.toRef.displayId} --commit", task.checkoutDir)).thenReturn("Automatic merge failed\nuehtnosahbuten soahtuneso ahtunse hoatnuse ohatns\n")
 
         try {
@@ -122,8 +122,8 @@ class MergeAndSyncPullRequestTest {
     @Test
     public void attemptsSync() {
         StashRestApi mockStash = task.stash = mock(StashRestApi.class)
-        def pr1 = [id: 10, version: 1, fromRef: [displayId: "fromBranchName", latestChangeset:"998 "], toRef: [displayId: "toBranchName"]]
-        def pr2 = [id: 10, version: 2, fromRef: [displayId: "fromBranchName", latestChangeset:"999 "], toRef: [displayId: "toBranchName"]]
+        def pr1 = [id: 10, version: 1, fromRef: [displayId: "fromBranchName", latestCommit:"998 "], toRef: [displayId: "toBranchName"]]
+        def pr2 = [id: 10, version: 2, fromRef: [displayId: "fromBranchName", latestCommit:"999 "], toRef: [displayId: "toBranchName"]]
         when(cmd.execute("git rev-parse HEAD", task.checkoutDir)).thenReturn("999\n")
         when(cmd.execute("git merge origin/toBranchName --commit", task.checkoutDir)).thenReturn("Okay no problem\n")
         when(mockStash.getPullRequest(pr1.id)).thenReturn(pr2)
@@ -156,7 +156,7 @@ public class IsValidPullRequestsTaskTest {
 
     @Test
     public void isValidPullRequestForNonInProgressRpmBuild() {
-        def pr = [id: 10, version: -2, fromRef: [latestChangeset:"999", repository: [cloneUrl: "abc.com/stash"]], toRef: [repository : [cloneUrl: "abc.com/stash"]]]
+        def pr = [id: 10, version: -2, fromRef: [latestCommit:"999", repository: [cloneUrl: "abc.com/stash"]], toRef: [repository : [cloneUrl: "abc.com/stash"]]]
 
         Map b1 = new HashMap()
         b1.put("key", StashRestApi.RPM_BUILD_KEY)
@@ -165,37 +165,37 @@ public class IsValidPullRequestsTaskTest {
         b2.put("key", StashRestApi.BAKE_BUILD_KEY)
         b2.put("state", StashRestApi.INPROGRESS_BUILD_STATE)
 
-        when(mockStash.getBuilds(pr.fromRef.latestChangeset.toString())).thenReturn([b1,b2])
+        when(mockStash.getBuilds(pr.fromRef.latestCommit.toString())).thenReturn([b1,b2])
         assertTrue(task.isValidPullRequest(pr))
     }
 
     @Test
     public void isInvalidPullRequestForSuccessfulRpmBuild() {
-        def pr = [id: 10, version: -2, fromRef: [latestChangeset:"999", repository: [cloneUrl: "abc.com/stash"]], toRef: [repository : [cloneUrl: "abc.com/stash"]]]
+        def pr = [id: 10, version: -2, fromRef: [latestCommit:"999", repository: [cloneUrl: "abc.com/stash"]], toRef: [repository : [cloneUrl: "abc.com/stash"]]]
 
         Map b1 = new HashMap()
         b1.put("key", StashRestApi.RPM_BUILD_KEY)
         b1.put("state", StashRestApi.SUCCESSFUL_BUILD_STATE)
 
-        when(mockStash.getBuilds(pr.fromRef.latestChangeset.toString())).thenReturn([b1])
+        when(mockStash.getBuilds(pr.fromRef.latestCommit.toString())).thenReturn([b1])
         assertFalse(task.isValidPullRequest(pr))
     }
 
     @Test
     public void isInvalidPullRequestForInProgressRpmBuild() {
-        def pr = [id: 10, version: -2, fromRef: [latestChangeset:"999", repository: [cloneUrl: "abc.com/stash"]], toRef: [repository : [cloneUrl: "abc.com/stash"]]]
+        def pr = [id: 10, version: -2, fromRef: [latestCommit:"999", repository: [cloneUrl: "abc.com/stash"]], toRef: [repository : [cloneUrl: "abc.com/stash"]]]
 
         Map b1 = new HashMap()
         b1.put("key", StashRestApi.RPM_BUILD_KEY)
         b1.put("state", StashRestApi.INPROGRESS_BUILD_STATE)
 
-        when(mockStash.getBuilds(pr.fromRef.latestChangeset.toString())).thenReturn([b1])
+        when(mockStash.getBuilds(pr.fromRef.latestCommit.toString())).thenReturn([b1])
         assertFalse(task.isValidPullRequest(pr))
     }
 
     @Test
     public void ignoresPullRequestsFromDifferentForks() {
-        def pr = [id: 10, version: -2, fromRef: [latestChangeset:"999", repository: [cloneUrl: "abc.com/stash"]], toRef: [repository : [cloneUrl: "abc.com/somethingelse"]]]
+        def pr = [id: 10, version: -2, fromRef: [latestCommit:"999", repository: [cloneUrl: "abc.com/stash"]], toRef: [repository : [cloneUrl: "abc.com/somethingelse"]]]
         assertFalse(task.isValidPullRequest(pr))
     }
 }

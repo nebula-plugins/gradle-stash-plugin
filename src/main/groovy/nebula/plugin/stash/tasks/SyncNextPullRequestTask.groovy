@@ -40,7 +40,7 @@ class SyncNextPullRequestTask extends StashTask {
                     setPropertiesFile(pr, buildPath)
                     project.ext.set("pullRequestId", pr.id)
                     project.ext.set("pullRequestVersion", pr.version)
-                    project.ext.set("buildCommit", pr.fromRef.latestChangeset.trim())
+                    project.ext.set("buildCommit", pr.fromRef.latestCommit.trim())
                     logger.info("Finished processing pull request: {id: ${pr.id}, version: ${pr.version}}")
                     break
                 }
@@ -62,7 +62,7 @@ class SyncNextPullRequestTask extends StashTask {
      *  * if it has reviewers and all the reviewers have approved it
      */
     public boolean isValidPullRequest(Map pr) {
-        def builds = stash.getBuilds(pr.fromRef.latestChangeset.toString())
+        def builds = stash.getBuilds(pr.fromRef.latestCommit.toString())
         if (pr.fromRef.repository.cloneUrl != pr.toRef.repository.cloneUrl) {
             logger.info("Ignoring pull requests from other fork: $pr")
             return false
@@ -111,7 +111,7 @@ class SyncNextPullRequestTask extends StashTask {
                 throw new GradleException("Merge conflict merging from '$targetBranch' to '$fromBranch'\n:$results")
             cmd.execute("git push origin HEAD:$fromBranch", checkoutDir)
             def localCommit = cmd.execute("git rev-parse HEAD", checkoutDir).trim()
-            def pullReqCommit = pr.fromRef.latestChangeset.trim()
+            def pullReqCommit = pr.fromRef.latestCommit.trim()
             if (!localCommit.equals(pullReqCommit))
                 pr = retryStash(localCommit, pr)
             logger.info "Finished syncing git repo"
@@ -134,7 +134,7 @@ class SyncNextPullRequestTask extends StashTask {
             //timeout = System.currentTimeMillis() + consistencyPollRetryDeplayMs
             logger.info("getting latest PR info for ${pullRequest.id}")
             def updatedPR = stash.getPullRequest(pullRequest.id)
-            stashCommit = updatedPR.fromRef.latestChangeset.trim()
+            stashCommit = updatedPR.fromRef.latestCommit.trim()
             logger.info("Comparing stash head commit '$stashCommit' to local head commit '$localCommit'")
             if (stashCommit == localCommit)
                 return updatedPR
@@ -151,7 +151,7 @@ class SyncNextPullRequestTask extends StashTask {
         prop.setProperty("pullRequestVersion", Integer.toString(pr.version));
         prop.setProperty("pullRequestSourceBranch", pr.fromRef.displayId);
         prop.setProperty("pullRequestTargetBranch", pr.toRef.displayId);
-        prop.setProperty("buildCommit", pr.fromRef.latestChangeset.trim());
+        prop.setProperty("buildCommit", pr.fromRef.latestCommit.trim());
         
         logger.info "set properties"
         try {

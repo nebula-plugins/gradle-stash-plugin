@@ -14,10 +14,10 @@ class MergeBuiltPullRequestsTask extends StashTask {
             for (def pr : pullRequests) {
                 println "PR : ${pr.dump()}"
                 assert(pr.containsKey("fromRef"))
-                assert(pr.fromRef.containsKey("latestChangeset"))
+                assert(pr.fromRef.containsKey("latestCommit"))
                 def originBranch = pr.fromRef.displayId
                 logger.info("Checking if pull request from $originBranch (pr id ${pr.id}, version ${pr.version}) can be closed. Pulling builds for current commit of branch.")
-                List<Map> builds = stash.getBuilds(pr.fromRef.latestChangeset)
+                List<Map> builds = stash.getBuilds(pr.fromRef.latestCommit)
                 if(builds.size() == 0) {
                     logger.info("pr id ${pr.id}, version ${pr.version} has no builds, so it can't be closed")
                 }

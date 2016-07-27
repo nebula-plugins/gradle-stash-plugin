@@ -159,7 +159,7 @@ class OpenPostPullRequestIfNotOnBranchTaskFunctionalTest {
     public void branchAlreadyHasAPullRequest() {
         project.tasks.openPostPullRequestIfNotOnBranchTask.stash = mockStash
         def branchInfoResponse = [ [id : "refs/heads/branch-a", displayId : "branch-a"] ]
-        def matchingBranchResponse = [ [id : "refs/heads/branch-a", displayId : "branch-a", latestChangeset : testCommit] ]
+        def matchingBranchResponse = [ [id : "refs/heads/branch-a", displayId : "branch-a", latestCommit : testCommit] ]
         def openPrsResponse = [ [fromRef : [id: "refs/heads/branch-a"], toRef : [id : "refs/heads/${testBranch}"]] ]
 
         when(mockStash.getBranchInfo(testCommit)).thenReturn(branchInfoResponse)
@@ -175,7 +175,7 @@ class OpenPostPullRequestIfNotOnBranchTaskFunctionalTest {
     public void commitNotHeadOfSourceBranch() {
         project.tasks.openPostPullRequestIfNotOnBranchTask.stash = mockStash
         def branchInfoResponse = [ [id : "refs/heads/branch-a", displayId : "branch-a"] ]
-        def matchingBranchResponse = [ [id : "refs/heads/branch-a", displayId : "branch-a", latestChangeset : "notExpectedCommit"] ]
+        def matchingBranchResponse = [ [id : "refs/heads/branch-a", displayId : "branch-a", latestCommit : "notExpectedCommit"] ]
         def openPrsResponse = []
         def postPullRequestResponse = [ link : [url : "http://foo.com/123"] ]
 
@@ -195,7 +195,7 @@ class OpenPostPullRequestIfNotOnBranchTaskFunctionalTest {
     public void successfullyOpenPullRequest() {
         project.tasks.openPostPullRequestIfNotOnBranchTask.stash = mockStash
         def branchInfoResponse = [ [id : "refs/heads/branch-a", displayId : "branch-a"] ]
-        def matchingBranchResponse = [ [id : "refs/heads/branch-a", displayId : "branch-a", latestChangeset : testCommit] ]
+        def matchingBranchResponse = [ [id : "refs/heads/branch-a", displayId : "branch-a", latestCommit : testCommit] ]
         def openPrsResponse = []
         def postPullRequestResponse = [ link : [url : "http://foo.com/123"] ]
 
