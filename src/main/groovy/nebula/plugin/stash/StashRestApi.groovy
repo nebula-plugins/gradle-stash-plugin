@@ -19,6 +19,7 @@ interface StashRestApi {
     List<Map> getPullRequests(String at)
     List<Map> getPullRequests(String at, String state, String order)
     Map getPullRequest(Long id)
+    void createBranch(String branchName, String startPoint)
     void deleteBranch(String branchName)
     List<Map> getBuilds(String changeSet)
     Map getBuildStats(String changeSet)
