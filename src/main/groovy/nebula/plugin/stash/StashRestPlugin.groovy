@@ -10,7 +10,7 @@ class StashRestPlugin implements Plugin<Project> {
     @Override
     void apply(Project project) {
         project.plugins.apply(StashRestBasePlugin)
-        project.logger.lifecycle "gradle-stash tasks are enabled"
+        project.logger.debug "gradle-stash tasks are enabled"
         createTasks(project)
     }
 
