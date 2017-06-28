@@ -60,21 +60,17 @@ class StashRestApiImpl implements StashRestApi {
         return httpRequest(POST, JSON, path, queryParams, builder.toString())
     }
 
-    private void stashDeleteJson(String path, Map postBody = [:], Map queryParams = [:])
+    private void stashDeleteJson(String path, Map queryParams = [:])
     {
-        log "DELETE: \n$path \n$postBody"
-        def builder = new groovy.json.JsonBuilder()
-        def root = builder { postBody }
-        log "builder : " + builder.toString()
-//        return httpRequest(POST, JSON, pathInRepo, queryParams, JSONUtility.jsonFromMap(postBody))
-        httpRequest(DELETE, JSON, path, queryParams, builder.toString())
+        log "DELETE: \n$path"
+        httpRequest(DELETE, JSON, path, queryParams)
     }
 
     private Map httpRequest(Method method, ContentType contentType, String path, Map queryParams, String requestBody = '') throws Exception {
         new HTTPBuilder(stashHost).request(method, contentType) { req ->
             uri.path = path
             uri.query = queryParams
-            if (method != GET)
+            if (method != GET && method != DELETE)
                 body = requestBody
             headers.'Authorization' = getBasicAuthHeader()
             response.success = { resp, json ->
@@ -230,7 +226,8 @@ class StashRestApiImpl implements StashRestApi {
     @Override
     void deleteBranch(String branchName)
     {
-        stashDeleteJson(path, [name:"/refs/heads/$branchName", dryRun:false], [:])
+        def path = getRestPath() + "branches/"
+        stashDeleteJson(path, [name:"/refs/heads/$branchName", dryRun:false])
     }
 
     @Override
