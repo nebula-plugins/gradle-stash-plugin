@@ -19,7 +19,7 @@
     },
     "integTestCompile": {
         "com.netflix.nebula:nebula-test": {
-            "locked": "6.1.1",
+            "locked": "6.1.2",
             "requested": "6.+"
         },
         "org.codehaus.groovy.modules.http-builder:http-builder": {
@@ -33,7 +33,7 @@
     },
     "integTestCompileClasspath": {
         "com.netflix.nebula:nebula-test": {
-            "locked": "6.1.1",
+            "locked": "6.1.2",
             "requested": "6.+"
         },
         "org.codehaus.groovy.modules.http-builder:http-builder": {
@@ -47,7 +47,7 @@
     },
     "integTestRuntime": {
         "com.netflix.nebula:nebula-test": {
-            "locked": "6.1.1",
+            "locked": "6.1.2",
             "requested": "6.+"
         },
         "org.codehaus.groovy.modules.http-builder:http-builder": {
@@ -61,7 +61,7 @@
     },
     "integTestRuntimeClasspath": {
         "com.netflix.nebula:nebula-test": {
-            "locked": "6.1.1",
+            "locked": "6.1.2",
             "requested": "6.+"
         },
         "org.codehaus.groovy.modules.http-builder:http-builder": {
@@ -97,7 +97,7 @@
     },
     "testCompile": {
         "com.netflix.nebula:nebula-test": {
-            "locked": "6.1.1",
+            "locked": "6.1.2",
             "requested": "6.+"
         },
         "org.codehaus.groovy.modules.http-builder:http-builder": {
@@ -111,7 +111,7 @@
     },
     "testCompileClasspath": {
         "com.netflix.nebula:nebula-test": {
-            "locked": "6.1.1",
+            "locked": "6.1.2",
             "requested": "6.+"
         },
         "org.codehaus.groovy.modules.http-builder:http-builder": {
@@ -125,7 +125,7 @@
     },
     "testRuntime": {
         "com.netflix.nebula:nebula-test": {
-            "locked": "6.1.1",
+            "locked": "6.1.2",
             "requested": "6.+"
         },
         "org.codehaus.groovy.modules.http-builder:http-builder": {
@@ -139,7 +139,7 @@
     },
     "testRuntimeClasspath": {
         "com.netflix.nebula:nebula-test": {
-            "locked": "6.1.1",
+            "locked": "6.1.2",
             "requested": "6.+"
         },
         "org.codehaus.groovy.modules.http-builder:http-builder": {
