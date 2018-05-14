@@ -9,7 +9,6 @@ import org.junit.Before
 import org.junit.Test
 
 import static nebula.plugin.stash.StashPluginFixture.setDummyStashTaskPropertyValues
-import static nebula.plugin.stash.StashTaskAssertion.runTaskExpectFail
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertTrue
 import static org.mockito.Mockito.mock
@@ -68,60 +67,6 @@ class AddBuildStatusTaskTest {
         task.buildCommit = "AEAEAEAE"
         assertEquals("AEAEAEAE", task.buildCommit)
     }
-    @Test
-    public void failsIfBuildStateNotProvided() {
-        AddBuildStatusTask task = project.tasks.addBuildStatus
-        task.buildKey = "121"
-        task.buildName = "My Build"
-        task.buildUrl = "http://builds/mine"
-        task.buildDescription = "Build Description"
-        task.buildCommit = "AEAEAEAE"
-        runTaskExpectFail(task, "buildState")
-    }
-
-    @Test
-    public void failsIfBuildKeyNotProvided() {
-        AddBuildStatusTask task = project.tasks.addBuildStatus
-        task.buildState = "INPROGRESS"
-        task.buildName = "My Build"
-        task.buildUrl = "http://builds/mine"
-        task.buildDescription = "Build Description"
-        task.buildCommit = "AEAEAEAE"
-        runTaskExpectFail(task, "buildKey")
-    }
-
-    @Test
-    public void failsIfBuildNameNotProvided() {
-        AddBuildStatusTask task = project.tasks.addBuildStatus
-        task.buildState = "INPROGRESS"
-        task.buildKey = "121"
-        task.buildUrl = "http://builds/mine"
-        task.buildDescription = "Build Description"
-        task.buildCommit = "AEAEAEAE"
-        runTaskExpectFail(task, "buildName")
-    }
-
-    @Test
-    public void failsIfBuildUrlNotProvided() {
-        AddBuildStatusTask task = project.tasks.addBuildStatus
-        task.buildState = "INPROGRESS"
-        task.buildKey = "121"
-        task.buildName = "My Build"
-        task.buildDescription = "Build Description"
-        task.buildCommit = "AEAEAEAE"
-        runTaskExpectFail(task, "buildUrl")
-    }
-
-    @Test
-    public void failsIfBuildDescriptionNotProvided() {
-        AddBuildStatusTask task = project.tasks.addBuildStatus
-        task.buildState = "INPROGRESS"
-        task.buildKey = "121"
-        task.buildName = "My Build"
-        task.buildUrl = "http://builds/mine"
-        task.buildCommit = "AEAEAEAE"
-        runTaskExpectFail(task, "buildDescription")
-    }
 }
 
 class AddBuildStatusTaskFuncTest {
@@ -153,7 +98,7 @@ class AddBuildStatusTaskFuncTest {
         ExternalProcess cmd = task.cmd = mock(ExternalProcess.class)
         project.tasks.addBuildStatus.stash = mockStash
         when(mockStash.postBuildStatus(task.buildCommit, [state:task.buildState, key:task.buildKey, name:task.buildName, url:task.buildUrl, description:task.buildDescription])).thenReturn(null)
-        project.tasks.addBuildStatus.execute()
+        project.tasks.addBuildStatus.runAction()
         // nothing to verify since postBuildStatus returns an empty result
     }
 
@@ -165,7 +110,7 @@ class AddBuildStatusTaskFuncTest {
         ExternalProcess cmd = task.cmd = mock(ExternalProcess.class)
         when(cmd.execute("git rev-parse HEAD", System.getProperty("user.dir"))).thenReturn("FEDCBA\n")
         when(mockStash.postBuildStatus("FEDCBA", [state:task.buildState, key:task.buildKey, name:task.buildName, url:task.buildUrl, description:task.buildDescription])).thenReturn(null)
-        project.tasks.addBuildStatus.execute()
+        project.tasks.addBuildStatus.runAction()
         // nothing to verify since postBuildStatus returns an empty result 
     }
 
@@ -177,6 +122,6 @@ class AddBuildStatusTaskFuncTest {
         ExternalProcess cmd = task.cmd = mock(ExternalProcess.class)
         when(cmd.execute("git rev-parse HEAD", System.getProperty("user.dir"))).thenReturn(null)
         when(mockStash.postBuildStatus("FEDCBA", [state:task.buildState, key:task.buildKey, name:task.buildName, url:task.buildUrl, description:task.buildDescription])).thenReturn(null)
-        project.tasks.addBuildStatus.execute()
+        project.tasks.addBuildStatus.runAction()
     }
 }
