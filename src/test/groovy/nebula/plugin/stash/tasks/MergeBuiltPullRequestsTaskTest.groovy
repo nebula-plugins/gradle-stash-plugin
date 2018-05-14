@@ -8,7 +8,6 @@ import org.junit.Before
 import org.junit.Test
 
 import static nebula.plugin.stash.StashPluginFixture.setDummyStashTaskPropertyValues
-import static nebula.plugin.stash.StashTaskAssertion.runTaskExpectFail
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertTrue
 import static org.mockito.Matchers.anyString
@@ -37,12 +36,6 @@ class MergeBuiltPullRequestsTaskTest {
         task.targetBranch = "bar"
 
         assertEquals("bar", task.targetBranch)
-    }
-
-    @Test
-    public void failsIfTargetBranchNotProvided() {
-        MergeBuiltPullRequestsTask task = project.tasks.mergeBuiltPullRequests
-        runTaskExpectFail(task, "targetBranch")
     }
 }
 
@@ -77,7 +70,7 @@ class MergeBuiltPullRequestsTaskFuncTest {
         when(mockStash.mergePullRequest([id: pr.id, version: pr.version])).thenReturn(null)
         when(mockStash.commentPullRequest(eq(pr.id), anyString())).thenReturn(null)
 
-        task.execute()
+        task.runAction()
 
         verify(mockStash).getPullRequests(eq(task.targetBranch), eq("OPEN"), eq("OLDEST"))
         verify(mockStash).getBuilds(eq(pr.fromRef.latestCommit))
@@ -95,7 +88,7 @@ class MergeBuiltPullRequestsTaskFuncTest {
         when(mockStash.mergePullRequest([id: pr.id, version: pr.version])).thenReturn(null)
         when(mockStash.commentPullRequest(eq(pr.id), anyString())).thenReturn(null)
 
-        task.execute()
+        task.runAction()
 
         verify(mockStash).getPullRequests(eq(task.targetBranch), eq("OPEN"), eq("OLDEST"))
         verify(mockStash).getBuilds(eq(pr.fromRef.latestCommit))
@@ -116,7 +109,7 @@ class MergeBuiltPullRequestsTaskFuncTest {
         when(mockStash.mergePullRequest([id: pr.id, version: pr.version])).thenReturn(null)
         when(mockStash.commentPullRequest(eq(pr.id), anyString())).thenReturn(null)
 
-        task.execute()
+        task.runAction()
 
         verify(mockStash).getPullRequests(eq(task.targetBranch), eq("OPEN"), eq("OLDEST"))
         verify(mockStash).getBuilds(eq(pr.fromRef.latestCommit))
@@ -138,7 +131,7 @@ class MergeBuiltPullRequestsTaskFuncTest {
         when(mockStash.mergePullRequest([id: pr.id, version: pr.version])).thenReturn(null)
         when(mockStash.commentPullRequest(eq(pr.id), anyString())).thenReturn(null)
 
-        task.execute()
+        task.runAction()
 
         verify(mockStash).getPullRequests(eq(task.targetBranch), eq("OPEN"), eq("OLDEST"))
         verify(mockStash).getBuilds(eq(pr.fromRef.latestCommit))
@@ -159,7 +152,7 @@ class MergeBuiltPullRequestsTaskFuncTest {
         when(mockStash.mergePullRequest([id: pr.id, version: pr.version])).thenReturn(null)
         when(mockStash.commentPullRequest(eq(pr.id), anyString())).thenReturn(null)
 
-        task.execute()
+        task.runAction()
 
         verify(mockStash).getPullRequests(eq(task.targetBranch), eq("OPEN"), eq("OLDEST"))
         verify(mockStash).getBuilds(eq(pr.fromRef.latestCommit))
@@ -181,7 +174,7 @@ class MergeBuiltPullRequestsTaskFuncTest {
         when(mockStash.mergePullRequest([id: pr.id, version: pr.version])).thenReturn(null)
         when(mockStash.commentPullRequest(eq(pr.id), anyString())).thenReturn(null)
 
-        task.execute()
+        task.runAction()
 
         verify(mockStash).getPullRequests(eq(task.targetBranch), eq("OPEN"), eq("OLDEST"))
         verify(mockStash).getBuilds(eq(pr.fromRef.latestCommit))

@@ -8,7 +8,6 @@ import org.junit.Before
 import org.junit.Test
 
 import static nebula.plugin.stash.StashPluginFixture.setDummyStashTaskPropertyValues
-import static nebula.plugin.stash.StashTaskAssertion.runTaskExpectFail
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertTrue
 import static org.mockito.Matchers.anyString
@@ -64,42 +63,6 @@ class PostPullRequestTaskTest {
         task.prDescription = "description"
         assertEquals("description", task.prDescription)
     }
-    
-    @Test
-    public void failsIfPrFromBranchNotProvided() {
-        PostPullRequestTask task = project.tasks.postPullRequest
-        task.prToBranch = "branch2"
-        task.prDescription = "description"
-        task.prTitle = "title"
-        runTaskExpectFail(task, "prFromBranch")
-    }
-    
-    @Test
-    public void failsIfprToBranchNotProvided() {
-        PostPullRequestTask task = project.tasks.postPullRequest
-        task.prFromBranch = "branch"
-        task.prDescription = "description"
-        task.prTitle = "title"
-        runTaskExpectFail(task, "prToBranch")
-    }
-    
-    @Test
-    public void failsIfprDescriptionNotProvided() {
-        PostPullRequestTask task = project.tasks.postPullRequest
-        task.prFromBranch = "branch"
-        task.prToBranch = "branch2"
-        task.prTitle = "title"
-        runTaskExpectFail(task, "prDescription")
-    }
-    
-    @Test
-    public void failsIfPrTitleNotProvided() {
-        PostPullRequestTask task = project.tasks.postPullRequest
-        task.prFromBranch = "branch"
-        task.prToBranch = "branch2"
-        task.prDescription = "description"
-        runTaskExpectFail(task, "prTitle")
-    }
 }
 
 class PostPullRequestTaskFunctionalTest {    
@@ -128,7 +91,7 @@ class PostPullRequestTaskFunctionalTest {
     public void postPullRequest() {
         def pr = [id:1, version: 0, fromRef: [latestCommit: "abc123"], toRef: [latestCommit: "def456"]]
         when(mockStash.postPullRequest(anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(pr)
-        project.tasks.postPullRequest.execute()
+        project.tasks.postPullRequest.runAction()
         verify(mockStash).postPullRequest(anyString(), anyString(), anyString(), anyString(), anyString())
     }
 
@@ -136,7 +99,7 @@ class PostPullRequestTaskFunctionalTest {
     public void postPullRequestFails() {
         def pr = [id:1, version: 0, fromRef: [latestCommit: "abc123"], toRef: [latestCommit: "def456"]]
         when(mockStash.postPullRequest(anyString(), anyString(), anyString(), anyString(), anyString())).thenThrow(new GradleException("mock exception"))
-        project.tasks.postPullRequest.execute()
+        project.tasks.postPullRequest.runAction()
     }    
 }
 

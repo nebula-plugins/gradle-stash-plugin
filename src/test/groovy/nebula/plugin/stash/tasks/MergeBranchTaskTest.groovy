@@ -10,7 +10,6 @@ import org.junit.Before
 import org.junit.Test
 
 import static nebula.plugin.stash.StashPluginFixture.setDummyStashTaskPropertyValues
-import static nebula.plugin.stash.StashTaskAssertion.runTaskExpectFail
 import static org.junit.Assert.*
 import static org.mockito.AdditionalMatchers.find
 import static org.mockito.AdditionalMatchers.not
@@ -84,42 +83,6 @@ class MergeBranchTaskTest {
         task.repoName = "stashRepo"
         assertEquals("stashRepo", task.repoName)
     }
-    
-    @Test
-    public void failsIfPullFromBranchNotProvided() {
-        MergeBranchTask task = project.tasks.mergeBranch
-        task.mergeToBranch = "branch"
-        task.repoUrl = "http://foo/bar"
-        task.workingPath = "/foo/bar"
-        runTaskExpectFail(task, "pullFromBranch")
-    }
-    
-    @Test
-    public void failsIfMergeToBranchNotProvided() {
-        MergeBranchTask task = project.tasks.mergeBranch
-        task.pullFromBranch = "branch"
-        task.repoUrl = "http://foo/bar"
-        task.workingPath = "/foo/bar"
-        runTaskExpectFail(task, "mergeToBranch")
-    }
-    
-    @Test
-    public void failsIfstashRepoUrlNotProvided() {
-        MergeBranchTask task = project.tasks.mergeBranch
-        task.pullFromBranch = "branch"
-        task.mergeToBranch = "branch"
-        task.workingPath = "/foo/bar"
-        runTaskExpectFail(task, "repoUrl")
-    }
-    
-    @Test
-    public void failsIfWorkingPathNotProvided() {
-        MergeBranchTask task = project.tasks.mergeBranch
-        task.pullFromBranch = "branch"
-        task.mergeToBranch = "branch"
-        task.repoUrl = "http://foo/bar"
-        runTaskExpectFail(task, "workingPath")
-    }
 }
 
 class MergeBranchTaskFunctionalTest {
@@ -161,7 +124,7 @@ class MergeBranchTaskFunctionalTest {
         // cant seem to be able to mock this groovy extension method
         //when(mockFile.deleteDir()).thenReturn(true)
         when(mockStash.getBranchesMatching(anyString())).thenReturn([[foo : "bar"]])
-        task.execute()
+        task.runAction()
     }
     
     @Test
@@ -172,7 +135,7 @@ class MergeBranchTaskFunctionalTest {
         
         when(mockClonePath.exists()).thenReturn(true)
         try {
-            task.execute()
+            task.runAction()
             fail("should have thrown an exception")
         } catch (GradleException e) {
             verify(mockClonePath).exists()
@@ -188,7 +151,7 @@ class MergeBranchTaskFunctionalTest {
         when(mockFile.isDirectory()).thenReturn(true)
         when(mockFile.exists()).thenReturn(true)
         when(cmd.execute(anyString(), anyString())).thenReturn("Automatic merge failed")
-        task.execute()
+        task.runAction()
     }
     
     @Test
@@ -204,7 +167,7 @@ class MergeBranchTaskFunctionalTest {
         when(mockStash.postPullRequest(anyObject(), anyObject(), anyObject(), anyObject(), anyObject())).thenThrow(new RuntimeException("mock exception"))
         when(mockStash.getBranchesMatching(anyString())).thenReturn([[foo : "bar"]])
         try {
-            project.tasks.mergeBranch.execute()
+            project.tasks.mergeBranch.runAction()
             fail("should have thrown an exception")
         } catch (GradleException e) {
             verify(mockStash).postPullRequest(anyObject(), anyObject(), anyObject(), anyObject(), anyObject())
@@ -226,7 +189,7 @@ class MergeBranchTaskFunctionalTest {
         when(mockStash.getBranchesMatching(anyString())).thenReturn([[foo : "bar"]])
 
         try {
-            task.execute()
+            task.runAction()
             fail("should have thrown an exception")
         } catch (GradleException e) {
             println (e.dump())
@@ -249,7 +212,7 @@ class MergeBranchTaskFunctionalTest {
         when(mockStash.getBranchesMatching(anyString())).thenReturn([[foo : "bar"]])
 
         try {
-            task.execute()
+            task.runAction()
             fail("should have thrown an exception")
         } catch (GradleException e) {
             verify(mockStash).postPullRequest(anyObject(), anyObject(), anyObject(), anyObject(), anyObject())

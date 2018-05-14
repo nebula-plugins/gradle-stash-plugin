@@ -8,7 +8,6 @@ import org.junit.Before
 import org.junit.Test
 
 import static nebula.plugin.stash.StashPluginFixture.setDummyStashTaskPropertyValues
-import static nebula.plugin.stash.StashTaskAssertion.runTaskExpectFail
 import static org.junit.Assert.*
 import static org.mockito.Matchers.anyString
 import static org.mockito.Matchers.eq
@@ -44,20 +43,6 @@ class ClosePullRequestTaskTest {
 
         assertEquals(10, project.tasks.closePullRequest.pullRequestId)
     }
-
-    @Test
-    public void failsIfPullRequestIdNotProvided() {
-        ClosePullRequestAfterBuildTask task = project.tasks.closePullRequest
-        task.pullRequestVersion = 1L
-        runTaskExpectFail(task, "pullRequestId")
-    }
-    
-    @Test
-    public void failsIfPullRequestVersionNotProvided() {
-        ClosePullRequestAfterBuildTask task = project.tasks.closePullRequest
-        task.pullRequestId = 1L
-        runTaskExpectFail(task, "pullRequestVersion")
-    }
 }
 
 class ClosePullRequestTaskFunctionalTest {
@@ -90,7 +75,7 @@ class ClosePullRequestTaskFunctionalTest {
         when(mockStash.mergePullRequest([pr])).thenReturn(prResponse)
         when(mockStash.commentPullRequest(eq(pr.id), anyString())).thenReturn(null)
         
-        project.tasks.closePullRequest.execute()
+        project.tasks.closePullRequest.runAction()
         
         verify(mockStash).mergePullRequest(eq([id: pr.id, version: pr.version]))
         verify(mockStash).commentPullRequest(eq(givenPullRequestId), eq(ClosePullRequestAfterBuildTask.MESSAGE_SUCCESSFUL))
@@ -106,7 +91,7 @@ class ClosePullRequestTaskFunctionalTest {
         when(mockStash.commentPullRequest(eq(pr.id), anyString())).thenReturn(null)
         
         try {
-            project.tasks.closePullRequest.execute()
+            project.tasks.closePullRequest.runAction()
             fail("did not throw expected GradleException")
         } catch(GradleException e) {
             verify(mockStash).commentPullRequest(eq(givenPullRequestId), eq(ClosePullRequestAfterBuildTask.MESSAGE_CONFLICTED))

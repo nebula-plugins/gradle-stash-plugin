@@ -6,7 +6,6 @@ import org.junit.Before
 import org.junit.Test
 
 import static nebula.plugin.stash.StashPluginFixture.setDummyStashTaskPropertyValues
-import static nebula.plugin.stash.StashTaskAssertion.runTaskExpectFail
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertTrue
 import static org.mockito.Matchers.anyString
@@ -46,42 +45,6 @@ public class OpenPostPullRequestIfNotOnBranchTaskTest {
         assertEquals("prTitle", task.prTitle)
         assertEquals("prDescription", task.prDescription)
     }
-
-    @Test
-    public void failsIfPrCommitNotProvided() {
-        OpenPostPullRequestIfNotOnBranchTask task = project.tasks.openPostPullRequestIfNotOnBranchTask
-        task.prToBranch = "prToBranch"
-        task.prTitle = "prTitle"
-        task.prDescription = "prDescription"
-        runTaskExpectFail(task, "prCommit")
-    }
-
-    @Test
-    public void failsIfPrToBranchNotProvided() {
-        OpenPostPullRequestIfNotOnBranchTask task = project.tasks.openPostPullRequestIfNotOnBranchTask
-        task.prCommit = "prCommit"
-        task.prTitle = "prTitle"
-        task.prDescription = "prDescription"
-        runTaskExpectFail(task, "prToBranch")
-    }
-
-    @Test
-    public void failsIfFPrTitleNotProvided() {
-        OpenPostPullRequestIfNotOnBranchTask task = project.tasks.openPostPullRequestIfNotOnBranchTask
-        task.prCommit = "prCommit"
-        task.prToBranch = "prToBranch"
-        task.prDescription = "prDescription"
-        runTaskExpectFail(task, "prTitle")
-    }
-
-    @Test
-    public void failsIfPrDescriptionNotProvided() {
-        OpenPostPullRequestIfNotOnBranchTask task = project.tasks.openPostPullRequestIfNotOnBranchTask
-        task.prCommit = "prCommit"
-        task.prToBranch = "prToBranch"
-        task.prTitle = "prTitle"
-        runTaskExpectFail(task, "prDescription")
-    }
 }
 
 class OpenPostPullRequestIfNotOnBranchTaskFunctionalTest {
@@ -114,7 +77,7 @@ class OpenPostPullRequestIfNotOnBranchTaskFunctionalTest {
                                    [id : "refs/heads/branch-a", displayId : testBranch] ]
 
         when(mockStash.getBranchInfo(testCommit)).thenReturn(branchInfoResponse)
-        project.tasks.openPostPullRequestIfNotOnBranchTask.execute()
+        project.tasks.openPostPullRequestIfNotOnBranchTask.runAction()
 
         verify(mockStash, never()).getBranchesMatching()
         verify(mockStash, never()).getPullRequests(anyString(), anyString(), anyString())
@@ -127,9 +90,9 @@ class OpenPostPullRequestIfNotOnBranchTaskFunctionalTest {
 
         when(mockStash.getBranchInfo(testCommit)).thenThrow(new Exception("commit doesn't exist on any branch"))
         try {
-            project.tasks.openPostPullRequestIfNotOnBranchTask.execute()
+            project.tasks.openPostPullRequestIfNotOnBranchTask.runAction()
         } catch(Exception e) {
-            assertTrue(e.cause.message.contains("commit doesn't exist on any branch"))
+            assertTrue(e.message.contains("commit doesn't exist on any branch"))
         }
 
         verify(mockStash, never()).getBranchesMatching()
@@ -145,9 +108,9 @@ class OpenPostPullRequestIfNotOnBranchTaskFunctionalTest {
 
         when(mockStash.getBranchInfo(testCommit)).thenReturn(branchInfoResponse)
         try {
-            project.tasks.openPostPullRequestIfNotOnBranchTask.execute()
+            project.tasks.openPostPullRequestIfNotOnBranchTask.runAction()
         } catch(RuntimeException e) {
-            assertTrue(e.cause.message.contains("multiple (non-${testBranch}) branches have this commit : ${testCommit}"))
+            assertTrue(e.message.contains("multiple (non-${testBranch}) branches have this commit : ${testCommit}"))
         }
 
         verify(mockStash, never()).getBranchesMatching()
@@ -166,7 +129,7 @@ class OpenPostPullRequestIfNotOnBranchTaskFunctionalTest {
         when(mockStash.getBranchesMatching("branch-a")).thenReturn(matchingBranchResponse)
         when(mockStash.getPullRequests(testBranch, "OPEN", null)).thenReturn(openPrsResponse)
 
-        project.tasks.openPostPullRequestIfNotOnBranchTask.execute()
+        project.tasks.openPostPullRequestIfNotOnBranchTask.runAction()
 
         verify(mockStash, never()).postPullRequest(anyString(), anyString(), anyString(), anyString(), anyString())
     }
@@ -183,9 +146,9 @@ class OpenPostPullRequestIfNotOnBranchTaskFunctionalTest {
         when(mockStash.getBranchesMatching("branch-a")).thenReturn(matchingBranchResponse)
 
         try {
-            project.tasks.openPostPullRequestIfNotOnBranchTask.execute()
-        } catch(Exception e) {
-            assertTrue(e.cause.message.contains("assert"))
+            project.tasks.openPostPullRequestIfNotOnBranchTask.runAction()
+        } catch(Throwable e) {
+            assertTrue(e.message.contains("assert"))
         }
         verify(mockStash, never()).getPullRequests(anyString(), anyString(), anyString())
         verify(mockStash, never()).postPullRequest(anyString(), anyString(), anyString(), anyString(), anyString())
@@ -204,6 +167,6 @@ class OpenPostPullRequestIfNotOnBranchTaskFunctionalTest {
         when(mockStash.getPullRequests(testBranch, "OPEN", null)).thenReturn(openPrsResponse)
         when(mockStash.postPullRequest(eq("branch-a"), anyString(), eq(testBranch), eq(testTitle), eq(testDescription))).thenReturn(postPullRequestResponse)
 
-        project.tasks.openPostPullRequestIfNotOnBranchTask.execute()
+        project.tasks.openPostPullRequestIfNotOnBranchTask.runAction()
     }
 }
