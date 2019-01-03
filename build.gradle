@@ -26,6 +26,10 @@ contacts {
         moniker 'Daniel Zapata'
         github 'dzapata'
     }
+    'roberto@perezalcolea.info' {
+        moniker 'Roberto Perez Alcolea'
+        github 'rpalcolea'
+    }
 }
 
 dependencies {
