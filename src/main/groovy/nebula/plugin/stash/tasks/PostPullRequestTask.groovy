@@ -1,10 +1,11 @@
 package nebula.plugin.stash.tasks
 
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.Internal
 
 class PostPullRequestTask extends StashTask {
     @Input String prFromBranch
-    String prToRepo = stashRepo
+    @Internal String prToRepo = stashRepo
     @Input String prToBranch
     @Input String prTitle
     @Input String prDescription
