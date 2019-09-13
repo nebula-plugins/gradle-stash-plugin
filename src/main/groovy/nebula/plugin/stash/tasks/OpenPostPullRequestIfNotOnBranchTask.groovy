@@ -1,6 +1,8 @@
 package nebula.plugin.stash.tasks
 
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.Internal
+import org.gradle.api.tasks.Optional
 
 /**
  * Given a commit and a target branch:
@@ -10,11 +12,11 @@ import org.gradle.api.tasks.Input
  */
 class OpenPostPullRequestIfNotOnBranchTask extends StashTask {
     @Input String prCommit
-    String prToRepo = stashRepo
+    @Internal String prToRepo = stashRepo
     @Input String prToBranch
     @Input String prTitle
     @Input String prDescription
-    String prFromBranch
+    @Input @Optional String prFromBranch
 
     @Override
     void executeStashCommand() {

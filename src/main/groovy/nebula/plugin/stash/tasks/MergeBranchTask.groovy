@@ -2,13 +2,15 @@ package nebula.plugin.stash.tasks
 
 import org.gradle.api.GradleException
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
 
 import java.text.SimpleDateFormat
 
-public class MergeBranchTask extends StashTask {
+class MergeBranchTask extends StashTask {
     @Input String pullFromBranch
-    String mergeToRepo = stashRepo
+    @Internal String mergeToRepo = stashRepo
     @Input String mergeToBranch
     @Input @Optional String remoteName
     @Input String repoUrl
@@ -17,9 +19,9 @@ public class MergeBranchTask extends StashTask {
     @Input @Optional String mergeMessage
     @Input @Optional String repoName
     @Input @Optional Boolean acceptFilter
-    String pathInRepo
-    File pathFile
-    File clonePath
+    @Input @Optional String pathInRepo
+    @InputFile @Optional File pathFile
+    @InputFile @Optional File clonePath
 
     @Override
     void executeStashCommand() {
