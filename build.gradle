@@ -22,13 +22,9 @@ plugins {
 description 'Gradle plugin to do various Stash SCM tasks'
 
 contacts {
-    'dzapata@gmail.com' {
-        moniker 'Daniel Zapata'
-        github 'dzapata'
-    }
-    'roberto@perezalcolea.info' {
-        moniker 'Roberto Perez Alcolea'
-        github 'rpalcolea'
+    'nebula-plugins-oss@netflix.com' {
+        moniker 'Nebula Plugins Maintainers'
+        github 'nebula-plugins'
     }
 }
 
