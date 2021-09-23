@@ -57,8 +57,8 @@ class StashRestApiImpl implements StashRestApi {
         def values = []
 
         while (!lastPage) {
-            def result = stashGetJson(path, queryParams + [start:${nextPageStart}])
-            lastPage = (result.lastPage == 'true')
+            def result = stashGetJson(path, queryParams + [start:nextPageStart])
+            lastPage = result.isLastPage
             result.each {
                 values << it
             }
