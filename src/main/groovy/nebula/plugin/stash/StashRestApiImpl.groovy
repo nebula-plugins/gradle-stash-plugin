@@ -46,7 +46,25 @@ class StashRestApiImpl implements StashRestApi {
     private Map stashGetJson(String path, HashMap queryParams = [:])
     {
         log "GET: \n$path"
+        log "queryparams: \n$queryParams"
         return httpRequest(GET, JSON, path, queryParams)
+    }
+
+    private Map stashGetJsonPaged(String path, HashMap queryParams = [:])
+    {
+        def lastPage = false
+        def nextPageStart = 0
+        def values = []
+
+        while (!lastPage) {
+            def result = stashGetJson(path, queryParams + [start:${nextPageStart}])
+            lastPage = (result.lastPage == 'true')
+            result.each {
+                values << it
+            }
+            nextPageStart = result.nextPageStart
+        }
+        return [values: values]
     }
 
     private Map stashPostJson(String path, Map postBody = [:], Map queryParams = [:])
@@ -221,7 +239,7 @@ class StashRestApiImpl implements StashRestApi {
         branch = branch.trim()
         def path = getRestPath() + "branches/"
         def prs = []
-        stashGetJson(path, [filterText:branch]).values.each {
+        stashGetJsonPaged(path, [filterText:branch]).values.each {
             prs << it
         }
         return prs
