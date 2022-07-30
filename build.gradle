@@ -16,7 +16,7 @@
 
 
 plugins {
-    id 'nebula.plugin-plugin' version '16.3.0'
+    id 'nebula.plugin-plugin' version '17.0.0'
 }
 
 description 'Gradle plugin to do various Stash SCM tasks'
@@ -34,19 +34,23 @@ dependencies {
 }
 
 pluginBundle {
+    tags = ['nebula', 'scm', 'stash']
+}
+
+gradlePlugin {
     plugins {
         gradleStash {
             id = 'nebula.gradle-stash'
             displayName = 'Nebula Stash Plugin'
             description = project.description
-            tags = ['nebula', 'scm', 'stash']
+            implementationClass = 'nebula.plugin.stash.StashRestPlugin'
         }
 
         gradleStashBase {
             id = 'nebula.gradle-stash-base'
             displayName = 'Nebula Stash Base Plugin'
             description = 'Sets up some common '
-            tags = ['nebula', 'scm', 'stash']
+            implementationClass = 'nebula.plugin.stash.StashRestBasePlugin'
         }
     }
 }
