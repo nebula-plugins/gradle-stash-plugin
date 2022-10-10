@@ -16,7 +16,7 @@ class StashRestPluginIntegrationTest extends ProjectSpec {
         def stash = new StashRestApiImpl()
         //def failedBuild = [state:"FAILED", key:StashRestApi.RPM_BUILD_KEY, name:StashRestApi.RPM_BUILD_KEY + "-45", url:"http://google.com", description:"build failed"]
         //stash.postBuildStatus("1f98fba51eafd5d3184e10ccdbb4a615545d5464", failedBuild)
-        project.apply plugin: 'nebula.gradle-stash'
+        project.apply plugin: 'com.netflix.nebula.gradle-stash'
         project.tasks.mergeBuiltPullRequests.execute()
     }
 
@@ -160,7 +160,7 @@ class StashRestPluginIntegrationTest extends ProjectSpec {
  */
     //@Test
     public void mergeBranchTask() {
-        project.apply plugin: 'nebula.gradle-stash'
+        project.apply plugin: 'com.netflix.nebula.gradle-stash'
 
         project.ext.set("pullFromBranch", "a")
         project.ext.set("mergeToBranch", "master")

@@ -6,7 +6,7 @@ import org.gradle.api.Task
 
 class StashRestPluginTest extends ProjectSpec {
     def setup() {
-        project.apply plugin: 'nebula.gradle-stash'
+        project.apply plugin: 'com.netflix.nebula.gradle-stash'
         assert project.plugins.hasPlugin(StashRestBasePlugin)
     }
 

@@ -5,7 +5,7 @@ import nebula.test.ProjectSpec
 
 class StashRestBasePluginTest extends ProjectSpec {
     def setup() {
-        project.apply plugin: 'nebula.gradle-stash-base'
+        project.apply plugin: 'com.netflix.nebula.gradle-stash-base'
     }
 
     def "Can create task of type StashTask"() {

@@ -40,14 +40,14 @@ pluginBundle {
 gradlePlugin {
     plugins {
         gradleStash {
-            id = 'nebula.gradle-stash'
+            id = 'com.netflix.nebula.gradle-stash'
             displayName = 'Nebula Stash Plugin'
             description = project.description
             implementationClass = 'nebula.plugin.stash.StashRestPlugin'
         }
 
         gradleStashBase {
-            id = 'nebula.gradle-stash-base'
+            id = 'com.netflix.nebula.gradle-stash-base'
             displayName = 'Nebula Stash Base Plugin'
             description = 'Sets up some common '
             implementationClass = 'nebula.plugin.stash.StashRestBasePlugin'
