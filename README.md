@@ -42,13 +42,13 @@ The JAR file comes with two plugins:
 The `gradle-stash` plugin helps you get started quickly. To use the Stash plugin, include the following code snippet
 in your build script:
 
-    apply plugin: 'nebula.gradle-stash'
+    apply plugin: 'com.netflix.nebula.gradle-stash'
 
 If you need full control over the creation of your tasks, you will want to use the `gradle-stash-base` plugin. The downside is that each task
 has to be configured individually in your build script. To use the Stash base plugin, include the following code snippet
 in your build script:
 
-    apply plugin: 'nebula.gradle-stash-base'
+    apply plugin: 'com.netflix.nebula.gradle-stash-base'
 
 ### Tasks provided by `gradle-stash`
 
