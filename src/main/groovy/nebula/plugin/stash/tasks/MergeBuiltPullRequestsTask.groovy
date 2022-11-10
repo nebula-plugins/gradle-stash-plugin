@@ -2,7 +2,9 @@ package nebula.plugin.stash.tasks
 
 import nebula.plugin.stash.StashRestApi
 import org.gradle.api.tasks.Input
+import org.gradle.work.DisableCachingByDefault
 
+@DisableCachingByDefault
 class MergeBuiltPullRequestsTask extends StashTask {
     @Input String targetBranch
 

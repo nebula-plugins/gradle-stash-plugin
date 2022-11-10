@@ -5,9 +5,12 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.work.DisableCachingByDefault
 
 import java.text.SimpleDateFormat
 
+@DisableCachingByDefault
 class MergeBranchTask extends StashTask {
     @Input String pullFromBranch
     @Internal String mergeToRepo = stashRepo
@@ -20,8 +23,8 @@ class MergeBranchTask extends StashTask {
     @Input @Optional String repoName
     @Input @Optional Boolean acceptFilter
     @Input @Optional String pathInRepo
-    @InputFile @Optional File pathFile
-    @InputFile @Optional File clonePath
+    @InputFile @Optional @PathSensitive File pathFile
+    @InputFile @Optional @PathSensitive File clonePath
 
     @Override
     void executeStashCommand() {

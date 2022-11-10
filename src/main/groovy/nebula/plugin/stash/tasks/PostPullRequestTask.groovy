@@ -2,7 +2,9 @@ package nebula.plugin.stash.tasks
 
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Internal
+import org.gradle.work.DisableCachingByDefault
 
+@DisableCachingByDefault
 class PostPullRequestTask extends StashTask {
     @Input String prFromBranch
     @Internal String prToRepo = stashRepo

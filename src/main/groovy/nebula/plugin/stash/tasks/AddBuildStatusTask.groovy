@@ -3,7 +3,9 @@ package nebula.plugin.stash.tasks
 import org.gradle.api.GradleException
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
+import org.gradle.work.DisableCachingByDefault
 
+@DisableCachingByDefault
 class AddBuildStatusTask extends StashTask {
     @Input String buildState
     @Input String buildKey

@@ -3,6 +3,7 @@ package nebula.plugin.stash.tasks
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
+import org.gradle.work.DisableCachingByDefault
 
 /**
  * Given a commit and a target branch:
@@ -10,6 +11,7 @@ import org.gradle.api.tasks.Optional
  * 2) Determine which branch the commit lives on
  * 3) If the commit is the head of that branch, open a pull request to get the commit on the target branch if one isn't already opened
  */
+@DisableCachingByDefault
 class OpenPostPullRequestIfNotOnBranchTask extends StashTask {
     @Input String prCommit
     @Internal String prToRepo = stashRepo

@@ -5,6 +5,7 @@ import org.gradle.api.GradleException
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
+import org.gradle.work.DisableCachingByDefault
 
 /**
  * Poll stash pull requests and pick the top one.
@@ -12,6 +13,7 @@ import org.gradle.api.tasks.Optional
  * @author dzapata
  *
  */
+@DisableCachingByDefault
 class SyncNextPullRequestTask extends StashTask {
     @Internal int consistencyPollRetryCount = 20
     //long consistencyPollRetryDeplayMs = 250
