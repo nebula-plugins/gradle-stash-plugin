@@ -16,7 +16,7 @@
 
 
 plugins {
-    id 'com.netflix.nebula.plugin-plugin' version '19.0.2'
+    id 'com.netflix.nebula.plugin-plugin' version '20.0.0'
 }
 
 description 'Gradle plugin to do various Stash SCM tasks'
@@ -33,10 +33,6 @@ dependencies {
     testImplementation 'org.mockito:mockito-all:1.9.5'
 }
 
-pluginBundle {
-    tags = ['nebula', 'scm', 'stash']
-}
-
 gradlePlugin {
     plugins {
         gradleStash {
@@ -44,6 +40,7 @@ gradlePlugin {
             displayName = 'Nebula Stash Plugin'
             description = project.description
             implementationClass = 'nebula.plugin.stash.StashRestPlugin'
+            tags.set(['nebula', 'scm', 'stash'])
         }
 
         gradleStashBase {
@@ -51,6 +48,7 @@ gradlePlugin {
             displayName = 'Nebula Stash Base Plugin'
             description = 'Sets up some common '
             implementationClass = 'nebula.plugin.stash.StashRestBasePlugin'
+            tags.set(['nebula', 'scm', 'stash'])
         }
     }
 }
