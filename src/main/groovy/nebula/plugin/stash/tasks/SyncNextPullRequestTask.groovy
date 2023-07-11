@@ -24,8 +24,8 @@ class SyncNextPullRequestTask extends StashTask {
 
     @Override
     void executeStashCommand() {
-        String buildPath = project.buildDir.getPath().toString()
-
+        String buildPath = project.layout.buildDirectory.asFile.get().getPath().toString()
+        
         logger.info("checking for open pull requests")
         targetBranch = targetBranch ?:  "master"
         logger.info("Finding Pull Requests targeting $targetBranch.")
