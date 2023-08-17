@@ -1,0 +1,56 @@
+{
+    "compileClasspath": {
+        "org.codehaus.groovy.modules.http-builder:http-builder": {
+            "locked": "0.7.1"
+        }
+    },
+    "integTestCompileClasspath": {
+        "com.netflix.nebula:nebula-test": {
+            "locked": "10.5.0"
+        },
+        "org.codehaus.groovy.modules.http-builder:http-builder": {
+            "locked": "0.7.1"
+        },
+        "org.mockito:mockito-all": {
+            "locked": "1.9.5"
+        }
+    },
+    "integTestRuntimeClasspath": {
+        "com.netflix.nebula:nebula-test": {
+            "locked": "10.5.0"
+        },
+        "org.codehaus.groovy.modules.http-builder:http-builder": {
+            "locked": "0.7.1"
+        },
+        "org.mockito:mockito-all": {
+            "locked": "1.9.5"
+        }
+    },
+    "runtimeClasspath": {
+        "org.codehaus.groovy.modules.http-builder:http-builder": {
+            "locked": "0.7.1"
+        }
+    },
+    "testCompileClasspath": {
+        "com.netflix.nebula:nebula-test": {
+            "locked": "10.5.0"
+        },
+        "org.codehaus.groovy.modules.http-builder:http-builder": {
+            "locked": "0.7.1"
+        },
+        "org.mockito:mockito-all": {
+            "locked": "1.9.5"
+        }
+    },
+    "testRuntimeClasspath": {
+        "com.netflix.nebula:nebula-test": {
+            "locked": "10.5.0"
+        },
+        "org.codehaus.groovy.modules.http-builder:http-builder": {
+            "locked": "0.7.1"
+        },
+        "org.mockito:mockito-all": {
+            "locked": "1.9.5"
+        }
+    }
+}
