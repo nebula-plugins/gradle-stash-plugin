@@ -123,9 +123,9 @@ options including an example that demonstrates the use case:
 
 On the command line provide a project project via `-PtargetBranch=master`.
 
-In your build script, parse the provided project property and assign it to the task property:
+In your build script, parse the provided project property and assign it to the task property (will default to `null` if the property cannot be located):
 
-    mergeBuiltPullRequests.targetBranch = project.hasProperty('targetBranch') ? project.getProperty('targetBranch') : null
+    mergeBuiltPullRequests.targetBranch = project.findProperty('targetBranch')
 
 #### Using system properties
 
